@@ -1,144 +1,67 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chat de Ciencias Naturales y Medicina</title>
-
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #f0f4f8;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }
-
-    .chat-container {
-        width: 450px;
-        height: 650px;
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 0 15px rgba(0,0,0,0.15);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
-
-    .header {
-        background: #1f7a8c;
-        color: white;
-        padding: 15px;
-        text-align: center;
-        font-size: 20px;
-        font-weight: bold;
-    }
-
-    .chat-box {
-        flex: 1;
-        padding: 15px;
-        overflow-y: auto;
-    }
-
-    .message {
-        margin-bottom: 10px;
-        padding: 10px;
-        border-radius: 10px;
-        max-width: 80%;
-    }
-
-    .user {
-        background: #d9fdd3;
-        margin-left: auto;
-    }
-
-    .bot {
-        background: #e8eef7;
-    }
-
-    .input-area {
-        display: flex;
-        border-top: 1px solid #ddd;
-    }
-
-    input {
-        flex: 1;
-        border: none;
-        padding: 15px;
-        font-size: 16px;
-        outline: none;
-    }
-
-    button {
-        border: none;
-        background: #1f7a8c;
-        color: white;
-        padding: 15px 20px;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background: #155d6b;
-    }
-</style>
-</head>
-<body>
-
-<div class="chat-container">
-    <div class="header">
-        Chat de Ciencias Naturales y Medicina
-    </div>
-
-    <div class="chat-box" id="chatBox">
-        <div class="message bot">
-            Hola. Solo respondo preguntas sobre ciencias naturales y medicina.
-        </div>
-    </div>
-
-    <div class="input-area">
-        <input
-            type="text"
-            id="userInput"
-            placeholder="Escribe tu pregunta..."
-            onkeypress="if(event.key==='Enter') enviarMensaje()"
-        >
-        <button onclick="enviarMensaje()">Enviar</button>
-    </div>
-</div>
-
-<script>
 const palabrasPermitidas = [
-    "biología", "biologia",
-    "química", "quimica",
-    "física", "fisica",
-    "medicina", "salud",
-    "anatomía", "anatomia",
-    "célula", "celula",
-    "genética", "genetica",
-    "virus", "bacteria",
-    "ecosistema",
-    "órgano", "organo",
-    "enfermedad",
-    "sistema nervioso",
-    "sangre",
-    "ADN",
-    "vacuna",
-    "farmacología",
-    "farmacologia"
+    // Áreas generales
+    "medicina", "salud", "ciencias naturales", "biología", "biologia",
+    "química", "quimica", "física", "fisica", "astronomía", "astronomia",
+    "geología", "geologia", "ecología", "ecologia", "ciencia", "científico",
+
+    // Cuerpo humano
+    "cuerpo", "humano", "anatomía", "anatomia", "fisiología", "fisiologia",
+    "órgano", "organo", "tejido", "célula", "celula",
+
+    // Órganos
+    "pulmón", "pulmon", "pulmones", "corazón", "corazon", "cerebro",
+    "hígado", "higado", "riñón", "riñon", "estómago", "estomago",
+    "intestino", "piel", "ojo", "ojos", "oído", "oido", "nariz",
+
+    // Sistemas del cuerpo
+    "sistema respiratorio", "sistema digestivo", "sistema circulatorio",
+    "sistema nervioso", "sistema inmunológico", "sistema inmunologico",
+
+    // Procesos biológicos
+    "respiración", "respiracion", "digestión", "digestion",
+    "circulación", "circulacion", "reproducción", "reproduccion",
+    "metabolismo", "evolución", "evolucion", "herencia",
+
+    // Genética
+    "adn", "arn", "gen", "genes", "genética", "genetica",
+    "cromosoma", "mutación", "mutacion",
+
+    // Enfermedades y medicina
+    "enfermedad", "enfermedades", "virus", "bacteria", "bacterias",
+    "hongo", "hongos", "parásito", "parasito",
+    "infección", "infeccion", "vacuna", "vacunas",
+    "tratamiento", "medicamento", "medicamentos",
+    "síntoma", "sintoma", "síntomas", "sintomas",
+    "diagnóstico", "diagnostico", "hospital",
+    "doctor", "médico", "medico", "paciente",
+
+    // Animales y plantas
+    "animal", "animales", "planta", "plantas", "árbol", "arbol",
+    "bosque", "ecosistema", "especie", "especies",
+    "mamífero", "mamifero", "ave", "aves",
+    "reptil", "anfibio", "pez", "peces", "insecto", "insectos",
+
+    // Tierra y naturaleza
+    "agua", "aire", "suelo", "clima", "atmósfera", "atmosfera",
+    "océano", "oceano", "mar", "río", "rio",
+    "montaña", "montana", "volcán", "volcan",
+    "terremoto", "roca", "mineral",
+
+    // Física
+    "energía", "energia", "fuerza", "movimiento",
+    "gravedad", "electricidad", "magnetismo",
+    "luz", "sonido", "temperatura",
+
+    // Química
+    "átomo", "atomo", "molécula", "molecula",
+    "elemento", "compuesto", "reacción", "reaccion",
+    "ácido", "acido", "base", "oxidación", "oxidacion",
+
+    // Astronomía
+    "planeta", "estrella", "sol", "luna",
+    "galaxia", "universo", "espacio",
+    "satélite", "satelite"
 ];
-
-function agregarMensaje(texto, tipo) {
-    const chatBox = document.getElementById("chatBox");
-
-    const mensaje = document.createElement("div");
-    mensaje.className = "message " + tipo;
-    mensaje.textContent = texto;
-
-    chatBox.appendChild(mensaje);
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
 
 function esTemaPermitido(texto) {
     texto = texto.toLowerCase();
@@ -147,30 +70,3 @@ function esTemaPermitido(texto) {
         texto.includes(palabra.toLowerCase())
     );
 }
-
-function enviarMensaje() {
-    const input = document.getElementById("userInput");
-    const texto = input.value.trim();
-
-    if (!texto) return;
-
-    agregarMensaje(texto, "user");
-
-    if (esTemaPermitido(texto)) {
-        agregarMensaje(
-            "La pregunta parece relacionada con ciencias naturales o medicina. Aquí podrías conectar una IA para generar una respuesta especializada.",
-            "bot"
-        );
-    } else {
-        agregarMensaje(
-            "Lo siento, solo puedo responder preguntas sobre ciencias naturales y medicina.",
-            "bot"
-        );
-    }
-
-    input.value = "";
-}
-</script>
-
-</body>
-</html>
