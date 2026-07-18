@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin - Perfumes Ciro</title>
+
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, Helvetica, sans-serif;
+}
+
+
+body{
+
+background:#080808;
+color:white;
+padding:40px;
+
+}
+
+
+h1{
+
+text-align:center;
+color:#d4af37;
+margin-bottom:30px;
+
+}
+
+
+.panel{
+
+max-width:600px;
+margin:auto;
+background:#151515;
+padding:30px;
+border-radius:20px;
+
+}
+
+
+
+input{
+
+width:100%;
+padding:15px;
+margin:10px 0;
+border:none;
+border-radius:10px;
+font-size:16px;
+
+}
+
+
+
+button{
+
+background:#d4af37;
+border:none;
+padding:12px 25px;
+border-radius:20px;
+cursor:pointer;
+font-weight:bold;
+
+}
+
+
+button:hover{
+
+background:#f5d76e;
+
+}
+
+
+
+#administrador{
+
+display:none;
+
+}
+
+
+
+.producto{
+
+background:#222;
+padding:20px;
+margin:20px 0;
+border-radius:15px;
+
+}
+
+
+.producto h3{
+
+color:#d4af37;
+margin-bottom:10px;
+
+}
+
+
+.mensaje{
+
+color:#00c853;
+margin-top:15px;
+
+}
+
+
+</style>
+
+
+</head>
+
+
+<body>
+
+
+<h1>
+PERFUMES CIRO ADMIN
+</h1>
+
+
+
+<div class="panel">
+
+
+
+<div id="login">
+
+
+<h2>
+Ingresar
+</h2>
+
+
+<input 
+type="password"
+id="clave"
+placeholder="Contraseña">
+
+
+<button onclick="entrar()">
+
+Entrar
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+<div id="administrador">
+
+
+<h2>
+Editar precios
+</h2>
+
+
+<div id="lista"></div>
+
+
+<p class="mensaje" id="mensaje"></p>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<script>
+
+
+// CAMBIA TU CONTRASEÑA AQUI
+
+const contraseña = "305769";
+
+
+
+
+
+let perfumes = JSON.parse(localStorage.getItem("perfumes"))
+||
+[
+
+
+{
+nombre:"Lattafa Khamrah",
+precio:35000
+},
+
+
+{
+nombre:"Lattafa Asad",
+precio:32000
+},
+
+
+{
+nombre:"Yara Lattafa",
+precio:30000
+},
+
+
+{
+nombre:"Oud For Glory",
+precio:42000
+},
+
+
+{
+nombre:"Fakhar Black",
+precio:31000
+}
+
+
+];
+
+
+
+
+
+
+function entrar(){
+
+
+let clave =
+document.getElementById("clave").value;
+
+
+
+if(clave === contraseña){
+
+
+document.getElementById("login").style.display="none";
+
+
+document.getElementById("administrador").style.display="block";
+
+
+mostrarProductos();
+
+
+}
+
+else{
+
+
+alert("Contraseña incorrecta");
+
+
+}
+
+
+}
+
+
+
+
+
+
+function mostrarProductos(){
+
+
+let lista =
+document.getElementById("lista");
+
+
+lista.innerHTML="";
+
+
+
+perfumes.forEach((p,index)=>{
+
+
+lista.innerHTML += `
+
+
+<div class="producto">
+
+
+<h3>
+${p.nombre}
+</h3>
+
+
+<input 
+id="precio${index}"
+value="${p.precio}">
+
+
+<button onclick="guardar(${index})">
+
+Guardar precio
+
+</button>
+
+
+</div>
+
+
+`;
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+function guardar(index){
+
+
+let nuevoPrecio =
+document.getElementById(
+"precio"+index
+).value;
+
+
+
+perfumes[index].precio =
+Number(nuevoPrecio);
+
+
+
+localStorage.setItem(
+"perfumes",
+JSON.stringify(perfumes)
+);
+
+
+
+document.getElementById("mensaje").innerHTML =
+"Precio actualizado correctamente";
+
+
+}
+
+
+
+</script>
+
+
+</body>
+
+</html>
