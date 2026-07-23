@@ -1,140 +1,1353 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Catálogo de Productos</title>
+
+<title>Productos de Limpieza Profesional</title>
+
+
+<!-- ICONOS PROFESIONALES -->
+<link rel="stylesheet" 
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+
+<!-- ANIMACIONES -->
+<link rel="stylesheet"
+href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+
 
 <style>
+
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
+    font-family:'Arial',sans-serif;
 }
+
+
+html{
+    scroll-behavior:smooth;
+}
+
 
 body{
-    background:linear-gradient(to bottom,#ffffff,#dff7df);
-    padding:30px;
+
+    background:#ffffff;
+
+    color:#333;
+
 }
 
-h1{
-    text-align:center;
-    color:#157a1f;
-    font-size:48px;
-    margin-bottom:40px;
+
+/* ==========================
+       MENU SUPERIOR
+========================== */
+
+
+header{
+
+    position:fixed;
+
+    width:100%;
+
+    top:0;
+
+    left:0;
+
+    padding:20px 8%;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    background:rgba(255,255,255,.92);
+
+    backdrop-filter:blur(10px);
+
+    z-index:1000;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+
 }
 
-.catalogo{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-    gap:30px;
+
+.logo-menu{
+
+    width:90px;
+
 }
 
-.producto{
-    background:white;
-    border-radius:15px;
-    padding:20px;
-    box-shadow:0 5px 15px rgba(0,0,0,.15);
-    text-align:center;
-}
 
-.producto img{
-    width:250px;
-    height:250px;
-    object-fit:contain;
-    border:2px dashed #bdbdbd;
-    border-radius:10px;
-    margin-bottom:20px;
-}
 
-.producto h2{
-    font-size:34px;
+nav a{
+
+    text-decoration:none;
+
     color:#146b17;
-    margin-bottom:20px;
+
+    font-weight:bold;
+
+    margin-left:25px;
+
+    font-size:18px;
+
 }
+
+
+
+nav a:hover{
+
+    color:#d50000;
+
+}
+
+
+
+/* ==========================
+          PORTADA
+========================== */
+
+
+.hero{
+
+
+    height:100vh;
+
+
+    /* ==========================
+       CAMBIAR IMAGEN DE FONDO AQUI
+    ========================== */
+
+
+    background-image:url("imagenes/fondo.jpg");
+
+
+    background-size:cover;
+
+    background-position:center;
+
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+
+}
+
+
+
+.capa{
+
+
+    width:100%;
+
+    height:100%;
+
+
+    background:rgba(255,255,255,.75);
+
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+
+}
+
+
+.presentacion{
+
+    text-align:center;
+
+    max-width:1000px;
+
+    padding:20px;
+
+}
+
+
+
+/* ==========================
+       LOGO PRINCIPAL
+========================== */
+
+
+.logo-grande{
+
+
+    width:230px;
+
+    margin-bottom:30px;
+
+
+}
+
+
+
+
+.presentacion h1{
+
+
+    font-size:60px;
+
+    color:#146b17;
+
+    margin-bottom:20px;
+
+
+}
+
+
+
+.presentacion p{
+
+
+    font-size:28px;
+
+    line-height:1.5;
+
+    margin-bottom:40px;
+
+
+}
+
+
+
+
+.boton{
+
+
+    display:inline-block;
+
+    padding:18px 35px;
+
+    border-radius:12px;
+
+    text-decoration:none;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    margin:10px;
+
+    transition:.3s;
+
+
+}
+
+
+
+.boton:hover{
+
+    transform:scale(1.08);
+
+}
+
+
 
 .whatsapp{
-    display:inline-block;
+
     background:#d50000;
+
     color:white;
-    text-decoration:none;
-    padding:15px 25px;
-    border-radius:10px;
-    font-size:22px;
-    font-weight:bold;
-    transition:.3s;
+
 }
 
-.whatsapp:hover{
-    background:#a80000;
+
+
+.productos-btn{
+
+
+    background:#146b17;
+
+    color:white;
+
+
 }
-</style>
+
+
+
+/* ==========================
+       TITULOS
+========================== */
+
+
+.titulo{
+
+
+    text-align:center;
+
+    font-size:45px;
+
+    color:#146b17;
+
+    margin:80px 0 50px;
+
+
+}
+
+
+
+/* ==========================
+       POR QUE ELEGIRNOS
+========================== */
+
+
+.ventajas{
+
+
+    padding:20px 10% 80px;
+
+
+}
+
+
+.contenedor-ventajas{
+
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+    gap:30px;
+
+
+}
+
+
+
+.ventaja{
+
+
+    background:#f4fff4;
+
+    padding:35px;
+
+    text-align:center;
+
+    border-radius:20px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.10);
+
+    transition:.4s;
+
+
+}
+
+
+.ventaja:hover{
+
+    transform:translateY(-12px);
+
+}
+
+
+
+.ventaja i{
+
+
+    font-size:55px;
+
+    color:#1c8b27;
+
+    margin-bottom:20px;
+
+
+}
+
+
+.ventaja h3{
+
+
+    color:#146b17;
+
+    font-size:27px;
+
+    margin-bottom:15px;
+
+
+}
+
+
+.ventaja p{
+
+    font-size:18px;
+
+}
+
+
+
+
+
+/* ==========================
+          CATALOGO
+========================== */
+
+
+.catalogo{
+
+    width:90%;
+
+    margin:auto;
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+
+    gap:35px;
+
+    padding-bottom:80px;
+
+}
+
+
+
+.producto{
+
+
+    background:white;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.12);
+
+    transition:.4s;
+
+
+}
+
+
+
+.producto:hover{
+
+    transform:translateY(-10px);
+
+}
+
+
+
+.imagen-producto{
+
+
+    height:300px;
+
+    background:#f5f5f5;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    overflow:hidden;
+
+
+}
+
+
+
+.imagen-producto img{
+
+
+    width:90%;
+
+    height:90%;
+
+    object-fit:contain;
+
+    transition:.5s;
+
+
+}
+
+
+
+.producto:hover img{
+
+    transform:scale(1.08);
+
+}
+
+
+
+.info-producto{
+
+
+    padding:25px;
+
+    text-align:center;
+
+
+}
+
+
+
+.info-producto h2{
+
+
+    font-size:32px;
+
+    color:#146b17;
+
+    margin-bottom:20px;
+
+
+}
+
+
+
+.info-producto p{
+
+
+    font-size:17px;
+
+    margin-bottom:25px;
+
+
+}
+
+
+
+.boton-consultar{
+
+
+    background:#d50000;
+
+    color:white;
+
+    padding:14px 25px;
+
+    border-radius:10px;
+
+    text-decoration:none;
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    display:inline-block;
+
+    transition:.3s;
+
+
+}
+
+
+
+.boton-consultar:hover{
+
+
+    background:#a80000;
+
+    transform:scale(1.05);
+
+
+}
+
+
+
+/* ==========================
+       WHATSAPP FLOTANTE
+========================== */
+
+
+.whatsapp-fijo{
+
+
+    position:fixed;
+
+    right:25px;
+
+    bottom:25px;
+
+
+    width:65px;
+
+    height:65px;
+
+
+    background:#25D366;
+
+    color:white;
+
+
+    border-radius:50%;
+
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+
+    font-size:35px;
+
+
+    text-decoration:none;
+
+
+    box-shadow:0 5px 20px rgba(0,0,0,.3);
+
+
+    z-index:2000;
+
+
+    animation:pulso 2s infinite;
+
+
+}
+
+
+
+@keyframes pulso{
+
+
+    0%{
+
+        transform:scale(1);
+
+    }
+
+
+    50%{
+
+        transform:scale(1.15);
+
+    }
+
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+
+}
+
+
+
+
+/* ==========================
+          FOOTER
+========================== */
+
+
+footer{
+
+
+    background:#146b17;
+
+
+    color:white;
+
+
+    text-align:center;
+
+
+    padding:40px;
+
+
+    font-size:20px;
+
+
+}
+
+
+
+/* ==========================
+       RESPONSIVE CELULAR
+========================== */
+
+
+@media(max-width:768px){
+
+
+header{
+
+    padding:15px;
+
+}
+
+
+nav{
+
+    display:none;
+
+}
+
+
+
+.presentacion h1{
+
+
+    font-size:38px;
+
+
+}
+
+
+
+.presentacion p{
+
+
+    font-size:20px;
+
+
+}
+
+
+
+.titulo{
+
+
+    font-size:35px;
+
+
+}
+
+
+
+}</style>
 
 </head>
+
 <body>
 
-<h1>Catálogo de Productos</h1>
+
+<!-- ==========================
+          MENU
+========================== -->
+
+
+<header>
+
+<img src="imagenes/logo.png" class="logo-menu">
+
+
+<nav>
+
+<a href="#inicio">Inicio</a>
+
+<a href="#productos">Productos</a>
+
+<a href="#ventajas">Por qué elegirnos</a>
+
+<a href="#contacto">Contacto</a>
+
+</nav>
+
+</header>
+
+
+
+
+
+<!-- ==========================
+          PORTADA
+========================== -->
+
+
+<section class="hero" id="inicio">
+
+
+<div class="capa">
+
+
+<div class="presentacion" data-aos="fade-up">
+
+
+
+<!-- CAMBIAR AQUI TU LOGO -->
+
+<img src="imagenes/logo.png" class="logo-grande">
+
+
+
+<h1>
+Productos de limpieza profesional para cada necesidad
+</h1>
+
+
+<p>
+Calidad, rendimiento y confianza en productos pensados para hogares,
+comercios e industrias.
+</p>
+
+
+
+<a class="boton whatsapp"
+href="https://wa.me/5491171005652"
+target="_blank">
+
+<i class="fa-brands fa-whatsapp"></i>
+
+Consultar por WhatsApp
+
+</a>
+
+
+
+<a class="boton productos-btn"
+href="#productos">
+
+Ver productos
+
+</a>
+
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+<!-- ==========================
+       POR QUE ELEGIRNOS
+========================== -->
+
+
+<section class="ventajas" id="ventajas">
+
+
+<h2 class="titulo">
+
+¿Por qué elegirnos?
+
+</h2>
+
+
+
+<div class="contenedor-ventajas">
+
+
+
+<div class="ventaja" data-aos="fade-up">
+
+<i class="fa-solid fa-flask"></i>
+
+<h3>
+Calidad Profesional
+</h3>
+
+<p>
+Productos diseñados para brindar excelentes resultados.
+</p>
+
+</div>
+
+
+
+
+<div class="ventaja" data-aos="fade-up">
+
+<i class="fa-solid fa-sparkles"></i>
+
+<h3>
+Limpieza Superior
+</h3>
+
+<p>
+Fórmulas de alto rendimiento para una limpieza efectiva.
+</p>
+
+</div>
+
+
+
+
+<div class="ventaja" data-aos="fade-up">
+
+<i class="fa-solid fa-handshake"></i>
+
+<h3>
+Atención Personalizada
+</h3>
+
+<p>
+Te ayudamos a elegir el producto adecuado.
+</p>
+
+</div>
+
+
+
+
+<div class="ventaja" data-aos="fade-up">
+
+<i class="fa-solid fa-tags"></i>
+
+<h3>
+Precios Competitivos
+</h3>
+
+<p>
+Excelente relación entre calidad y precio.
+</p>
+
+</div>
+
+
+
+
+<div class="ventaja" data-aos="fade-up">
+
+<i class="fa-solid fa-house"></i>
+
+<h3>
+Para Todo Uso
+</h3>
+
+<p>
+Ideal para hogares, comercios e industrias.
+</p>
+
+</div>
+
+
+
+
+<div class="ventaja" data-aos="fade-up">
+
+<i class="fa-solid fa-shield-halved"></i>
+
+<h3>
+Confianza
+</h3>
+
+<p>
+Compromiso con la calidad de nuestros productos.
+</p>
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<!-- ==========================
+          PRODUCTOS
+========================== -->
+
+
+<section id="productos">
+
+
+<h2 class="titulo">
+
+Nuestros Productos
+
+</h2>
+
+
 
 <div class="catalogo">
 
-<div class="producto">
-<img src="imagenes/detergente.jpg" alt="Detergente 12%">
-<h2>Detergente 12% Amarillo</h2>
-<a class="whatsapp" href="https://wa.me/5491171005652" target="_blank">
-Consultar por WhatsApp
-</a>
+
+
+
+
+<!-- PRODUCTO 1 -->
+
+<div class="producto" data-aos="zoom-in">
+
+
+<div class="imagen-producto">
+
+
+<!-- FOTO DETERGENTE 12% -->
+
+<img src="imagenes/detergente12.jpg">
+
+
 </div>
 
-<div class="producto">
-<img src="imagenes/jabon-ropa.jpg" alt="Jabón líquido para ropa">
-<h2>Jabón Líquido para Ropa 15% Azul Baja Espuma</h2>
-<a class="whatsapp" href="https://wa.me/5491171005652" target="_blank">
-Consultar por WhatsApp
-</a>
-</div>
 
-<div class="producto">
-<img src="imagenes/suavizante.jpg" alt="Suavizante">
-<h2>Suavizante para Ropa</h2>
-<a class="whatsapp" href="https://wa.me/5491171005652" target="_blank">
-Consultar por WhatsApp
-</a>
-</div>
+<div class="info-producto">
 
-<div class="producto">
-<img src="imagenes/desodorantes.jpg" alt="Desodorantes">
-<h2>Desodorantes Concentrados Línea Plus</h2>
-<a class="whatsapp" href="https://wa.me/5491171005652" target="_blank">
-Consultar por WhatsApp
-</a>
-</div>
 
-<div class="producto">
-<img src="imagenes/desengrasante.jpg" alt="Desengrasante">
-<h2>Desengrasante Multiuso</h2>
-<a class="whatsapp" href="https://wa.me/5491171005652" target="_blank">
-Consultar por WhatsApp
-</a>
-</div>
+<h2>
+Detergente 12% Amarillo
+</h2>
 
-<div class="producto">
-<img src="imagenes/jabon-manos.jpg" alt="Jabón para manos">
-<h2>Jabón Líquido para Manos</h2>
-<a class="whatsapp" href="https://wa.me/5491171005652" target="_blank">
-Consultar por WhatsApp
-</a>
-</div>
 
-<div class="producto">
-<img src="imagenes/bolsas.jpg" alt="Bolsas de residuos">
-<h2>Bolsas de Residuos</h2>
-<a class="whatsapp" href="https://wa.me/5491171005652" target="_blank">
-Consultar por WhatsApp
+<p>
+Excelente poder de limpieza y rendimiento.
+</p>
+
+
+<a class="boton-consultar"
+href="https://wa.me/5491171005652"
+target="_blank">
+
+Consultar
+
 </a>
+
+
 </div>
 
 </div>
+
+
+
+
+
+
+<!-- PRODUCTO 2 -->
+
+
+<div class="producto" data-aos="zoom-in">
+
+
+<div class="imagen-producto">
+
+
+<!-- FOTO JABON ROPA -->
+
+<img src="imagenes/jabonropa.jpg">
+
+
+</div>
+
+
+<div class="info-producto">
+
+
+<h2>
+Jabón líquido para ropa 15% azul baja espuma
+</h2>
+
+
+<p>
+Ideal para limpieza profunda de prendas.
+</p>
+
+
+<a class="boton-consultar"
+href="https://wa.me/5491171005652">
+
+Consultar
+
+</a>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- PRODUCTO 3 -->
+
+
+<div class="producto" data-aos="zoom-in">
+
+
+<div class="imagen-producto">
+
+<!-- FOTO SUAVIZANTE -->
+
+<img src="imagenes/suavizante.jpg">
+
+</div>
+
+
+<div class="info-producto">
+
+
+<h2>
+Suavizante para ropa
+</h2>
+
+
+<a class="boton-consultar"
+href="https://wa.me/5491171005652">
+
+Consultar
+
+</a>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+<!-- PRODUCTO 4 -->
+
+
+<div class="producto" data-aos="zoom-in">
+
+
+<div class="imagen-producto">
+
+
+<img src="imagenes/desodorante.jpg">
+
+
+</div>
+
+
+<div class="info-producto">
+
+
+<h2>
+Desodorantes concentrados línea plus
+</h2>
+
+
+<a class="boton-consultar"
+href="https://wa.me/5491171005652">
+
+Consultar
+
+</a>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<!-- PRODUCTO 5 -->
+
+
+<div class="producto" data-aos="zoom-in">
+
+
+<div class="imagen-producto">
+
+
+<img src="imagenes/desengrasante.jpg">
+
+
+</div>
+
+
+<div class="info-producto">
+
+
+<h2>
+Desengrasante multiuso
+</h2>
+
+
+<a class="boton-consultar"
+href="https://wa.me/5491171005652">
+
+Consultar
+
+</a>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<!-- PRODUCTO 6 -->
+
+
+<div class="producto" data-aos="zoom-in">
+
+
+<div class="imagen-producto">
+
+
+<img src="imagenes/manos.jpg">
+
+
+</div>
+
+
+<div class="info-producto">
+
+
+<h2>
+Jabón líquido para manos
+</h2>
+
+
+<a class="boton-consultar"
+href="https://wa.me/5491171005652">
+
+Consultar
+
+</a>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- PRODUCTO 7 -->
+
+
+<div class="producto" data-aos="zoom-in">
+
+
+<div class="imagen-producto">
+
+
+<img src="imagenes/bolsas.jpg">
+
+
+</div>
+
+
+<div class="info-producto">
+
+
+<h2>
+Bolsas de residuos
+</h2>
+
+
+<a class="boton-consultar"
+href="https://wa.me/5491171005652">
+
+Consultar
+
+</a>
+
+
+</div>
+
+
+</div>
+
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+<!-- ==========================
+      WHATSAPP FIJO
+========================== -->
+
+
+<a class="whatsapp-fijo"
+href="https://wa.me/5491171005652"
+target="_blank">
+
+<i class="fa-brands fa-whatsapp"></i>
+
+</a>
+
+
+
+
+
+
+
+<!-- ==========================
+          FOOTER
+========================== -->
+
+
+<footer id="contacto">
+
+
+<h2>
+Calidad • Confianza • Rendimiento
+</h2>
+
+
+<p>
+Consultas por WhatsApp: +54 9 11 7100-5652
+</p>
+
+
+</footer>
+
+
+
+
+
+<!-- ANIMACIONES -->
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+
+<script>
+
+AOS.init({
+
+duration:1000,
+
+once:true
+
+});
+
+</script>
+
+
 
 </body>
+
 </html>
