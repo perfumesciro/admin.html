@@ -34,8 +34,25 @@ scroll-behavior:smooth;
 
 body{
 
-background:#fff;
+background:white;
+
 color:#333;
+
+background-image:
+
+linear-gradient(
+rgba(255,255,255,.94),
+rgba(255,255,255,.94)
+),
+url("imagenes/icono-fondo.png");
+
+background-repeat:no-repeat;
+
+background-position:center;
+
+background-size:450px;
+
+background-attachment:fixed;
 
 }
 
@@ -232,12 +249,11 @@ transform:translateY(-5px) scale(1.03);
 
 .whatsapp{
 
-background:#d50000;
+background:#25D366;
 
 color:white;
 
 }
-
 
 
 .productos-btn{
@@ -464,15 +480,32 @@ padding-bottom:80px;
 
 background:white;
 
-border-radius:20px;
+border-radius:30px;
 
 overflow:hidden;
 
-box-shadow:0 10px 25px rgba(0,0,0,.12);
+position:relative;
+
+border:2px solid #e0f2e1;
+
+box-shadow:
+
+0 15px 35px rgba(20,107,23,.12);
 
 transition:.4s;
 
-position:relative;
+}
+
+
+.producto:hover{
+
+transform:translateY(-12px);
+
+border-color:#146b17;
+
+box-shadow:
+
+0 25px 50px rgba(20,107,23,.25);
 
 }
 
@@ -486,35 +519,19 @@ transform:translateY(-10px);
 
 
 
-.etiqueta{
-
-position:absolute;
-
-top:15px;
-
-left:15px;
-
-background:#d50000;
-
-color:white;
-
-padding:8px 15px;
-
-border-radius:20px;
-
-font-weight:bold;
-
-z-index:5;
-
-}
 
 
 
 .imagen-producto{
 
-height:300px;
+height:330px;
 
-background:#f5f5f5;
+background:
+linear-gradient(
+145deg,
+#ffffff,
+#effff1
+);
 
 display:flex;
 
@@ -522,7 +539,69 @@ align-items:center;
 
 justify-content:center;
 
+padding:30px;
+
 overflow:hidden;
+
+border-bottom:4px solid #146b17;
+
+position:relative;
+
+}
+
+
+/* detalle verde moderno */
+
+.imagen-producto::before{
+
+content:"";
+
+position:absolute;
+
+width:180px;
+
+height:180px;
+
+background:#146b17;
+
+opacity:.08;
+
+border-radius:50%;
+
+top:-60px;
+
+right:-60px;
+
+}
+
+
+/* imagen del producto */
+
+.imagen-producto img{
+
+width:95%;
+
+height:95%;
+
+object-fit:contain;
+
+filter:
+drop-shadow(
+0 15px 15px rgba(20,107,23,.20)
+);
+
+transition:.5s;
+
+position:relative;
+
+z-index:2;
+
+
+
+
+.producto:hover .imagen-producto img{
+
+transform:scale(1.08);
 
 }
 
@@ -601,23 +680,40 @@ color:#146b17;
 
 .boton-consultar{
 
-background:#d50000;
+background:#146b17;
 
 color:white;
 
-padding:14px 25px;
+padding:15px 32px;
 
-border-radius:25px;
+border-radius:30px;
 
 text-decoration:none;
 
 font-weight:bold;
 
-display:inline-block;
+display:inline-flex;
+
+align-items:center;
+
+gap:10px;
 
 margin-top:15px;
 
+box-shadow:
+
+0 8px 18px rgba(20,107,23,.25);
+
 transition:.3s;
+
+}
+
+
+.boton-consultar:hover{
+
+background:#0d4f12;
+
+transform:translateY(-3px);
 
 }
 
@@ -651,7 +747,7 @@ transform:scale(1.05);
 
 <a href="#ventajas">Por qué elegirnos</a>
 
-<a href="#opiniones">Opiniones</a>
+
 
 <a href="#contacto">Contacto</a>
 
@@ -912,9 +1008,7 @@ Industrial
 <div class="producto ropa limpieza" data-aos="zoom-in">
 
 
-<div class="etiqueta">
-🔥 Más vendido
-</div>
+
 
 
 <div class="imagen-producto">
@@ -1053,9 +1147,7 @@ Consultar
 <div class="producto ropa" data-aos="zoom-in">
 
 
-<div class="etiqueta">
-⭐ Recomendado
-</div>
+
 
 
 <div class="imagen-producto">
@@ -1335,90 +1427,6 @@ Consultar
 
 
 
-<!-- OPINIONES -->
-
-
-<section class="opiniones" id="opiniones">
-
-
-<h2 class="titulo">
-
-Opiniones de clientes
-
-</h2>
-
-
-
-<div class="estrellas">
-
-★★★★★
-
-</div>
-
-
-<h3>
-4.9 / 5 - Clientes satisfechos
-</h3>
-
-
-
-
-<div class="opinion-card">
-
-
-<p>
-
-"Excelente calidad de productos, muy buen rendimiento y atención."
-
-</p>
-
-
-<strong>
-Cliente verificado ⭐
-</strong>
-
-
-</div>
-
-
-
-
-
-<div class="opinion-card">
-
-
-<p>
-
-"Productos ideales para negocio, cumplen con lo prometido."
-
-</p>
-
-
-<strong>
-Cliente verificado ⭐
-</strong>
-
-
-</div>
-
-
-
-
-
-<a class="boton-opinion"
-href="https://wa.me/5491171005652"
-target="_blank">
-
-
-<i class="fa-solid fa-star"></i>
-
-Dejanos tu opinión
-
-
-</a>
-
-
-</section>
 
 
 
