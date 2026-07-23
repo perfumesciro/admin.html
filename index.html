@@ -1,371 +1,140 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Admin - Perfumes Ciro</title>
-
+<title>Catálogo de Productos</title>
 
 <style>
-
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial, Helvetica, sans-serif;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
 }
-
 
 body{
-
-background:#080808;
-color:white;
-padding:40px;
-
+    background:linear-gradient(to bottom,#ffffff,#dff7df);
+    padding:30px;
 }
-
 
 h1{
-
-text-align:center;
-color:#d4af37;
-margin-bottom:30px;
-
+    text-align:center;
+    color:#157a1f;
+    font-size:48px;
+    margin-bottom:40px;
 }
 
-
-.panel{
-
-max-width:600px;
-margin:auto;
-background:#151515;
-padding:30px;
-border-radius:20px;
-
+.catalogo{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:30px;
 }
-
-
-
-input{
-
-width:100%;
-padding:15px;
-margin:10px 0;
-border:none;
-border-radius:10px;
-font-size:16px;
-
-}
-
-
-
-button{
-
-background:#d4af37;
-border:none;
-padding:12px 25px;
-border-radius:20px;
-cursor:pointer;
-font-weight:bold;
-
-}
-
-
-button:hover{
-
-background:#f5d76e;
-
-}
-
-
-
-#administrador{
-
-display:none;
-
-}
-
-
 
 .producto{
-
-background:#222;
-padding:20px;
-margin:20px 0;
-border-radius:15px;
-
+    background:white;
+    border-radius:15px;
+    padding:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,.15);
+    text-align:center;
 }
 
-
-.producto h3{
-
-color:#d4af37;
-margin-bottom:10px;
-
+.producto img{
+    width:250px;
+    height:250px;
+    object-fit:contain;
+    border:2px dashed #bdbdbd;
+    border-radius:10px;
+    margin-bottom:20px;
 }
 
-
-.mensaje{
-
-color:#00c853;
-margin-top:15px;
-
+.producto h2{
+    font-size:34px;
+    color:#146b17;
+    margin-bottom:20px;
 }
 
+.whatsapp{
+    display:inline-block;
+    background:#d50000;
+    color:white;
+    text-decoration:none;
+    padding:15px 25px;
+    border-radius:10px;
+    font-size:22px;
+    font-weight:bold;
+    transition:.3s;
+}
 
+.whatsapp:hover{
+    background:#a80000;
+}
 </style>
 
-
 </head>
-
-
 <body>
 
+<h1>Catálogo de Productos</h1>
 
-<h1>
-PERFUMES CIRO ADMIN
-</h1>
-
-
-
-<div class="panel">
-
-
-
-<div id="login">
-
-
-<h2>
-Ingresar
-</h2>
-
-
-<input 
-type="password"
-id="clave"
-placeholder="Contraseña">
-
-
-<button onclick="entrar()">
-
-Entrar
-
-</button>
-
-
-</div>
-
-
-
-
-
-
-<div id="administrador">
-
-
-<h2>
-Editar precios
-</h2>
-
-
-<div id="lista"></div>
-
-
-<p class="mensaje" id="mensaje"></p>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-<script>
-
-
-// CAMBIA TU CONTRASEÑA AQUI
-
-const contraseña = "305769";
-
-
-
-
-
-let perfumes = JSON.parse(localStorage.getItem("perfumes"))
-||
-[
-
-
-{
-nombre:"Lattafa Khamrah",
-precio:35000
-},
-
-
-{
-nombre:"Lattafa Asad",
-precio:32000
-},
-
-
-{
-nombre:"Yara Lattafa",
-precio:30000
-},
-
-
-{
-nombre:"Oud For Glory",
-precio:42000
-},
-
-
-{
-nombre:"Fakhar Black",
-precio:31000
-}
-
-
-];
-
-
-
-
-
-
-function entrar(){
-
-
-let clave =
-document.getElementById("clave").value;
-
-
-
-if(clave === contraseña){
-
-
-document.getElementById("login").style.display="none";
-
-
-document.getElementById("administrador").style.display="block";
-
-
-mostrarProductos();
-
-
-}
-
-else{
-
-
-alert("Contraseña incorrecta");
-
-
-}
-
-
-}
-
-
-
-
-
-
-function mostrarProductos(){
-
-
-let lista =
-document.getElementById("lista");
-
-
-lista.innerHTML="";
-
-
-
-perfumes.forEach((p,index)=>{
-
-
-lista.innerHTML += `
-
+<div class="catalogo">
 
 <div class="producto">
+<img src="imagenes/detergente.jpg" alt="Detergente 12%">
+<h2>Detergente 12% Amarillo</h2>
+<a class="whatsapp" href="https://wa.me/5491171005652" target="_blank">
+Consultar por WhatsApp
+</a>
+</div>
 
+<div class="producto">
+<img src="imagenes/jabon-ropa.jpg" alt="Jabón líquido para ropa">
+<h2>Jabón Líquido para Ropa 15% Azul Baja Espuma</h2>
+<a class="whatsapp" href="https://wa.me/5491171005652" target="_blank">
+Consultar por WhatsApp
+</a>
+</div>
 
-<h3>
-${p.nombre}
-</h3>
+<div class="producto">
+<img src="imagenes/suavizante.jpg" alt="Suavizante">
+<h2>Suavizante para Ropa</h2>
+<a class="whatsapp" href="https://wa.me/5491171005652" target="_blank">
+Consultar por WhatsApp
+</a>
+</div>
 
+<div class="producto">
+<img src="imagenes/desodorantes.jpg" alt="Desodorantes">
+<h2>Desodorantes Concentrados Línea Plus</h2>
+<a class="whatsapp" href="https://wa.me/5491171005652" target="_blank">
+Consultar por WhatsApp
+</a>
+</div>
 
-<input 
-id="precio${index}"
-value="${p.precio}">
+<div class="producto">
+<img src="imagenes/desengrasante.jpg" alt="Desengrasante">
+<h2>Desengrasante Multiuso</h2>
+<a class="whatsapp" href="https://wa.me/5491171005652" target="_blank">
+Consultar por WhatsApp
+</a>
+</div>
 
+<div class="producto">
+<img src="imagenes/jabon-manos.jpg" alt="Jabón para manos">
+<h2>Jabón Líquido para Manos</h2>
+<a class="whatsapp" href="https://wa.me/5491171005652" target="_blank">
+Consultar por WhatsApp
+</a>
+</div>
 
-<button onclick="guardar(${index})">
-
-Guardar precio
-
-</button>
-
+<div class="producto">
+<img src="imagenes/bolsas.jpg" alt="Bolsas de residuos">
+<h2>Bolsas de Residuos</h2>
+<a class="whatsapp" href="https://wa.me/5491171005652" target="_blank">
+Consultar por WhatsApp
+</a>
+</div>
 
 </div>
 
-
-`;
-
-
-});
-
-
-}
-
-
-
-
-
-
-
-function guardar(index){
-
-
-let nuevoPrecio =
-document.getElementById(
-"precio"+index
-).value;
-
-
-
-perfumes[index].precio =
-Number(nuevoPrecio);
-
-
-
-localStorage.setItem(
-"perfumes",
-JSON.stringify(perfumes)
-);
-
-
-
-document.getElementById("mensaje").innerHTML =
-"Precio actualizado correctamente";
-
-
-}
-
-
-
-</script>
-
-
 </body>
-
 </html>
