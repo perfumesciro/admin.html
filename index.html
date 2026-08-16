@@ -1,1865 +1,2296 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
 <meta charset="UTF-8">
-  
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-<link rel="icon" type="image/jpeg" href="icon.jpg">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<link rel="apple-touch-icon" href="icon.jpg">
-
-<title>Productos de Limpieza Profesional</title>
-
-
-<link rel="stylesheet" 
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
-
-<link rel="stylesheet"
-href="https://unpkg.com/aos@2.3.1/dist/aos.css">
-
+<title>Survival 3D - Parte 15</title>
 
 <style>
 
 *{
-margin:0;
-padding:0;
 box-sizing:border-box;
-font-family:'Arial',sans-serif;
 }
-
-
-html{
-scroll-behavior:smooth;
-}
-
 
 body{
-
-background:white;
-
-color:#333;
-
-background-image:
-linear-gradient(
-rgba(255,255,255,.85),
-rgba(255,255,255,.93)
-),
-url("imagenes/icono.png");
-
-background-repeat:no-repeat;
-
-background-position:center;
-
-background-size:450px;
-
-background-attachment:fixed;
-
+margin:0;
+overflow:hidden;
+background:#000;
+font-family:Arial,sans-serif;
 }
 
-/* ======================
-MENU
-====================== */
+canvas{
+display:block;
+}
 
-
-header{
-
+#ui{
 position:fixed;
-width:100%;
-top:0;
-left:0;
-
-padding:18px 8%;
-
-display:flex;
-justify-content:space-between;
-align-items:center;
-
-background:rgba(255,255,255,.94);
-
-backdrop-filter:blur(10px);
-
-z-index:1000;
-
-box-shadow:0 5px 20px rgba(0,0,0,.08);
-
-}
-
-
-.logo-menu{
-
-width:90px;
-
-}
-
-
-
-nav a{
-
-text-decoration:none;
-
-color:#146b17;
-
-font-weight:bold;
-
-margin-left:25px;
-
-font-size:18px;
-
-transition:.3s;
-
-}
-
-
-
-nav a:hover{
-
-color:#d50000;
-
-}
-
-
-/* ======================
-HERO
-====================== */
-
-
-.hero{
-
-height:100vh;
-
-background-image:url("imagenes/fondo.jpg");
-
-background-size:cover;
-
-background-position:center;
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-}
-
-
-
-.capa{
-
-width:100%;
-height:100%;
-
-background:rgba(255,255,255,.75);
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-}
-
-
-
-.presentacion{
-
-text-align:center;
-
-max-width:1000px;
-
-padding:20px;
-
-}
-
-
-
-.logo-grande{
-
-width:230px;
-
-margin-bottom:25px;
-
-}
-
-
-
-.presentacion h1{
-
-font-size:60px;
-
-color:#146b17;
-
-margin-bottom:20px;
-
-}
-
-
-
-.presentacion p{
-
-font-size:28px;
-
-line-height:1.5;
-
-margin-bottom:40px;
-
-}
-
-
-/* ======================
-BOTONES MODERNOS
-====================== */
-
-
-.boton{
-
-display:inline-flex;
-
-align-items:center;
-
-gap:10px;
-
-padding:18px 35px;
-
-border-radius:30px;
-
-text-decoration:none;
-
-font-size:20px;
-
-font-weight:bold;
-
-margin:10px;
-
-transition:.35s;
-
-box-shadow:0 10px 20px rgba(0,0,0,.15);
-
-}
-
-
-
-.boton:hover{
-
-transform:translateY(-5px) scale(1.03);
-
-}
-
-
-
-.whatsapp{
-
-background:#25D366;
-
+inset:0;
+z-index:10;
 color:white;
-
+pointer-events:none;
 }
 
-
-.productos-btn{
-
-background:#146b17;
-
-color:white;
-
-}
-
-
-
-/* ======================
-TITULOS
-====================== */
-
-
-.titulo{
-
-text-align:center;
-
-font-size:45px;
-
-color:#146b17;
-
-margin:80px 0 45px;
-
-}
-
-
-/* ======================
-VENTAJAS
-====================== */
-
-
-.ventajas{
-
-padding:20px 10% 80px;
-
-}
-
-
-
-.contenedor-ventajas{
-
-display:grid;
-
-grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-
-gap:30px;
-
-}
-
-
-
-.ventaja{
-
-background:#f4fff4;
-
-padding:35px;
-
-text-align:center;
-
-border-radius:20px;
-
-box-shadow:0 10px 25px rgba(0,0,0,.1);
-
-transition:.4s;
-
-}
-
-
-
-.ventaja:hover{
-
-transform:translateY(-10px);
-
-}
-
-
-
-.ventaja i{
-
-font-size:55px;
-
-color:#1c8b27;
-
-margin-bottom:20px;
-
-}
-
-
-
-.ventaja h3{
-
-color:#146b17;
-
-font-size:27px;
-
-margin-bottom:15px;
-
-}
-
-
-
-.ventaja p{
-
-font-size:18px;
-
-}
-
-
-
-/* ======================
-BUSCADOR
-====================== */
-
-
-.busqueda-productos{
-
-width:90%;
-
-margin:auto;
-
-text-align:center;
-
-}
-
-
-
-.busqueda-productos input{
-
-width:80%;
-
-max-width:600px;
-
-padding:18px 25px;
-
-border-radius:35px;
-
-border:2px solid #146b17;
-
-font-size:20px;
-
-outline:none;
-
-box-shadow:0 8px 20px rgba(0,0,0,.12);
-
-}
-
-
-
-/* ======================
-FILTROS
-====================== */
-
-
-.filtros{
-
-text-align:center;
-
-margin:35px;
-
-}
-
-
-
-.filtro{
-
-display:inline-block;
-
-background:#146b17;
-
-color:white;
-
-padding:12px 25px;
-
-border-radius:30px;
-
-margin:8px;
-
-cursor:pointer;
-
-font-weight:bold;
-
-transition:.3s;
-
-}
-
-
-
-.filtro:hover{
-
-background:#d50000;
-
-}
-
-
-
-/* ======================
-CATALOGO
-====================== */
-
-
-.catalogo{
-
-width:90%;
-
-margin:auto;
-
-display:grid;
-
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-
-gap:35px;
-
-padding-bottom:80px;
-
-}
-
-
-
-.producto{
-
-background:white;
-
-border-radius:30px;
-
-overflow:hidden;
-
-position:relative;
-
-border:2px solid #e0f2e1;
-
-box-shadow:
-
-0 15px 35px rgba(20,107,23,.12);
-
-transition:.4s;
-
-}
-
-
-.producto:hover{
-
-transform:translateY(-12px);
-
-border-color:#146b17;
-
-box-shadow:
-
-0 25px 50px rgba(20,107,23,.25);
-
-}
-
-
-
-.producto:hover{
-
-transform:translateY(-10px);
-
-}
-
-
-
-
-
-
-.imagen-producto{
-
-height:330px;
-
-background:
-linear-gradient(
-145deg,
-#ffffff,
-#effff1
-);
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-padding:30px;
-
-overflow:hidden;
-
-border-bottom:4px solid #146b17;
-
-position:relative;
-
-}
-
-
-/* detalle verde moderno */
-
-.imagen-producto::before{
-
-content:"";
-
+#crosshair{
 position:absolute;
-
-width:180px;
-
-height:180px;
-
-background:#146b17;
-
-opacity:.08;
-
-border-radius:50%;
-
-top:-60px;
-
-right:-60px;
-
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+font-size:25px;
+text-shadow:0 0 8px black;
 }
 
-
-/* imagen del producto */
-
-.imagen-producto img{
-
-width:95%;
-
-height:95%;
-
-object-fit:contain;
-
-filter:
-drop-shadow(
-0 15px 15px rgba(20,107,23,.20)
-);
-
-transition:.5s;
-
-position:relative;
-
-z-index:2;
-
-
-
-
-.producto:hover .imagen-producto img{
-
-transform:scale(1.08);
-
+#stats{
+position:absolute;
+top:15px;
+left:15px;
+width:260px;
+padding:13px;
+background:rgba(0,0,0,.75);
+border-radius:12px;
 }
 
-
-
-.imagen-producto img{
-
-width:90%;
-
-height:90%;
-
-object-fit:contain;
-
-transition:.5s;
-
+.bar{
+height:13px;
+margin:4px 0 8px;
+background:#333;
+border-radius:10px;
+overflow:hidden;
 }
 
-
-
-.producto:hover img{
-
-transform:scale(1.08);
-
+.fill{
+height:100%;
+width:100%;
 }
 
+#health{background:#e53935}
+#hunger{background:#e0a323}
+#thirst{background:#2196f3}
+#energy{background:#9c27b0}
+#temperature{background:#ff8c00}
 
+#inventory{
+position:absolute;
+right:15px;
+top:15px;
+width:300px;
+background:rgba(0,0,0,.82);
+padding:15px;
+border-radius:13px;
+}
 
-.info-producto{
-
-padding:25px;
-
+#inventory h2{
+margin:0 0 10px;
 text-align:center;
-
 }
 
-
-
-.info-producto h2{
-
-font-size:30px;
-
-color:#146b17;
-
-margin-bottom:15px;
-
+#items{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:7px;
 }
 
+.item{
+height:65px;
+background:#242424;
+border:2px solid #555;
+border-radius:8px;
+text-align:center;
+padding:5px;
+font-size:12px;
+}
 
+.item .icon{
+font-size:22px;
+}
 
-.info-producto p{
+.item .count{
+font-size:12px;
+}
 
+#hotbar{
+position:absolute;
+bottom:22px;
+left:50%;
+transform:translateX(-50%);
+display:flex;
+gap:7px;
+}
+
+.slot{
+width:76px;
+height:72px;
+background:rgba(0,0,0,.75);
+border:2px solid #777;
+border-radius:9px;
+text-align:center;
+padding:7px;
+font-size:12px;
+}
+
+.slot.selected{
+border-color:white;
+}
+
+#message{
+position:absolute;
+bottom:125px;
+left:50%;
+transform:translateX(-50%);
+font-size:20px;
+text-shadow:0 2px 5px black;
+text-align:center;
+}
+
+#location{
+position:absolute;
+left:50%;
+top:18px;
+transform:translateX(-50%);
+background:rgba(0,0,0,.55);
+padding:8px 14px;
+border-radius:10px;
+}
+
+#status{
+position:absolute;
+top:115px;
+left:15px;
+background:rgba(0,0,0,.65);
+padding:9px 12px;
+border-radius:10px;
+}
+
+#nightWarning{
+position:absolute;
+top:75px;
+left:50%;
+transform:translateX(-50%);
 font-size:17px;
-
+text-shadow:0 2px 6px black;
 }
 
-
-.caracteristicas{
-
-text-align:left;
-
-margin:20px 0;
-
-line-height:1.8;
-
+#instructions{
+position:absolute;
+bottom:5px;
+left:8px;
+background:rgba(0,0,0,.6);
+padding:7px;
+border-radius:8px;
+font-size:12px;
 }
 
-
-
-.caracteristicas i{
-
-color:#146b17;
-
+#craftMenu{
+position:fixed;
+z-index:30;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+width:430px;
+max-width:90%;
+background:rgba(10,10,10,.95);
+border:2px solid #777;
+border-radius:15px;
+padding:18px;
+display:none;
+pointer-events:auto;
 }
 
+#craftMenu h2{
+text-align:center;
+margin-top:0;
+}
 
-
-.boton-consultar{
-
-background:#146b17;
-
-color:white;
-
-padding:15px 32px;
-
-border-radius:30px;
-
-text-decoration:none;
-
-font-weight:bold;
-
-display:inline-flex;
-
-align-items:center;
-
+.craftGrid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
 gap:10px;
-
-margin-top:15px;
-
-box-shadow:
-
-0 8px 18px rgba(20,107,23,.25);
-
-transition:.3s;
-
 }
 
-
-.boton-consultar:hover{
-
-background:#0d4f12;
-
-transform:translateY(-3px);
-
+.craftButton{
+min-height:100px;
+background:#292929;
+color:white;
+border:2px solid #555;
+border-radius:10px;
+cursor:pointer;
+font-size:14px;
 }
 
-
-
-.boton-consultar:hover{
-
-background:#a80000;
-
-transform:scale(1.05);
-
+.craftButton:hover{
+background:#414141;
 }
+
+.craftButton:disabled{
+opacity:.4;
+cursor:not-allowed;
+}
+
+.closeCraft{
+width:100%;
+margin-top:12px;
+padding:10px;
+background:#555;
+color:white;
+border:0;
+border-radius:8px;
+cursor:pointer;
+}
+
+#craftInfo{
+text-align:center;
+font-size:13px;
+margin-bottom:12px;
+color:#ddd;
+}
+
+#start,
+#dead{
+position:fixed;
+inset:0;
+z-index:40;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+background:rgba(0,0,0,.94);
+color:white;
+}
+
+#dead{
+display:none;
+}
+
+#start button,
+#dead button{
+padding:14px 35px;
+border:0;
+border-radius:9px;
+font-size:19px;
+cursor:pointer;
+}
+
 </style>
-
 </head>
-
 
 <body>
 
 
-<header>
+<div id="start">
 
-<img src="imagenes/logo.png" class="logo-menu">
+<h1>🏝️ SURVIVAL 3D</h1>
 
+<p>PARTE 15 — CRAFTEO</p>
 
-<nav>
-
-<a href="#inicio">Inicio</a>
-
-<a href="#productos">Productos</a>
-
-<a href="#ventajas">Por qué elegirnos</a>
-
-
-
-<a href="#contacto">Contacto</a>
-
-</nav>
-
-</header>
-
-
-
-<!-- PORTADA -->
-
-
-<section class="hero" id="inicio">
-
-
-<div class="capa">
-
-
-<div class="presentacion" data-aos="fade-up">
-
-
-<img src="imagenes/logo.png" class="logo-grande">
-
-
-<h1>
-Productos de limpieza profesional para cada necesidad
-</h1>
-
-
-<p>
-Calidad, rendimiento y confianza para hogares,
-comercios e industrias.
-</p>
-
-
-
-<a class="boton whatsapp"
-href="https://wa.me/5491171005652"
-target="_blank">
-
-<i class="fa-brands fa-whatsapp"></i>
-
-Consultar por WhatsApp
-
-</a>
-
-
-
-<a class="boton productos-btn"
-href="#productos">
-
-<i class="fa-solid fa-box-open"></i>
-
-Ver catálogo
-
-</a>
-
+<button id="play">
+JUGAR
+</button>
 
 </div>
 
 
-</div>
+<div id="dead">
 
+<h1>💀 HAS MUERTO</h1>
 
-</section>
+<p>Tu aventura terminó.</p>
 
-
-
-
-
-<!-- VENTAJAS -->
-
-
-<section class="ventajas" id="ventajas">
-
-
-<h2 class="titulo">
-
-¿Por qué elegirnos?
-
-</h2>
-
-
-<div class="contenedor-ventajas">
-
-
-
-<div class="ventaja" data-aos="fade-up">
-
-<i class="fa-solid fa-flask"></i>
-
-<h3>
-Calidad Profesional
-</h3>
-
-<p>
-Productos diseñados para obtener excelentes resultados.
-</p>
+<button id="restart">
+REINICIAR
+</button>
 
 </div>
 
 
+<div id="ui">
 
-<div class="ventaja" data-aos="fade-up">
+<div id="crosshair">+</div>
 
-<i class="fa-solid fa-sparkles"></i>
+<div id="location">
+🌲 Bosque
+</div>
 
-<h3>
-Limpieza Superior
-</h3>
+<div id="nightWarning"></div>
 
-<p>
-Fórmulas de alto rendimiento.
-</p>
+
+<div id="stats">
+
+❤️ Vida
+
+<div class="bar">
+<div id="health" class="fill"></div>
+</div>
+
+🍗 Hambre
+
+<div class="bar">
+<div id="hunger" class="fill"></div>
+</div>
+
+💧 Sed
+
+<div class="bar">
+<div id="thirst" class="fill"></div>
+</div>
+
+⚡ Energía
+
+<div class="bar">
+<div id="energy" class="fill"></div>
+</div>
+
+🌡️ Temperatura
+
+<div class="bar">
+<div id="temperature" class="fill"></div>
+</div>
+
+☀️ Día:
+<span id="day">1</span>
 
 </div>
 
 
+<div id="status">
 
-<div class="ventaja" data-aos="fade-up">
-
-<i class="fa-solid fa-handshake"></i>
-
-<h3>
-Atención Personalizada
-</h3>
-
-<p>
-Te ayudamos a elegir el producto correcto.
-</p>
+Estado:
+<b id="statusText">
+Normal
+</b>
 
 </div>
 
 
-
-<div class="ventaja" data-aos="fade-up">
-
-<i class="fa-solid fa-tags"></i>
-
-<h3>
-Buenos Precios
-</h3>
-
-<p>
-Excelente relación calidad y rendimiento.
-</p>
-
-</div>
-
-
-
-<div class="ventaja" data-aos="fade-up">
-
-<i class="fa-solid fa-house"></i>
-
-<h3>
-Todo Uso
-</h3>
-
-<p>
-Ideal para hogares y negocios.
-</p>
-
-</div>
-
-
-
-<div class="ventaja" data-aos="fade-up">
-
-<i class="fa-solid fa-shield"></i>
-
-<h3>
-Confianza
-</h3>
-
-<p>
-Compromiso con nuestros clientes.
-</p>
-
-</div>
-
-
-
-</div>
-
-</section>
-
-
-
-
-
-
-
-<!-- PRODUCTOS -->
-
-
-<section id="productos">
-
-
-<h2 class="titulo">
-Nuestros Productos
-</h2>
-
-
-
-<div class="busqueda-productos">
-
-
-<input 
-type="text"
-id="buscarProducto"
-placeholder="🔍 Buscar producto..."
-onkeyup="buscarProducto()">
-
-
-</div>
-
-
-
-<div class="filtros">
-
-
-<span class="filtro" onclick="filtrarProductos('todos')">
-Todos
-</span>
-
-
-<span class="filtro" onclick="filtrarProductos('ropa')">
-Ropa
-</span>
-
-
-<span class="filtro" onclick="filtrarProductos('limpieza')">
-Limpieza
-</span>
-
-
-<span class="filtro" onclick="filtrarProductos('industrial')">
-Industrial
-</span>
-
-
-</div>
-
-
-
-
-
-<div class="catalogo">
-
-
-
-
-
-<!-- PRODUCTO 1 -->
-
-
-<div class="producto ropa limpieza" data-aos="zoom-in">
-
-
-
-
-
-<div class="imagen-producto">
-
-
-<img src="imagenes/detergente12.jpg">
-
-
-</div>
-
-
-
-<div class="info-producto">
-
+<div id="inventory">
 
 <h2>
-Detergente 12% Amarillo
+🎒 INVENTARIO
 </h2>
 
-
-<p>
-Excelente poder de limpieza y rendimiento.
-</p>
-
-
-
-<div class="caracteristicas">
-
-<i class="fa-solid fa-check"></i>
-Alto poder desengrasante
-<br>
-
-<i class="fa-solid fa-check"></i>
-Gran rendimiento
-<br>
-
-<i class="fa-solid fa-check"></i>
-Uso profesional
+<div id="items"></div>
 
 </div>
 
 
+<div id="hotbar">
 
-<a class="boton-consultar"
-href="https://wa.me/5491171005652"
-target="_blank">
+<div class="slot">
+🪓<br>
+Hacha<br>
+1
+</div>
 
-<i class="fa-brands fa-whatsapp"></i>
+<div class="slot">
+⛏️<br>
+Pico<br>
+2
+</div>
 
-Consultar
+<div class="slot">
+🗡️<br>
+Espada<br>
+3
+</div>
 
-</a>
-
+<div class="slot">
+🔥<br>
+Fogata<br>
+4
+</div>
 
 </div>
 
 
-</div>
+<div id="message"></div>
 
 
+<div id="instructions">
 
-
-
-
-
-<!-- PRODUCTO 2 -->
-
-
-<div class="producto ropa" data-aos="zoom-in">
-
-
-<div class="imagen-producto">
-
-
-<img src="imagenes/jabonropa.jpg">
-
+WASD mover |
+Mouse mirar |
+Click atacar/minar |
+E recoger |
+C crafteo |
+B construir |
+F comida |
+G agua |
+H carne |
+Shift correr
 
 </div>
 
+</div>
 
 
-<div class="info-producto">
+<!-- =====================================================
+     MENÚ CRAFTEO
+===================================================== -->
 
+<div id="craftMenu">
 
 <h2>
-Jabón líquido para ropa 15%
+🔨 MESA DE CRAFTEO
 </h2>
 
-
-<p>
-Limpieza profunda de prendas.
-</p>
-
-
-
-<div class="caracteristicas">
-
-<i class="fa-solid fa-check"></i>
-Baja espuma
-<br>
-
-<i class="fa-solid fa-check"></i>
-Excelente aroma
-<br>
-
-<i class="fa-solid fa-check"></i>
-Cuida las telas
-
+<div id="craftInfo">
+Usá los materiales que encontraste para fabricar herramientas.
 </div>
 
-
-<a class="boton-consultar"
-href="https://wa.me/5491171005652">
-
-<i class="fa-brands fa-whatsapp"></i>
-
-Consultar
-
-</a>
+<div class="craftGrid">
 
 
-</div>
+<button
+class="craftButton"
+data-craft="ironPickaxe">
+
+⛏️ <b>PICO DE HIERRO</b>
+
+<br><br>
+
+3 ⬜ Hierro<br>
+2 🪵 Madera
+
+</button>
 
 
-</div>
+<button
+class="craftButton"
+data-craft="ironAxe">
+
+🪓 <b>HACHA DE HIERRO</b>
+
+<br><br>
+
+3 ⬜ Hierro<br>
+2 🪵 Madera
+
+</button>
 
 
+<button
+class="craftButton"
+data-craft="ironSword">
+
+⚔️ <b>ESPADA DE HIERRO</b>
+
+<br><br>
+
+5 ⬜ Hierro<br>
+1 🪵 Madera
+
+</button>
 
 
+<button
+class="craftButton"
+data-craft="goldPickaxe">
+
+⛏️ <b>PICO DE ORO</b>
+
+<br><br>
+
+4 🟨 Oro<br>
+2 🪵 Madera
+
+</button>
 
 
+<button
+class="craftButton"
+data-craft="torch">
 
-<!-- PRODUCTO 3 -->
+🔥 <b>ANTORCHAS</b>
 
+<br><br>
 
-<div class="producto ropa" data-aos="zoom-in">
+1 ⬛ Carbón<br>
+1 🪵 Madera<br>
+→ 4 antorchas
 
-
-
-
-
-<div class="imagen-producto">
-
-<img src="imagenes/suavizante.jpg">
-
-</div>
+</button>
 
 
+<button
+class="craftButton"
+data-craft="armor">
 
-<div class="info-producto">
+🛡️ <b>PROTECCIÓN</b>
 
+<br><br>
 
-<h2>
-Suavizante para ropa
-</h2>
+8 ⬜ Hierro<br>
+2 🪵 Madera
 
-
-
-<div class="caracteristicas">
-
-<i class="fa-solid fa-check"></i>
-Aroma duradero
-<br>
-
-<i class="fa-solid fa-check"></i>
-Suavidad superior
-
-</div>
-
-
-
-<a class="boton-consultar"
-href="https://wa.me/5491171005652">
-
-<i class="fa-brands fa-whatsapp"></i>
-
-Consultar
-
-</a>
-
-
-</div>
+</button>
 
 
 </div>
 
 
+<button
+class="closeCraft"
+id="closeCraft">
 
-
-
-
-
-<!-- PRODUCTO 4 -->
-
-
-<div class="producto limpieza industrial" data-aos="zoom-in">
-
-
-<div class="imagen-producto">
-
-<img src="imagenes/desodorante.jpg">
+CERRAR
+</button>
 
 </div>
 
 
+<script type="module">
 
-<div class="info-producto">
 
+import * as THREE from
+'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 
-<h2>
-Desodorantes concentrados línea plus
-</h2>
 
+import {
+PointerLockControls
+}
+from
+'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/PointerLockControls.js';
 
 
-<div class="caracteristicas">
+// =====================================================
+// ESCENA
+// =====================================================
 
-<i class="fa-solid fa-check"></i>
-Fragancias concentradas
-<br>
+const scene=
+new THREE.Scene();
 
-<i class="fa-solid fa-check"></i>
-Larga duración
+scene.background=
+new THREE.Color(0x87ceeb);
 
-</div>
+scene.fog=
+new THREE.Fog(
+0x87ceeb,
+35,
+280
+);
 
 
+// =====================================================
+// CÁMARA
+// =====================================================
 
-<a class="boton-consultar"
-href="https://wa.me/5491171005652">
+const camera=
+new THREE.PerspectiveCamera(
+75,
+innerWidth/innerHeight,
+.1,
+800
+);
 
-<i class="fa-brands fa-whatsapp"></i>
+camera.position.set(
+0,
+2,
+10
+);
 
-Consultar
 
-</a>
+// =====================================================
+// RENDER
+// =====================================================
 
+const renderer=
+new THREE.WebGLRenderer({
+antialias:true
+});
 
-</div>
+renderer.setSize(
+innerWidth,
+innerHeight
+);
 
+renderer.setPixelRatio(
+Math.min(devicePixelRatio,2)
+);
 
-</div>
+renderer.shadowMap.enabled=true;
 
+document.body.appendChild(
+renderer.domElement
+);
 
 
+// =====================================================
+// LUCES
+// =====================================================
 
+const ambient=
+new THREE.HemisphereLight(
+0xffffff,
+0x303040,
+1.5
+);
 
+scene.add(ambient);
 
-<!-- PRODUCTO 5 -->
 
+const sun=
+new THREE.DirectionalLight(
+0xffffff,
+2
+);
 
-<div class="producto limpieza industrial" data-aos="zoom-in">
+sun.position.set(
+100,
+150,
+50
+);
+
+sun.castShadow=true;
+
+scene.add(sun);
+
+
+// =====================================================
+// CONTROLES
+// =====================================================
+
+const controls=
+new PointerLockControls(
+camera,
+document.body
+);
+
+
+// =====================================================
+// ESTADO
+// =====================================================
+
+const keys={};
+
+let health=100;
+let hunger=100;
+let thirst=100;
+let energy=100;
+let temperature=70;
+
+let dead=false;
+
+let time=0;
+
+
+// =====================================================
+// INVENTARIO
+// =====================================================
+
+const inventory={
+
+wood:{
+name:"Madera",
+icon:"🌲",
+amount:30
+},
+
+stone:{
+name:"Piedra",
+icon:"🪨",
+amount:20
+},
+
+coal:{
+name:"Carbón",
+icon:"⬛",
+amount:0
+},
+
+iron:{
+name:"Hierro",
+icon:"⬜",
+amount:0
+},
+
+gold:{
+name:"Oro",
+icon:"🟨",
+amount:0
+},
+
+food:{
+name:"Comida",
+icon:"🍎",
+amount:4
+},
+
+water:{
+name:"Agua",
+icon:"💧",
+amount:4
+},
+
+meat:{
+name:"Carne",
+icon:"🥩",
+amount:0
+},
+
+torch:{
+name:"Antorcha",
+icon:"🔥",
+amount:0
+},
+
+axe:{
+name:"Hacha",
+icon:"🪓",
+amount:1
+},
+
+ironAxe:{
+name:"Hacha hierro",
+icon:"🪓",
+amount:0
+},
+
+pickaxe:{
+name:"Pico",
+icon:"⛏️",
+amount:1
+},
+
+ironPickaxe:{
+name:"Pico hierro",
+icon:"⛏️",
+amount:0
+},
+
+goldPickaxe:{
+name:"Pico oro",
+icon:"⛏️",
+amount:0
+},
+
+sword:{
+name:"Espada",
+icon:"🗡️",
+amount:1
+},
+
+ironSword:{
+name:"Espada hierro",
+icon:"⚔️",
+amount:0
+},
+
+armor:{
+name:"Protección",
+icon:"🛡️",
+amount:0
+}
+
+};
+
+
+// =====================================================
+// TERRENO
+// =====================================================
+
+function getTerrainHeight(x,z){
+
+const mountain1=
+Math.max(
+0,
+35-
+Math.sqrt(x*x+z*z)
+)*.12;
+
+const mountain2=
+Math.max(
+0,
+20-
+Math.sqrt(
+(x-75)*(x-75)+
+(z+50)*(z+50)
+)
+)*.18;
+
+const hills=
+Math.sin(x*.025)*
+Math.cos(z*.025)*2;
 
+return mountain1+
+mountain2+
+hills;
+
+}
+
+
+const terrainGeometry=
+new THREE.PlaneGeometry(
+500,
+500,
+100,
+100
+);
 
-<div class="imagen-producto">
+const pos=
+terrainGeometry.attributes.position;
+
+for(
+let i=0;
+i<pos.count;
+i++
+){
 
-<img src="imagenes/desengrasante.jpg">
+const x=pos.getX(i);
+const z=pos.getY(i);
+
+pos.setZ(
+i,
+getTerrainHeight(x,z)
+);
 
-</div>
+}
 
+terrainGeometry.computeVertexNormals();
 
 
-<div class="info-producto">
+const terrain=
+new THREE.Mesh(
+terrainGeometry,
+new THREE.MeshStandardMaterial({
+color:0x438f43
+})
+);
+
+terrain.rotation.x=-Math.PI/2;
 
+scene.add(terrain);
 
-<h2>
-Desengrasante multiuso
-</h2>
 
+// =====================================================
+// RÍO
+// =====================================================
 
-<div class="caracteristicas">
+const river=
+new THREE.Mesh(
+new THREE.PlaneGeometry(
+28,
+500
+),
+new THREE.MeshStandardMaterial({
+color:0x238bd2,
+transparent:true,
+opacity:.85
+})
+);
 
-<i class="fa-solid fa-check"></i>
-Elimina grasa difícil
-<br>
+river.rotation.x=-Math.PI/2;
+river.position.y=.15;
 
-<i class="fa-solid fa-check"></i>
-Uso profesional
+scene.add(river);
 
-</div>
 
+// =====================================================
+// RECURSOS
+// =====================================================
 
+const resources=[];
 
-<a class="boton-consultar"
-href="https://wa.me/5491171005652">
 
-<i class="fa-brands fa-whatsapp"></i>
+function createTree(x,z){
 
-Consultar
+const tree=new THREE.Group();
 
-</a>
+const trunk=
+new THREE.Mesh(
+new THREE.CylinderGeometry(
+.35,.45,3,8
+),
+new THREE.MeshStandardMaterial({
+color:0x704214
+})
+);
 
+trunk.position.y=1.5;
 
-</div>
+tree.add(trunk);
 
 
-</div>
+const leaves=
+new THREE.Mesh(
+new THREE.SphereGeometry(
+1.7,10,10
+),
+new THREE.MeshStandardMaterial({
+color:0x176b2c
+})
+);
 
-<!-- PRODUCTO 6 -->
+leaves.position.y=3.5;
 
+tree.add(leaves);
 
-<div class="producto limpieza" data-aos="zoom-in">
 
+tree.position.set(
+x,
+getTerrainHeight(x,z),
+z
+);
 
-<div class="imagen-producto">
+scene.add(tree);
 
-<img src="imagenes/manos.jpg">
+resources.push({
+object:tree,
+type:"wood"
+});
 
-</div>
+}
 
 
-<div class="info-producto">
+function createStone(x,z){
 
+const stone=
+new THREE.Mesh(
+new THREE.DodecahedronGeometry(.8),
+new THREE.MeshStandardMaterial({
+color:0x777777
+})
+);
 
-<h2>
-Jabón líquido para manos
-</h2>
+stone.position.set(
+x,
+getTerrainHeight(x,z)+.6,
+z
+);
 
+scene.add(stone);
 
-<div class="caracteristicas">
+resources.push({
+object:stone,
+type:"stone"
+});
 
-<i class="fa-solid fa-check"></i>
-Ideal para higiene diaria
-<br>
+}
 
-<i class="fa-solid fa-check"></i>
-Excelente rendimiento
-<br>
 
-<i class="fa-solid fa-check"></i>
-Uso comercial y doméstico
+for(let i=0;i<100;i++){
 
-</div>
+const x=(Math.random()-.5)*430;
+const z=(Math.random()-.5)*430;
 
+if(Math.abs(x)<20)
+continue;
 
+createTree(x,z);
 
-<a class="boton-consultar"
-href="https://wa.me/5491171005652">
+}
 
-<i class="fa-brands fa-whatsapp"></i>
 
-Consultar
+for(let i=0;i<70;i++){
 
-</a>
+const x=(Math.random()-.5)*430;
+const z=(Math.random()-.5)*430;
 
+if(Math.abs(x)<20)
+continue;
 
-</div>
+createStone(x,z);
 
+}
 
-</div>
 
+// =====================================================
+// MINERALES
+// =====================================================
 
+const ores=[];
 
 
+function createOre(type,x,z){
 
+let color;
 
-<!-- PRODUCTO 7 -->
+if(type==="coal")
+color=0x111111;
 
+if(type==="iron")
+color=0xb8b8b8;
 
-<div class="producto industrial" data-aos="zoom-in">
+if(type==="gold")
+color=0xffd21c;
 
 
-<div class="imagen-producto">
+const ore=
+new THREE.Mesh(
+new THREE.DodecahedronGeometry(.65),
+new THREE.MeshStandardMaterial({
+color:color,
+roughness:.8
+})
+);
 
-<img src="imagenes/bolsas.jpg">
+ore.position.set(
+x,
+getTerrainHeight(x,z)+.65,
+z
+);
 
-</div>
+scene.add(ore);
 
 
+ores.push({
 
-<div class="info-producto">
+object:ore,
 
+type:type,
 
-<h2>
-Bolsas de residuos
-</h2>
+health:
+type==="coal"
+?2
+:
+type==="iron"
+?3
+:5
 
+});
 
-<div class="caracteristicas">
+}
 
-<i class="fa-solid fa-check"></i>
-Alta resistencia
-<br>
 
-<i class="fa-solid fa-check"></i>
-Distintas medidas disponibles
+for(let i=0;i<70;i++){
 
-</div>
+const x=(Math.random()-.5)*420;
+const z=(Math.random()-.5)*420;
 
+if(Math.abs(x)<25)
+continue;
 
+createOre("coal",x,z);
 
-<a class="boton-consultar"
-href="https://wa.me/5491171005652">
+}
 
-<i class="fa-brands fa-whatsapp"></i>
 
-Consultar
+for(let i=0;i<45;i++){
 
-</a>
+const x=(Math.random()-.5)*420;
+const z=(Math.random()-.5)*420;
 
+if(Math.abs(x)<25)
+continue;
 
-</div>
+createOre("iron",x,z);
 
+}
 
-</div>
 
+for(let i=0;i<20;i++){
 
+const x=(Math.random()-.5)*420;
+const z=(Math.random()-.5)*420;
 
-</div>
+if(Math.abs(x)<25)
+continue;
 
-</section>
+createOre("gold",x,z);
 
+}
 
 
+// =====================================================
+// MINERÍA
+// =====================================================
 
+let miningTarget=null;
+let miningProgress=0;
+let mining=false;
 
 
+function getBestPickaxe(){
 
+if(inventory.goldPickaxe.amount>0)
+return"gold";
 
+if(inventory.ironPickaxe.amount>0)
+return"iron";
 
+return"stone";
 
+}
 
 
+function startMining(){
 
-<!-- WHATSAPP FLOTANTE -->
+if(!controls.isLocked||dead)
+return;
 
 
-<a class="whatsapp-fijo"
-href="https://wa.me/5491171005652"
-target="_blank">
+let closest=null;
+let distance=Infinity;
 
 
-<i class="fa-brands fa-whatsapp"></i>
+for(const ore of ores){
 
+if(!ore.object.parent)
+continue;
 
-</a>
+const d=
+camera.position.distanceTo(
+ore.object.position
+);
 
+if(d<distance){
 
+distance=d;
+closest=ore;
 
+}
 
+}
 
 
+if(!closest){
 
+showMessage(
+"⛏️ No hay mineral cerca"
+);
 
-<!-- FOOTER -->
+return;
 
+}
 
-<footer id="contacto">
 
+if(distance>5){
 
-<h2>
+showMessage(
+"📏 Acercate al mineral"
+);
 
-Calidad • Confianza • Rendimiento
+return;
 
-</h2>
+}
 
 
-<br>
+miningTarget=closest;
+mining=true;
+miningProgress=0;
 
+}
 
-<p>
 
-Consultas por WhatsApp:
-<br>
+function updateMining(delta){
 
-+54 9 11 7100-5652
+if(!mining||!miningTarget)
+return;
 
-</p>
 
+const distance=
+camera.position.distanceTo(
+miningTarget.object.position
+);
 
-</footer>
 
+if(distance>5){
 
+stopMining();
 
+return;
 
+}
 
 
+let speed=.25;
 
 
-<!-- ANIMACIONES -->
+const pick=
+getBestPickaxe();
 
 
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+if(pick==="iron")
+speed=.45;
 
+if(pick==="gold")
+speed=.65;
 
-<script>
 
+miningProgress+=
+delta*speed;
 
-AOS.init({
 
-duration:1000,
+if(miningTarget.type==="gold")
+miningProgress+=delta*.03;
 
-once:true
+
+if(miningProgress>=1){
+
+miningProgress=0;
+
+miningTarget.health--;
+
+
+if(miningTarget.health<=0){
+
+const type=
+miningTarget.type;
+
+scene.remove(
+miningTarget.object
+);
+
+
+if(type==="coal")
+inventory.coal.amount+=
+2+Math.floor(Math.random()*3);
+
+if(type==="iron")
+inventory.iron.amount+=
+1+Math.floor(Math.random()*3);
+
+if(type==="gold")
+inventory.gold.amount+=
+1+Math.floor(Math.random()*2);
+
+
+showMessage(
+"⛏️ Conseguido: "+
+getOreName(type)
+);
+
+
+updateInventoryUI();
+
+stopMining();
+
+}
+
+}
+
+}
+
+
+function getOreName(type){
+
+if(type==="coal")
+return"carbón";
+
+if(type==="iron")
+return"hierro";
+
+return"oro";
+
+}
+
+
+function stopMining(){
+
+mining=false;
+miningTarget=null;
+miningProgress=0;
+
+}
+
+
+// =====================================================
+// CRAFTEO
+// =====================================================
+
+const recipes={
+
+ironPickaxe:{
+iron:3,
+wood:2
+},
+
+ironAxe:{
+iron:3,
+wood:2
+},
+
+ironSword:{
+iron:5,
+wood:1
+},
+
+goldPickaxe:{
+gold:4,
+wood:2
+},
+
+torch:{
+coal:1,
+wood:1
+},
+
+armor:{
+iron:8,
+wood:2
+}
+
+};
+
+
+const craftButtons=
+document.querySelectorAll(
+".craftButton"
+);
+
+
+function openCraft(){
+
+if(dead)
+return;
+
+controls.unlock();
+
+document.getElementById(
+"craftMenu"
+).style.display=
+"block";
+
+updateCraftButtons();
+
+}
+
+
+function closeCraft(){
+
+document.getElementById(
+"craftMenu"
+).style.display=
+"none";
+
+if(!dead)
+controls.lock();
+
+}
+
+
+function canCraft(recipe){
+
+for(const material in recipe){
+
+if(
+inventory[material].amount<
+recipe[material]
+)
+return false;
+
+}
+
+return true;
+
+}
+
+
+function craft(type){
+
+const recipe=
+recipes[type];
+
+
+if(!canCraft(recipe)){
+
+showMessage(
+"❌ No tenés materiales suficientes"
+);
+
+return;
+
+}
+
+
+for(const material in recipe){
+
+inventory[material].amount-=
+recipe[material];
+
+}
+
+
+if(type==="ironPickaxe")
+inventory.ironPickaxe.amount++;
+
+if(type==="ironAxe")
+inventory.ironAxe.amount++;
+
+if(type==="ironSword")
+inventory.ironSword.amount++;
+
+if(type==="goldPickaxe")
+inventory.goldPickaxe.amount++;
+
+if(type==="torch")
+inventory.torch.amount+=4;
+
+if(type==="armor")
+inventory.armor.amount++;
+
+
+updateInventoryUI();
+
+updateCraftButtons();
+
+
+showMessage(
+"🔨 ¡Objeto fabricado!"
+);
+
+}
+
+
+function updateCraftButtons(){
+
+craftButtons.forEach(button=>{
+
+const type=
+button.dataset.craft;
+
+button.disabled=
+!canCraft(
+recipes[type]
+);
+
+});
+
+}
+
+
+craftButtons.forEach(button=>{
+
+button.onclick=()=>{
+
+craft(
+button.dataset.craft
+);
+
+};
 
 });
 
 
+document.getElementById(
+"closeCraft"
+).onclick=
+closeCraft;
 
 
+// =====================================================
+// CLICK
+// =====================================================
 
-// BUSCADOR
+document.addEventListener(
+"mousedown",
+e=>{
 
+if(
+e.button!==0||
+!controls.isLocked||
+dead
+)
+return;
 
-function buscarProducto(){
+startMining();
 
-
-let texto =
-document.getElementById("buscarProducto")
-.value
-.toLowerCase();
-
-
-
-let productos =
-document.querySelectorAll(".producto");
-
-
-
-productos.forEach(producto=>{
+});
 
 
-let contenido =
-producto.innerText.toLowerCase();
+// =====================================================
+// TECLAS
+// =====================================================
+
+document.addEventListener(
+"keydown",
+e=>{
+
+keys[e.code]=true;
 
 
+if(e.code==="KeyC"){
 
-if(contenido.includes(texto)){
+openCraft();
+
+}
 
 
-producto.style.display="block";
+if(e.code==="KeyE"){
 
+collectResource();
+
+}
+
+
+if(e.code==="KeyF"){
+
+eat();
+
+}
+
+
+if(e.code==="KeyG"){
+
+drink();
+
+}
+
+
+if(e.code==="KeyH"){
+
+eatMeat();
+
+}
+
+
+if(e.code==="Escape"){
+
+document.getElementById(
+"craftMenu"
+).style.display=
+"none";
+
+}
+
+});
+
+
+document.addEventListener(
+"keyup",
+e=>{
+
+keys[e.code]=false;
+
+});
+
+
+// =====================================================
+// RECOGER
+// =====================================================
+
+function collectResource(){
+
+let closest=null;
+let distance=Infinity;
+
+
+for(const resource of resources){
+
+if(!resource.object.parent)
+continue;
+
+
+const d=
+camera.position.distanceTo(
+resource.object.position
+);
+
+
+if(d<distance){
+
+distance=d;
+closest=resource;
+
+}
+
+}
+
+
+if(!closest)
+return;
+
+
+if(distance>4){
+
+showMessage(
+"📏 Acercate más"
+);
+
+return;
+
+}
+
+
+inventory[
+closest.type
+].amount++;
+
+
+scene.remove(
+closest.object
+);
+
+
+updateInventoryUI();
+
+}
+
+
+// =====================================================
+// COMIDA
+// =====================================================
+
+function eat(){
+
+if(
+inventory.food.amount<=0
+){
+
+showMessage(
+"❌ No tenés comida"
+);
+
+return;
+
+}
+
+inventory.food.amount--;
+
+hunger=
+Math.min(
+100,
+hunger+30
+);
+
+energy=
+Math.min(
+100,
+energy+10
+);
+
+updateInventoryUI();
+
+}
+
+
+function eatMeat(){
+
+if(
+inventory.meat.amount<=0
+){
+
+showMessage(
+"❌ No tenés carne"
+);
+
+return;
+
+}
+
+inventory.meat.amount--;
+
+hunger=
+Math.min(
+100,
+hunger+45
+);
+
+energy=
+Math.min(
+100,
+energy+15
+);
+
+updateInventoryUI();
+
+}
+
+
+function drink(){
+
+if(
+inventory.water.amount<=0
+){
+
+showMessage(
+"❌ No tenés agua"
+);
+
+return;
+
+}
+
+inventory.water.amount--;
+
+thirst=
+Math.min(
+100,
+thirst+40
+);
+
+updateInventoryUI();
+
+}
+
+
+// =====================================================
+// INVENTARIO
+// =====================================================
+
+function updateInventoryUI(){
+
+const container=
+document.getElementById(
+"items"
+);
+
+container.innerHTML="";
+
+
+for(const key in inventory){
+
+const item=
+inventory[key];
+
+
+const div=
+document.createElement(
+"div"
+);
+
+div.className="item";
+
+
+div.innerHTML=`
+
+<div class="icon">
+${item.icon}
+</div>
+
+<div>
+${item.name}
+</div>
+
+<div class="count">
+${item.amount}
+</div>
+
+`;
+
+
+container.appendChild(
+div
+);
+
+}
+
+}
+
+
+// =====================================================
+// SUPERVIVENCIA
+// =====================================================
+
+let survivalTimer=0;
+
+
+function updateSurvival(delta){
+
+survivalTimer+=delta;
+
+
+if(survivalTimer>=1){
+
+survivalTimer=0;
+
+hunger-=.35;
+thirst-=.55;
+
+
+if(
+keys["ShiftLeft"]||
+keys["ShiftRight"]
+){
+
+energy-=1.8;
 
 }else{
 
-
-producto.style.display="none";
-
+energy+=.7;
 
 }
 
 
+energy=
+Math.max(
+0,
+Math.min(
+100,
+energy
+)
+);
 
-});
 
+if(hunger<=0)
+health-=1;
+
+if(thirst<=0)
+health-=1.5;
+
+
+if(
+hunger>70&&
+thirst>70&&
+temperature>45&&
+temperature<85
+){
+
+health=
+Math.min(
+100,
+health+.4
+);
+
+}
 
 }
 
 
+health=
+Math.max(
+0,
+health
+);
+
+hunger=
+Math.max(
+0,
+hunger
+);
+
+thirst=
+Math.max(
+0,
+thirst
+);
 
 
+updateTemperature(delta);
+
+updateUI();
 
 
-
-
-// FILTROS
-
-
-function filtrarProductos(categoria){
-
-
-
-let productos =
-document.querySelectorAll(".producto");
-
-
-
-productos.forEach(producto=>{
-
-
-if(categoria=="todos"){
-
-
-producto.style.display="block";
-
-
-}
-
-else if(producto.classList.contains(categoria)){
-
-
-producto.style.display="block";
-
+if(health<=0)
+die();
 
 }
 
+
+// =====================================================
+// TEMPERATURA
+// =====================================================
+
+function updateTemperature(delta){
+
+const night=
+Math.sin(time)<-.25;
+
+
+const target=
+night?35:75;
+
+
+temperature+=
+(target-temperature)*
+delta*.4;
+
+
+if(temperature<25){
+
+health-=delta*.8;
+
+setStatus(
+"🥶 MUY FRÍO"
+);
+
+}
+else if(temperature<40){
+
+setStatus(
+"❄️ FRÍO"
+);
+
+}
+else if(temperature>90){
+
+health-=delta*.5;
+
+setStatus(
+"🥵 MUCHO CALOR"
+);
+
+}
 else{
 
-
-producto.style.display="none";
-
+setStatus(
+"Normal"
+);
 
 }
 
+}
+
+
+// =====================================================
+// UI
+// =====================================================
+
+function updateUI(){
+
+document.getElementById(
+"health"
+).style.width=
+health+"%";
+
+document.getElementById(
+"hunger"
+).style.width=
+hunger+"%";
+
+document.getElementById(
+"thirst"
+).style.width=
+thirst+"%";
+
+document.getElementById(
+"energy"
+).style.width=
+energy+"%";
+
+document.getElementById(
+"temperature"
+).style.width=
+temperature+"%";
+
+}
+
+
+function setStatus(text){
+
+document.getElementById(
+"statusText"
+).textContent=
+text;
+
+}
+
+
+// =====================================================
+// DÍA / NOCHE
+// =====================================================
+
+function updateDayNight(delta){
+
+time+=delta*.03;
+
+
+const daylight=
+Math.sin(time);
+
+
+const day=
+Math.floor(
+time/(Math.PI*2)
+)+1;
+
+
+document.getElementById(
+"day"
+).textContent=
+day;
+
+
+const brightness=
+Math.max(
+.08,
+daylight*.8+.9
+);
+
+
+ambient.intensity=
+brightness;
+
+sun.intensity=
+brightness*1.5;
+
+
+if(daylight<-.25){
+
+scene.background.set(
+0x080b20
+);
+
+scene.fog.color.set(
+0x080b20
+);
+
+document.getElementById(
+"nightWarning"
+).textContent=
+"🌙 NOCHE";
+
+}
+else{
+
+scene.background.set(
+0x87ceeb
+);
+
+scene.fog.color.set(
+0x87ceeb
+);
+
+document.getElementById(
+"nightWarning"
+).textContent=
+"";
+
+}
+
+}
+
+
+// =====================================================
+// MOVIMIENTO
+// =====================================================
+
+function movePlayer(delta){
+
+if(
+!controls.isLocked||
+dead
+)
+return;
+
+
+const direction=
+new THREE.Vector3();
+
+
+if(keys["KeyW"])
+direction.z-=1;
+
+if(keys["KeyS"])
+direction.z+=1;
+
+if(keys["KeyA"])
+direction.x-=1;
+
+if(keys["KeyD"])
+direction.x+=1;
+
+
+if(direction.length()>0){
+
+direction.normalize();
+
+
+let speed=8;
+
+
+if(
+keys["ShiftLeft"]||
+keys["ShiftRight"]
+){
+
+speed=
+energy>0?13:5;
+
+}
+
+
+controls.moveRight(
+direction.x*
+speed*
+delta
+);
+
+controls.moveForward(
+-direction.z*
+speed*
+delta
+);
+
+}
+
+
+camera.position.y=
+getTerrainHeight(
+camera.position.x,
+camera.position.z
+)+2;
+
+}
+
+
+// =====================================================
+// UBICACIÓN
+// =====================================================
+
+function updateLocation(){
+
+const x=
+camera.position.x;
+
+
+let location=
+"🌲 Bosque";
+
+
+if(Math.abs(x)<20)
+location="🌊 Río";
+
+
+document.getElementById(
+"location"
+).textContent=
+location;
+
+}
+
+
+// =====================================================
+// MUERTE
+// =====================================================
+
+function die(){
+
+dead=true;
+
+stopMining();
+
+controls.unlock();
+
+
+document.getElementById(
+"dead"
+).style.display=
+"flex";
+
+}
+
+
+document.getElementById(
+"restart"
+).onclick=
+()=>{
+
+location.reload();
+
+};
+
+
+// =====================================================
+// MENSAJES
+// =====================================================
+
+let messageTimer;
+
+
+function showMessage(text){
+
+const message=
+document.getElementById(
+"message"
+);
+
+message.textContent=text;
+
+
+clearTimeout(
+messageTimer
+);
+
+
+messageTimer=
+setTimeout(
+()=>{
+
+message.textContent="";
+
+},
+1700
+);
+
+}
+
+
+// =====================================================
+// INICIO
+// =====================================================
+
+document.getElementById(
+"play"
+).onclick=
+()=>{
+
+controls.lock();
+
+
+document.getElementById(
+"start"
+).style.display=
+"none";
+
+};
+
+
+// =====================================================
+// ANIMACIÓN
+// =====================================================
+
+const clock=
+new THREE.Clock();
+
+
+function animate(){
+
+requestAnimationFrame(
+animate
+);
+
+
+const delta=
+Math.min(
+clock.getDelta(),
+.05
+);
+
+
+movePlayer(delta);
+
+updateMining(delta);
+
+updateDayNight(delta);
+
+updateSurvival(delta);
+
+
+renderer.render(
+scene,
+camera
+);
+
+}
+
+
+animate();
+
+
+// =====================================================
+// RESIZE
+// =====================================================
+
+window.addEventListener(
+"resize",
+()=>{
+
+camera.aspect=
+innerWidth/innerHeight;
+
+camera.updateProjectionMatrix();
+
+renderer.setSize(
+innerWidth,
+innerHeight
+);
 
 });
 
 
-}
-
-
+updateInventoryUI();
+updateUI();
 
 </script>
 
-
-
-
-
-
-<style>
-
-
-/* WHATSAPP FLOTANTE */
-
-
-.whatsapp-fijo{
-
-
-position:fixed;
-
-right:25px;
-
-bottom:25px;
-
-width:70px;
-
-height:70px;
-
-background:#25D366;
-
-color:white;
-
-border-radius:50%;
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-font-size:38px;
-
-text-decoration:none;
-
-box-shadow:0 8px 25px rgba(0,0,0,.3);
-
-z-index:2000;
-
-animation:pulso 2s infinite;
-
-}
-
-
-
-@keyframes pulso{
-
-
-50%{
-
-transform:scale(1.12);
-
-}
-
-
-}
-
-
-
-
-
-/* OPINIONES */
-
-
-.opiniones{
-
-
-background:#f4fff4;
-
-padding:60px 10%;
-
-text-align:center;
-
-
-}
-
-
-
-.estrellas{
-
-
-font-size:45px;
-
-color:#ffc107;
-
-margin-bottom:20px;
-
-
-}
-
-
-
-.opinion-card{
-
-
-background:white;
-
-padding:30px;
-
-margin:25px auto;
-
-max-width:600px;
-
-border-radius:20px;
-
-box-shadow:0 10px 25px rgba(0,0,0,.12);
-
-
-}
-
-
-
-.opinion-card p{
-
-
-font-size:20px;
-
-margin-bottom:15px;
-
-
-}
-
-
-
-.boton-opinion{
-
-
-display:inline-block;
-
-background:#146b17;
-
-color:white;
-
-padding:15px 35px;
-
-border-radius:30px;
-
-text-decoration:none;
-
-font-weight:bold;
-
-transition:.3s;
-
-
-}
-
-
-
-.boton-opinion:hover{
-
-
-background:#d50000;
-
-transform:scale(1.05);
-
-
-}
-
-
-
-
-
-footer{
-
-
-background:#146b17;
-
-color:white;
-
-padding:45px;
-
-text-align:center;
-
-font-size:20px;
-
-
-}
-
-
-
-
-@media(max-width:768px){
-
-
-
-header{
-
-
-padding:15px;
-
-}
-
-
-
-nav{
-
-display:none;
-
-}
-
-
-
-.presentacion h1{
-
-font-size:38px;
-
-}
-
-
-
-.presentacion p{
-
-font-size:20px;
-
-}
-
-
-
-.titulo{
-
-font-size:35px;
-
-}
-
-
-
-.busqueda-productos input{
-
-width:95%;
-
-}
-
-
-
-}
-
-</style>
-
-
-
 </body>
-
 </html>
