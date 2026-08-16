@@ -3,2292 +3,7694 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
-<title>Survival 3D - Parte 15</title>
+<title>La Isla Perdida</title>
 
 <style>
-
 *{
-box-sizing:border-box;
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-body{
-margin:0;
-overflow:hidden;
-background:#000;
-font-family:Arial,sans-serif;
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    font-family:Arial,sans-serif;
 }
 
-canvas{
-display:block;
+#game{
+    position:fixed;
+    inset:0;
 }
 
-#ui{
-position:fixed;
-inset:0;
-z-index:10;
-color:white;
-pointer-events:none;
+#hud{
+    position:fixed;
+    top:15px;
+    left:15px;
+    z-index:20;
+    color:white;
+    background:rgba(0,0,0,.38);
+    padding:10px 14px;
+    border-radius:10px;
+    font-size:14px;
+    line-height:1.5;
+    user-select:none;
+}
+
+#cameraMode{
+    position:fixed;
+    top:15px;
+    right:15px;
+    z-index:20;
+    color:white;
+    background:rgba(0,0,0,.38);
+    padding:10px 14px;
+    border-radius:10px;
+}
+
+#timeDisplay{
+    position:fixed;
+    top:65px;
+    right:15px;
+    z-index:20;
+    color:white;
+    background:rgba(0,0,0,.38);
+    padding:8px 12px;
+    border-radius:8px;
+}
+
+#waterState{
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:20;
+    color:white;
+    background:rgba(0,0,0,.45);
+    padding:8px 15px;
+    border-radius:10px;
+    display:none;
 }
 
 #crosshair{
-position:absolute;
-left:50%;
-top:50%;
-transform:translate(-50%,-50%);
-font-size:25px;
-text-shadow:0 0 8px black;
+    position:fixed;
+    left:50%;
+    top:50%;
+    width:7px;
+    height:7px;
+    border:1px solid white;
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    z-index:30;
+    pointer-events:none;
 }
 
-#stats{
-position:absolute;
-top:15px;
-left:15px;
-width:260px;
-padding:13px;
-background:rgba(0,0,0,.75);
-border-radius:12px;
+#startMessage{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.25);
+    color:white;
+    z-index:40;
+    text-align:center;
+    pointer-events:none;
 }
 
-.bar{
-height:13px;
-margin:4px 0 8px;
-background:#333;
-border-radius:10px;
-overflow:hidden;
+#startMessage div{
+    background:rgba(0,0,0,.55);
+    padding:22px 30px;
+    border-radius:15px;
+    backdrop-filter:blur(6px);
 }
 
-.fill{
-height:100%;
-width:100%;
+#startMessage h1{
+    margin-bottom:10px;
+    font-size:30px;
+    letter-spacing:3px;
 }
 
-#health{background:#e53935}
-#hunger{background:#e0a323}
-#thirst{background:#2196f3}
-#energy{background:#9c27b0}
-#temperature{background:#ff8c00}
-
-#inventory{
-position:absolute;
-right:15px;
-top:15px;
-width:300px;
-background:rgba(0,0,0,.82);
-padding:15px;
-border-radius:13px;
+#startMessage p{
+    font-size:14px;
+    opacity:.9;
 }
-
-#inventory h2{
-margin:0 0 10px;
-text-align:center;
-}
-
-#items{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:7px;
-}
-
-.item{
-height:65px;
-background:#242424;
-border:2px solid #555;
-border-radius:8px;
-text-align:center;
-padding:5px;
-font-size:12px;
-}
-
-.item .icon{
-font-size:22px;
-}
-
-.item .count{
-font-size:12px;
-}
-
-#hotbar{
-position:absolute;
-bottom:22px;
-left:50%;
-transform:translateX(-50%);
-display:flex;
-gap:7px;
-}
-
-.slot{
-width:76px;
-height:72px;
-background:rgba(0,0,0,.75);
-border:2px solid #777;
-border-radius:9px;
-text-align:center;
-padding:7px;
-font-size:12px;
-}
-
-.slot.selected{
-border-color:white;
-}
-
-#message{
-position:absolute;
-bottom:125px;
-left:50%;
-transform:translateX(-50%);
-font-size:20px;
-text-shadow:0 2px 5px black;
-text-align:center;
-}
-
-#location{
-position:absolute;
-left:50%;
-top:18px;
-transform:translateX(-50%);
-background:rgba(0,0,0,.55);
-padding:8px 14px;
-border-radius:10px;
-}
-
-#status{
-position:absolute;
-top:115px;
-left:15px;
-background:rgba(0,0,0,.65);
-padding:9px 12px;
-border-radius:10px;
-}
-
-#nightWarning{
-position:absolute;
-top:75px;
-left:50%;
-transform:translateX(-50%);
-font-size:17px;
-text-shadow:0 2px 6px black;
-}
-
-#instructions{
-position:absolute;
-bottom:5px;
-left:8px;
-background:rgba(0,0,0,.6);
-padding:7px;
-border-radius:8px;
-font-size:12px;
-}
-
-#craftMenu{
-position:fixed;
-z-index:30;
-left:50%;
-top:50%;
-transform:translate(-50%,-50%);
-width:430px;
-max-width:90%;
-background:rgba(10,10,10,.95);
-border:2px solid #777;
-border-radius:15px;
-padding:18px;
-display:none;
-pointer-events:auto;
-}
-
-#craftMenu h2{
-text-align:center;
-margin-top:0;
-}
-
-.craftGrid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:10px;
-}
-
-.craftButton{
-min-height:100px;
-background:#292929;
-color:white;
-border:2px solid #555;
-border-radius:10px;
-cursor:pointer;
-font-size:14px;
-}
-
-.craftButton:hover{
-background:#414141;
-}
-
-.craftButton:disabled{
-opacity:.4;
-cursor:not-allowed;
-}
-
-.closeCraft{
-width:100%;
-margin-top:12px;
-padding:10px;
-background:#555;
-color:white;
-border:0;
-border-radius:8px;
-cursor:pointer;
-}
-
-#craftInfo{
-text-align:center;
-font-size:13px;
-margin-bottom:12px;
-color:#ddd;
-}
-
-#start,
-#dead{
-position:fixed;
-inset:0;
-z-index:40;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-background:rgba(0,0,0,.94);
-color:white;
-}
-
-#dead{
-display:none;
-}
-
-#start button,
-#dead button{
-padding:14px 35px;
-border:0;
-border-radius:9px;
-font-size:19px;
-cursor:pointer;
-}
-
 </style>
 </head>
 
 <body>
 
+<div id="game"></div>
 
-<div id="start">
-
-<h1>🏝️ SURVIVAL 3D</h1>
-
-<p>PARTE 15 — CRAFTEO</p>
-
-<button id="play">
-JUGAR
-</button>
-
+<div id="hud">
+    W A S D — Moverse<br>
+    ESPACIO — Saltar<br>
+    W + RUEDITA — Nadar rápido<br>
+    MOUSE — Mirar<br>
+    V — Cámara
 </div>
 
-
-<div id="dead">
-
-<h1>💀 HAS MUERTO</h1>
-
-<p>Tu aventura terminó.</p>
-
-<button id="restart">
-REINICIAR
-</button>
-
+<div id="cameraMode">
+    Primera persona
 </div>
 
-
-<div id="ui">
-
-<div id="crosshair">+</div>
-
-<div id="location">
-🌲 Bosque
+<div id="timeDisplay">
+    Día
 </div>
 
-<div id="nightWarning"></div>
-
-
-<div id="stats">
-
-❤️ Vida
-
-<div class="bar">
-<div id="health" class="fill"></div>
+<div id="waterState">
+    Nadando
 </div>
 
-🍗 Hambre
+<div id="crosshair"></div>
 
-<div class="bar">
-<div id="hunger" class="fill"></div>
+<div id="startMessage">
+    <div>
+        <h1>LA ISLA PERDIDA</h1>
+        <p>Hacé clic para comenzar</p>
+    </div>
 </div>
 
-💧 Sed
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
-<div class="bar">
-<div id="thirst" class="fill"></div>
-</div>
+<script>
 
-⚡ Energía
+/* =========================================================
+   LA ISLA PERDIDA
+   PARTE 2
+========================================================= */
 
-<div class="bar">
-<div id="energy" class="fill"></div>
-</div>
+"use strict";
 
-🌡️ Temperatura
 
-<div class="bar">
-<div id="temperature" class="fill"></div>
-</div>
+/* =========================================================
+   ESCENA
+========================================================= */
 
-☀️ Día:
-<span id="day">1</span>
+const scene = new THREE.Scene();
 
-</div>
+scene.background =
+    new THREE.Color(0x87b8c5);
 
+scene.fog =
+    new THREE.Fog(
+        0x87b8c5,
+        100,
+        650
+    );
 
-<div id="status">
 
-Estado:
-<b id="statusText">
-Normal
-</b>
+/* =========================================================
+   CÁMARA
+========================================================= */
 
-</div>
+const camera =
+    new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth /
+        window.innerHeight,
+        .1,
+        1200
+    );
 
 
-<div id="inventory">
+/* =========================================================
+   RENDER
+========================================================= */
 
-<h2>
-🎒 INVENTARIO
-</h2>
-
-<div id="items"></div>
-
-</div>
-
-
-<div id="hotbar">
-
-<div class="slot">
-🪓<br>
-Hacha<br>
-1
-</div>
-
-<div class="slot">
-⛏️<br>
-Pico<br>
-2
-</div>
-
-<div class="slot">
-🗡️<br>
-Espada<br>
-3
-</div>
-
-<div class="slot">
-🔥<br>
-Fogata<br>
-4
-</div>
-
-</div>
-
-
-<div id="message"></div>
-
-
-<div id="instructions">
-
-WASD mover |
-Mouse mirar |
-Click atacar/minar |
-E recoger |
-C crafteo |
-B construir |
-F comida |
-G agua |
-H carne |
-Shift correr
-
-</div>
-
-</div>
-
-
-<!-- =====================================================
-     MENÚ CRAFTEO
-===================================================== -->
-
-<div id="craftMenu">
-
-<h2>
-🔨 MESA DE CRAFTEO
-</h2>
-
-<div id="craftInfo">
-Usá los materiales que encontraste para fabricar herramientas.
-</div>
-
-<div class="craftGrid">
-
-
-<button
-class="craftButton"
-data-craft="ironPickaxe">
-
-⛏️ <b>PICO DE HIERRO</b>
-
-<br><br>
-
-3 ⬜ Hierro<br>
-2 🪵 Madera
-
-</button>
-
-
-<button
-class="craftButton"
-data-craft="ironAxe">
-
-🪓 <b>HACHA DE HIERRO</b>
-
-<br><br>
-
-3 ⬜ Hierro<br>
-2 🪵 Madera
-
-</button>
-
-
-<button
-class="craftButton"
-data-craft="ironSword">
-
-⚔️ <b>ESPADA DE HIERRO</b>
-
-<br><br>
-
-5 ⬜ Hierro<br>
-1 🪵 Madera
-
-</button>
-
-
-<button
-class="craftButton"
-data-craft="goldPickaxe">
-
-⛏️ <b>PICO DE ORO</b>
-
-<br><br>
-
-4 🟨 Oro<br>
-2 🪵 Madera
-
-</button>
-
-
-<button
-class="craftButton"
-data-craft="torch">
-
-🔥 <b>ANTORCHAS</b>
-
-<br><br>
-
-1 ⬛ Carbón<br>
-1 🪵 Madera<br>
-→ 4 antorchas
-
-</button>
-
-
-<button
-class="craftButton"
-data-craft="armor">
-
-🛡️ <b>PROTECCIÓN</b>
-
-<br><br>
-
-8 ⬜ Hierro<br>
-2 🪵 Madera
-
-</button>
-
-
-</div>
-
-
-<button
-class="closeCraft"
-id="closeCraft">
-
-CERRAR
-</button>
-
-</div>
-
-
-<script type="module">
-
-
-import * as THREE from
-'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-
-
-import {
-PointerLockControls
-}
-from
-'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/PointerLockControls.js';
-
-
-// =====================================================
-// ESCENA
-// =====================================================
-
-const scene=
-new THREE.Scene();
-
-scene.background=
-new THREE.Color(0x87ceeb);
-
-scene.fog=
-new THREE.Fog(
-0x87ceeb,
-35,
-280
-);
-
-
-// =====================================================
-// CÁMARA
-// =====================================================
-
-const camera=
-new THREE.PerspectiveCamera(
-75,
-innerWidth/innerHeight,
-.1,
-800
-);
-
-camera.position.set(
-0,
-2,
-10
-);
-
-
-// =====================================================
-// RENDER
-// =====================================================
-
-const renderer=
-new THREE.WebGLRenderer({
-antialias:true
-});
+const renderer =
+    new THREE.WebGLRenderer({
+        antialias:true
+    });
 
 renderer.setSize(
-innerWidth,
-innerHeight
+    window.innerWidth,
+    window.innerHeight
 );
 
 renderer.setPixelRatio(
-Math.min(devicePixelRatio,2)
+    Math.min(
+        window.devicePixelRatio,
+        1.5
+    )
 );
 
-renderer.shadowMap.enabled=true;
+renderer.shadowMap.enabled = true;
 
-document.body.appendChild(
-renderer.domElement
+renderer.shadowMap.type =
+    THREE.PCFSoftShadowMap;
+
+document
+    .getElementById("game")
+    .appendChild(renderer.domElement);
+
+
+/* =========================================================
+   LUCES
+========================================================= */
+
+const ambiente =
+    new THREE.HemisphereLight(
+        0xc8eaff,
+        0x263820,
+        1.8
+    );
+
+scene.add(ambiente);
+
+
+const sol =
+    new THREE.DirectionalLight(
+        0xffffff,
+        2
+    );
+
+sol.position.set(
+    -120,
+    180,
+    100
 );
 
+sol.castShadow = true;
 
-// =====================================================
-// LUCES
-// =====================================================
+sol.shadow.mapSize.width = 2048;
+sol.shadow.mapSize.height = 2048;
 
-const ambient=
-new THREE.HemisphereLight(
-0xffffff,
-0x303040,
-1.5
-);
-
-scene.add(ambient);
+scene.add(sol);
 
 
-const sun=
-new THREE.DirectionalLight(
-0xffffff,
-2
-);
+/* =========================================================
+   OCÉANO
+========================================================= */
 
-sun.position.set(
-100,
-150,
-50
-);
+const oceanGeometry =
+    new THREE.PlaneGeometry(
+        1200,
+        1200,
+        80,
+        80
+    );
 
-sun.castShadow=true;
+const oceanMaterial =
+    new THREE.MeshStandardMaterial({
+        color:0x176b87,
+        roughness:.2,
+        metalness:.05,
+        transparent:true,
+        opacity:.92
+    });
 
-scene.add(sun);
+const ocean =
+    new THREE.Mesh(
+        oceanGeometry,
+        oceanMaterial
+    );
 
+ocean.rotation.x =
+    -Math.PI/2;
 
-// =====================================================
-// CONTROLES
-// =====================================================
+ocean.position.y =
+    -1;
 
-const controls=
-new PointerLockControls(
-camera,
-document.body
-);
-
-
-// =====================================================
-// ESTADO
-// =====================================================
-
-const keys={};
-
-let health=100;
-let hunger=100;
-let thirst=100;
-let energy=100;
-let temperature=70;
-
-let dead=false;
-
-let time=0;
+scene.add(ocean);
 
 
-// =====================================================
-// INVENTARIO
-// =====================================================
+/* =========================================================
+   ISLA
+========================================================= */
 
-const inventory={
+const islandGeometry =
+    new THREE.CircleGeometry(
+        190,
+        96
+    );
 
-wood:{
-name:"Madera",
-icon:"🌲",
-amount:30
-},
+const islandMaterial =
+    new THREE.MeshStandardMaterial({
+        color:0x47763d,
+        roughness:1
+    });
 
-stone:{
-name:"Piedra",
-icon:"🪨",
-amount:20
-},
+const island =
+    new THREE.Mesh(
+        islandGeometry,
+        islandMaterial
+    );
 
-coal:{
-name:"Carbón",
-icon:"⬛",
-amount:0
-},
+island.rotation.x =
+    -Math.PI/2;
 
-iron:{
-name:"Hierro",
-icon:"⬜",
-amount:0
-},
+island.receiveShadow = true;
 
-gold:{
-name:"Oro",
-icon:"🟨",
-amount:0
-},
-
-food:{
-name:"Comida",
-icon:"🍎",
-amount:4
-},
-
-water:{
-name:"Agua",
-icon:"💧",
-amount:4
-},
-
-meat:{
-name:"Carne",
-icon:"🥩",
-amount:0
-},
-
-torch:{
-name:"Antorcha",
-icon:"🔥",
-amount:0
-},
-
-axe:{
-name:"Hacha",
-icon:"🪓",
-amount:1
-},
-
-ironAxe:{
-name:"Hacha hierro",
-icon:"🪓",
-amount:0
-},
-
-pickaxe:{
-name:"Pico",
-icon:"⛏️",
-amount:1
-},
-
-ironPickaxe:{
-name:"Pico hierro",
-icon:"⛏️",
-amount:0
-},
-
-goldPickaxe:{
-name:"Pico oro",
-icon:"⛏️",
-amount:0
-},
-
-sword:{
-name:"Espada",
-icon:"🗡️",
-amount:1
-},
-
-ironSword:{
-name:"Espada hierro",
-icon:"⚔️",
-amount:0
-},
-
-armor:{
-name:"Protección",
-icon:"🛡️",
-amount:0
-}
-
-};
+scene.add(island);
 
 
-// =====================================================
-// TERRENO
-// =====================================================
+/* =========================================================
+   PLAYA
+========================================================= */
 
-function getTerrainHeight(x,z){
+const beachGeometry =
+    new THREE.RingGeometry(
+        155,
+        190,
+        96
+    );
 
-const mountain1=
-Math.max(
-0,
-35-
-Math.sqrt(x*x+z*z)
-)*.12;
+const beachMaterial =
+    new THREE.MeshStandardMaterial({
+        color:0xc8a96b,
+        roughness:1
+    });
 
-const mountain2=
-Math.max(
-0,
-20-
-Math.sqrt(
-(x-75)*(x-75)+
-(z+50)*(z+50)
-)
-)*.18;
+const beach =
+    new THREE.Mesh(
+        beachGeometry,
+        beachMaterial
+    );
 
-const hills=
-Math.sin(x*.025)*
-Math.cos(z*.025)*2;
+beach.rotation.x =
+    -Math.PI/2;
 
-return mountain1+
-mountain2+
-hills;
+beach.position.y =
+    .03;
 
-}
+scene.add(beach);
 
 
-const terrainGeometry=
-new THREE.PlaneGeometry(
-500,
-500,
-100,
-100
-);
+/* =========================================================
+   MONTAÑAS
+========================================================= */
 
-const pos=
-terrainGeometry.attributes.position;
-
-for(
-let i=0;
-i<pos.count;
-i++
+function crearMontana(
+    x,
+    z,
+    escala
 ){
 
-const x=pos.getX(i);
-const z=pos.getY(i);
+    const geometria =
+        new THREE.ConeGeometry(
+            27,
+            48,
+            9
+        );
 
-pos.setZ(
-i,
-getTerrainHeight(x,z)
-);
+    const material =
+        new THREE.MeshStandardMaterial({
+            color:0x35552f,
+            roughness:1
+        });
 
-}
+    const montana =
+        new THREE.Mesh(
+            geometria,
+            material
+        );
 
-terrainGeometry.computeVertexNormals();
+    montana.position.set(
+        x,
+        23,
+        z
+    );
 
+    montana.scale.setScalar(
+        escala
+    );
 
-const terrain=
-new THREE.Mesh(
-terrainGeometry,
-new THREE.MeshStandardMaterial({
-color:0x438f43
-})
-);
+    montana.castShadow = true;
+    montana.receiveShadow = true;
 
-terrain.rotation.x=-Math.PI/2;
-
-scene.add(terrain);
-
-
-// =====================================================
-// RÍO
-// =====================================================
-
-const river=
-new THREE.Mesh(
-new THREE.PlaneGeometry(
-28,
-500
-),
-new THREE.MeshStandardMaterial({
-color:0x238bd2,
-transparent:true,
-opacity:.85
-})
-);
-
-river.rotation.x=-Math.PI/2;
-river.position.y=.15;
-
-scene.add(river);
-
-
-// =====================================================
-// RECURSOS
-// =====================================================
-
-const resources=[];
-
-
-function createTree(x,z){
-
-const tree=new THREE.Group();
-
-const trunk=
-new THREE.Mesh(
-new THREE.CylinderGeometry(
-.35,.45,3,8
-),
-new THREE.MeshStandardMaterial({
-color:0x704214
-})
-);
-
-trunk.position.y=1.5;
-
-tree.add(trunk);
-
-
-const leaves=
-new THREE.Mesh(
-new THREE.SphereGeometry(
-1.7,10,10
-),
-new THREE.MeshStandardMaterial({
-color:0x176b2c
-})
-);
-
-leaves.position.y=3.5;
-
-tree.add(leaves);
-
-
-tree.position.set(
-x,
-getTerrainHeight(x,z),
-z
-);
-
-scene.add(tree);
-
-resources.push({
-object:tree,
-type:"wood"
-});
-
+    scene.add(montana);
 }
 
 
-function createStone(x,z){
+crearMontana(-80,-50,1.25);
+crearMontana(70,-65,1.15);
+crearMontana(100,45,1.4);
+crearMontana(-100,65,1.2);
 
-const stone=
-new THREE.Mesh(
-new THREE.DodecahedronGeometry(.8),
-new THREE.MeshStandardMaterial({
-color:0x777777
-})
-);
 
-stone.position.set(
-x,
-getTerrainHeight(x,z)+.6,
-z
-);
+/* =========================================================
+   ÁRBOLES
+========================================================= */
 
-scene.add(stone);
+function crearArbol(
+    x,
+    z,
+    escala=1
+){
 
-resources.push({
-object:stone,
-type:"stone"
-});
+    const arbol =
+        new THREE.Group();
 
+
+    const tronco =
+        new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                1.2,
+                1.7,
+                10,
+                8
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x57381f
+            })
+        );
+
+    tronco.position.y = 5;
+
+    tronco.castShadow = true;
+
+    arbol.add(tronco);
+
+
+    const copa =
+        new THREE.Mesh(
+            new THREE.SphereGeometry(
+                6,
+                10,
+                8
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x285c2c
+            })
+        );
+
+    copa.position.y = 11;
+
+    copa.scale.y = .8;
+
+    copa.castShadow = true;
+
+    arbol.add(copa);
+
+
+    arbol.position.set(
+        x,
+        0,
+        z
+    );
+
+    arbol.scale.setScalar(
+        escala
+    );
+
+    scene.add(arbol);
 }
 
 
 for(let i=0;i<100;i++){
 
-const x=(Math.random()-.5)*430;
-const z=(Math.random()-.5)*430;
+    const angulo =
+        Math.random() *
+        Math.PI*2;
 
-if(Math.abs(x)<20)
-continue;
+    const distancia =
+        35 +
+        Math.random()*120;
 
-createTree(x,z);
-
+    crearArbol(
+        Math.cos(angulo)*distancia,
+        Math.sin(angulo)*distancia,
+        .7 +
+        Math.random()*.7
+    );
 }
 
 
-for(let i=0;i<70;i++){
+/* =========================================================
+   ROCAS
+========================================================= */
 
-const x=(Math.random()-.5)*430;
-const z=(Math.random()-.5)*430;
+function crearRoca(
+    x,
+    z
+){
 
-if(Math.abs(x)<20)
-continue;
+    const roca =
+        new THREE.Mesh(
+            new THREE.DodecahedronGeometry(
+                1.5 +
+                Math.random()*2
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x686760,
+                roughness:1
+            })
+        );
 
-createStone(x,z);
+    roca.position.set(
+        x,
+        1,
+        z
+    );
 
+    roca.rotation.y =
+        Math.random()*Math.PI;
+
+    roca.castShadow = true;
+
+    scene.add(roca);
 }
 
 
-// =====================================================
-// MINERALES
-// =====================================================
+for(let i=0;i<80;i++){
 
-const ores=[];
+    const angulo =
+        Math.random()*Math.PI*2;
 
+    const distancia =
+        25 +
+        Math.random()*150;
 
-function createOre(type,x,z){
-
-let color;
-
-if(type==="coal")
-color=0x111111;
-
-if(type==="iron")
-color=0xb8b8b8;
-
-if(type==="gold")
-color=0xffd21c;
+    crearRoca(
+        Math.cos(angulo)*distancia,
+        Math.sin(angulo)*distancia
+    );
+}
 
 
-const ore=
-new THREE.Mesh(
-new THREE.DodecahedronGeometry(.65),
-new THREE.MeshStandardMaterial({
-color:color,
-roughness:.8
-})
+/* =========================================================
+   AVIÓN
+========================================================= */
+
+const avion =
+    new THREE.Group();
+
+const metal =
+    new THREE.MeshStandardMaterial({
+        color:0x5c5c59,
+        metalness:.55,
+        roughness:.65
+    });
+
+
+const cuerpoAvion =
+    new THREE.Mesh(
+        new THREE.CylinderGeometry(
+            3,
+            3,
+            28,
+            12
+        ),
+        metal
+    );
+
+cuerpoAvion.rotation.z =
+    Math.PI/2;
+
+cuerpoAvion.rotation.y =
+    -.15;
+
+cuerpoAvion.castShadow = true;
+
+avion.add(cuerpoAvion);
+
+
+const ala =
+    new THREE.Mesh(
+        new THREE.BoxGeometry(
+            25,
+            .7,
+            5
+        ),
+        metal
+    );
+
+ala.position.y = 1;
+
+ala.castShadow = true;
+
+avion.add(ala);
+
+
+const cola =
+    new THREE.Mesh(
+        new THREE.BoxGeometry(
+            5,
+            6,
+            1
+        ),
+        metal
+    );
+
+cola.position.set(
+    -11,
+    4,
+    0
 );
 
-ore.position.set(
-x,
-getTerrainHeight(x,z)+.65,
-z
+avion.add(cola);
+
+
+avion.position.set(
+    20,
+    3,
+    18
 );
 
-scene.add(ore);
+avion.rotation.y =
+    -.35;
 
+avion.rotation.z =
+    .08;
 
-ores.push({
+scene.add(avion);
 
-object:ore,
 
-type:type,
+/* =========================================================
+   PERSONAJE
+========================================================= */
 
-health:
-type==="coal"
-?2
-:
-type==="iron"
-?3
-:5
+const player = {
 
-});
+    position:
+        new THREE.Vector3(
+            0,
+            2,
+            135
+        ),
 
-}
+    velocity:
+        new THREE.Vector3(),
 
+    speed:7,
 
-for(let i=0;i<70;i++){
+    swimSpeed:4,
 
-const x=(Math.random()-.5)*420;
-const z=(Math.random()-.5)*420;
+    jumpForce:9,
 
-if(Math.abs(x)<25)
-continue;
+    onGround:true,
 
-createOre("coal",x,z);
+    height:1.9,
 
-}
+    cameraMode:"first",
 
+    swimming:false,
 
-for(let i=0;i<45;i++){
+    sprinting:false
+};
 
-const x=(Math.random()-.5)*420;
-const z=(Math.random()-.5)*420;
 
-if(Math.abs(x)<25)
-continue;
+/* =========================================================
+   MODELO DEL PERSONAJE
+========================================================= */
 
-createOre("iron",x,z);
+const playerModel =
+    new THREE.Group();
 
-}
 
+const cuerpoJugador =
+    new THREE.Mesh(
+        new THREE.CylinderGeometry(
+            .55,
+            .7,
+            1.3,
+            12
+        ),
+        new THREE.MeshStandardMaterial({
+            color:0x754b31
+        })
+    );
 
-for(let i=0;i<20;i++){
+cuerpoJugador.position.y =
+    2.4;
 
-const x=(Math.random()-.5)*420;
-const z=(Math.random()-.5)*420;
+cuerpoJugador.castShadow = true;
 
-if(Math.abs(x)<25)
-continue;
-
-createOre("gold",x,z);
-
-}
-
-
-// =====================================================
-// MINERÍA
-// =====================================================
-
-let miningTarget=null;
-let miningProgress=0;
-let mining=false;
-
-
-function getBestPickaxe(){
-
-if(inventory.goldPickaxe.amount>0)
-return"gold";
-
-if(inventory.ironPickaxe.amount>0)
-return"iron";
-
-return"stone";
-
-}
-
-
-function startMining(){
-
-if(!controls.isLocked||dead)
-return;
-
-
-let closest=null;
-let distance=Infinity;
-
-
-for(const ore of ores){
-
-if(!ore.object.parent)
-continue;
-
-const d=
-camera.position.distanceTo(
-ore.object.position
-);
-
-if(d<distance){
-
-distance=d;
-closest=ore;
-
-}
-
-}
-
-
-if(!closest){
-
-showMessage(
-"⛏️ No hay mineral cerca"
-);
-
-return;
-
-}
-
-
-if(distance>5){
-
-showMessage(
-"📏 Acercate al mineral"
-);
-
-return;
-
-}
-
-
-miningTarget=closest;
-mining=true;
-miningProgress=0;
-
-}
-
-
-function updateMining(delta){
-
-if(!mining||!miningTarget)
-return;
-
-
-const distance=
-camera.position.distanceTo(
-miningTarget.object.position
-);
-
-
-if(distance>5){
-
-stopMining();
-
-return;
-
-}
-
-
-let speed=.25;
-
-
-const pick=
-getBestPickaxe();
-
-
-if(pick==="iron")
-speed=.45;
-
-if(pick==="gold")
-speed=.65;
-
-
-miningProgress+=
-delta*speed;
-
-
-if(miningTarget.type==="gold")
-miningProgress+=delta*.03;
-
-
-if(miningProgress>=1){
-
-miningProgress=0;
-
-miningTarget.health--;
-
-
-if(miningTarget.health<=0){
-
-const type=
-miningTarget.type;
-
-scene.remove(
-miningTarget.object
+playerModel.add(
+    cuerpoJugador
 );
 
 
-if(type==="coal")
-inventory.coal.amount+=
-2+Math.floor(Math.random()*3);
+const cabeza =
+    new THREE.Mesh(
+        new THREE.SphereGeometry(
+            .48,
+            16,
+            16
+        ),
+        new THREE.MeshStandardMaterial({
+            color:0x8b593b
+        })
+    );
 
-if(type==="iron")
-inventory.iron.amount+=
-1+Math.floor(Math.random()*3);
+cabeza.position.y =
+    3.45;
 
-if(type==="gold")
-inventory.gold.amount+=
-1+Math.floor(Math.random()*2);
+cabeza.castShadow = true;
 
-
-showMessage(
-"⛏️ Conseguido: "+
-getOreName(type)
+playerModel.add(
+    cabeza
 );
 
 
-updateInventoryUI();
+const pelo =
+    new THREE.Mesh(
+        new THREE.SphereGeometry(
+            .52,
+            16,
+            12
+        ),
+        new THREE.MeshStandardMaterial({
+            color:0x17130f
+        })
+    );
 
-stopMining();
+pelo.position.y =
+    3.65;
 
+pelo.scale.set(
+    1,
+    1.2,
+    1
+);
+
+playerModel.add(
+    pelo
+);
+
+
+const pantalon =
+    new THREE.Mesh(
+        new THREE.CylinderGeometry(
+            .72,
+            .8,
+            1.1,
+            12
+        ),
+        new THREE.MeshStandardMaterial({
+            color:0x111111
+        })
+    );
+
+pantalon.position.y =
+    1.35;
+
+pantalon.castShadow = true;
+
+playerModel.add(
+    pantalon
+);
+
+
+playerModel.position.copy(
+    player.position
+);
+
+scene.add(playerModel);
+
+
+/* =========================================================
+   SOL Y LUNA
+========================================================= */
+
+const solVisual =
+    new THREE.Mesh(
+        new THREE.SphereGeometry(
+            8,
+            24,
+            24
+        ),
+        new THREE.MeshBasicMaterial({
+            color:0xffe28a
+        })
+    );
+
+scene.add(solVisual);
+
+
+const luna =
+    new THREE.Mesh(
+        new THREE.SphereGeometry(
+            6,
+            24,
+            24
+        ),
+        new THREE.MeshBasicMaterial({
+            color:0xe8edf5
+        })
+    );
+
+scene.add(luna);
+
+
+/* =========================================================
+   SISTEMA DÍA / NOCHE
+========================================================= */
+
+/*
+    10 minutos de día
+    5 minutos de noche
+
+    Un ciclo completo:
+    15 minutos = 900 segundos
+*/
+
+const TIEMPO_DIA =
+    600;
+
+const TIEMPO_NOCHE =
+    300;
+
+const CICLO =
+    TIEMPO_DIA +
+    TIEMPO_NOCHE;
+
+
+/*
+    Comenzamos por la mañana.
+*/
+
+let tiempoMundo = 0;
+
+
+/* =========================================================
+   ACTUALIZAR CIELO
+========================================================= */
+
+function actualizarDiaNoche(
+    dt
+){
+
+    tiempoMundo += dt;
+
+    if(
+        tiempoMundo >= CICLO
+    ){
+
+        tiempoMundo = 0;
+    }
+
+
+    let esDeDia =
+        tiempoMundo < TIEMPO_DIA;
+
+
+    let progreso;
+
+
+    if(esDeDia){
+
+        progreso =
+            tiempoMundo /
+            TIEMPO_DIA;
+
+    }else{
+
+        progreso =
+            (
+                tiempoMundo -
+                TIEMPO_DIA
+            ) /
+            TIEMPO_NOCHE;
+    }
+
+
+    /*
+        El sol recorre el cielo.
+    */
+
+    const angulo =
+        esDeDia
+        ? Math.PI * (progreso)
+        : Math.PI + Math.PI * progreso;
+
+
+    const radio = 300;
+
+
+    solVisual.position.set(
+        Math.cos(angulo) * radio,
+        Math.sin(angulo) * radio,
+        80
+    );
+
+
+    sol.position.copy(
+        solVisual.position
+    );
+
+
+    /*
+        La luna está opuesta al sol.
+    */
+
+    luna.position.set(
+        -solVisual.position.x,
+        -solVisual.position.y,
+        -80
+    );
+
+
+    /*
+        Intensidad.
+    */
+
+    if(esDeDia){
+
+        const altura =
+            Math.max(
+                0,
+                Math.sin(angulo)
+            );
+
+        sol.intensity =
+            .3 +
+            altura * 2;
+
+        ambiente.intensity =
+            .7 +
+            altura * 1.1;
+
+    }else{
+
+        sol.intensity =
+            .05;
+
+        ambiente.intensity =
+            .25;
+    }
+
+
+    /*
+        Cambiar color del cielo.
+    */
+
+    let cielo;
+
+    if(esDeDia){
+
+        const altura =
+            Math.max(
+                0,
+                Math.sin(angulo)
+            );
+
+        if(altura < .18){
+
+            cielo =
+                new THREE.Color(
+                    0xd07859
+                );
+
+        }else{
+
+            cielo =
+                new THREE.Color(
+                    0x87b8c5
+                );
+        }
+
+    }else{
+
+        cielo =
+            new THREE.Color(
+                0x071321
+            );
+    }
+
+
+    scene.background =
+        cielo;
+
+    scene.fog.color =
+        cielo;
+
+
+    document
+        .getElementById(
+            "timeDisplay"
+        )
+        .textContent =
+        esDeDia
+        ? "☀️ Día"
+        : "🌙 Noche";
 }
 
+
+/* =========================================================
+   CONTROLES
+========================================================= */
+
+const keys = {};
+
+
+document.addEventListener(
+    "keydown",
+    function(e){
+
+        keys[e.code] = true;
+
+
+        /*
+            Saltar solamente
+            cuando NO está nadando.
+        */
+
+        if(
+            e.code === "Space" &&
+            player.onGround &&
+            !player.swimming
+        ){
+
+            player.velocity.y =
+                player.jumpForce;
+
+            player.onGround = false;
+        }
+
+
+        /*
+            Cambiar cámara.
+        */
+
+        if(
+            e.code === "KeyV"
+        ){
+
+            if(
+                player.cameraMode ===
+                "first"
+            ){
+
+                player.cameraMode =
+                    "third";
+
+                document
+                    .getElementById(
+                        "cameraMode"
+                    )
+                    .textContent =
+                    "Tercera persona";
+
+            }else{
+
+                player.cameraMode =
+                    "first";
+
+                document
+                    .getElementById(
+                        "cameraMode"
+                    )
+                    .textContent =
+                    "Primera persona";
+            }
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    "keyup",
+    function(e){
+
+        keys[e.code] = false;
+
+    }
+);
+
+
+/* =========================================================
+   RUEDITA DEL MOUSE
+========================================================= */
+
+let mouseWheelDown =
+    false;
+
+
+renderer.domElement.addEventListener(
+    "mousedown",
+    function(e){
+
+        if(e.button === 1){
+
+            mouseWheelDown = true;
+        }
+    }
+);
+
+
+document.addEventListener(
+    "mouseup",
+    function(e){
+
+        if(e.button === 1){
+
+            mouseWheelDown = false;
+        }
+    }
+);
+
+
+/* =========================================================
+   MOUSE
+========================================================= */
+
+let yaw = 0;
+let pitch = 0;
+
+let mouseLocked = false;
+
+
+renderer.domElement.addEventListener(
+    "click",
+    function(){
+
+        renderer.domElement
+            .requestPointerLock();
+
+    }
+);
+
+
+document.addEventListener(
+    "pointerlockchange",
+    function(){
+
+        mouseLocked =
+            document.pointerLockElement ===
+            renderer.domElement;
+
+        if(mouseLocked){
+
+            document
+                .getElementById(
+                    "startMessage"
+                )
+                .style.display =
+                "none";
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    "mousemove",
+    function(e){
+
+        if(!mouseLocked)
+            return;
+
+        yaw -=
+            e.movementX * .002;
+
+        pitch -=
+            e.movementY * .002;
+
+        pitch =
+            Math.max(
+                -1.45,
+                Math.min(
+                    1.45,
+                    pitch
+                )
+            );
+    }
+);
+
+
+/* =========================================================
+   DETECTAR AGUA
+========================================================= */
+
+function actualizarEstadoAgua(){
+
+    /*
+        El nivel del mar es -1.
+
+        El personaje tiene
+        aproximadamente 1.9 de altura.
+
+        Si su posición baja,
+        entra al agua.
+    */
+
+    const profundidad =
+        player.position.y < .8;
+
+
+    if(profundidad){
+
+        if(!player.swimming){
+
+            player.swimming = true;
+
+            document
+                .getElementById(
+                    "waterState"
+                )
+                .style.display =
+                "block";
+        }
+
+    }else{
+
+        if(player.swimming){
+
+            player.swimming = false;
+
+            document
+                .getElementById(
+                    "waterState"
+                )
+                .style.display =
+                "none";
+        }
+    }
 }
 
+
+/* =========================================================
+   MOVIMIENTO
+========================================================= */
+
+function actualizarJugador(dt){
+
+    actualizarEstadoAgua();
+
+
+    const direccion =
+        new THREE.Vector3();
+
+
+    if(keys["KeyW"])
+        direccion.z -= 1;
+
+    if(keys["KeyS"])
+        direccion.z += 1;
+
+    if(keys["KeyA"])
+        direccion.x -= 1;
+
+    if(keys["KeyD"])
+        direccion.x += 1;
+
+
+    /*
+        MOVIMIENTO EN AGUA
+    */
+
+    if(player.swimming){
+
+        if(
+            direccion.length() > 0
+        ){
+
+            direccion.normalize();
+
+            direccion.applyAxisAngle(
+                new THREE.Vector3(
+                    0,
+                    1,
+                    0
+                ),
+                yaw
+            );
+
+
+            /*
+                W + ruedita =
+                nadar rápido.
+            */
+
+            const velocidad =
+                (
+                    keys["KeyW"] &&
+                    mouseWheelDown
+                )
+                ? 7
+                : 4;
+
+
+            player.position.x +=
+                direccion.x *
+                velocidad *
+                dt;
+
+            player.position.z +=
+                direccion.z *
+                velocidad *
+                dt;
+        }
+
+
+        /*
+            En el agua no cae
+            como en tierra.
+        */
+
+        player.velocity.y *= .9;
+
+
+        /*
+            W permite avanzar
+            y subir ligeramente.
+        */
+
+        if(keys["KeyW"]){
+
+            player.position.y +=
+                1.2 * dt;
+        }
+
+        if(keys["KeyS"]){
+
+            player.position.y -=
+                1.2 * dt;
+        }
+
+
+        /*
+            Profundidad máxima.
+        */
+
+        if(
+            player.position.y < -8
+        ){
+
+            player.position.y = -8;
+        }
+
+
+    }else{
+
+        /*
+            MOVIMIENTO EN TIERRA
+        */
+
+        if(
+            direccion.length() > 0
+        ){
+
+            direccion.normalize();
+
+            direccion.applyAxisAngle(
+                new THREE.Vector3(
+                    0,
+                    1,
+                    0
+                ),
+                yaw
+            );
+
+
+            let velocidad =
+                player.speed;
+
+
+            /*
+                W + ruedita =
+                correr.
+            */
+
+            if(
+                keys["KeyW"] &&
+                mouseWheelDown
+            ){
+
+                velocidad = 11;
+
+                player.sprinting =
+                    true;
+
+            }else{
+
+                player.sprinting =
+                    false;
+            }
+
+
+            player.position.x +=
+                direccion.x *
+                velocidad *
+                dt;
+
+            player.position.z +=
+                direccion.z *
+                velocidad *
+                dt;
+        }
+
+
+        /*
+            Gravedad.
+        */
+
+        player.velocity.y -=
+            22 * dt;
+
+        player.position.y +=
+            player.velocity.y * dt;
+
+
+        /*
+            Suelo.
+        */
+
+        if(
+            player.position.y <= 2
+        ){
+
+            player.position.y = 2;
+
+            player.velocity.y = 0;
+
+            player.onGround = true;
+        }
+    }
+
+
+    /*
+        Límites de la isla.
+    */
+
+    const distancia =
+        Math.sqrt(
+            player.position.x *
+            player.position.x +
+            player.position.z *
+            player.position.z
+        );
+
+
+    if(
+        !player.swimming &&
+        distancia > 180
+    ){
+
+        const factor =
+            180 / distancia;
+
+        player.position.x *=
+            factor;
+
+        player.position.z *=
+            factor;
+    }
+
+
+    playerModel.position.copy(
+        player.position
+    );
+
+    playerModel.rotation.y =
+        yaw;
 }
 
 
-function getOreName(type){
+/* =========================================================
+   CÁMARA
+========================================================= */
 
-if(type==="coal")
-return"carbón";
+function actualizarCamara(){
 
-if(type==="iron")
-return"hierro";
+    if(
+        player.cameraMode ===
+        "first"
+    ){
 
-return"oro";
+        camera.position.set(
+            player.position.x,
+            player.position.y + 1.65,
+            player.position.z
+        );
 
+        camera.rotation.order =
+            "YXZ";
+
+        camera.rotation.y =
+            yaw;
+
+        camera.rotation.x =
+            pitch;
+
+    }else{
+
+        const distancia =
+            7;
+
+
+        const offset =
+            new THREE.Vector3(
+                0,
+                3,
+                distancia
+            );
+
+
+        offset.applyAxisAngle(
+            new THREE.Vector3(
+                1,
+                0,
+                0
+            ),
+            pitch
+        );
+
+
+        offset.applyAxisAngle(
+            new THREE.Vector3(
+                0,
+                1,
+                0
+            ),
+            yaw
+        );
+
+
+        camera.position.copy(
+            player.position
+        ).add(offset);
+
+
+        camera.lookAt(
+            player.position.x,
+            player.position.y + 1.8,
+            player.position.z
+        );
+    }
 }
 
 
-function stopMining(){
+/* =========================================================
+   OLAS
+========================================================= */
 
-mining=false;
-miningTarget=null;
-miningProgress=0;
+function actualizarOlas(
+    tiempo
+){
 
+    const posiciones =
+        ocean.geometry
+        .attributes
+        .position;
+
+
+    for(
+        let i=0;
+        i<posiciones.count;
+        i++
+    ){
+
+        const x =
+            posiciones.getX(i);
+
+        const y =
+            posiciones.getY(i);
+
+
+        const onda =
+            Math.sin(
+                x*.04 +
+                tiempo*.0015
+            )*.35
+            +
+            Math.cos(
+                y*.035 +
+                tiempo*.001
+            )*.25;
+
+
+        posiciones.setZ(
+            i,
+            onda
+        );
+    }
+
+
+    posiciones.needsUpdate =
+        true;
 }
 
+<!-- =========================================================
+     PARTE 3 — SISTEMA DE SUPERVIVENCIA
+========================================================= -->
 
-// =====================================================
-// CRAFTEO
-// =====================================================
+<style>
 
-const recipes={
+#survivalHUD{
+    position:fixed;
+    left:18px;
+    bottom:22px;
+    z-index:50;
 
-ironPickaxe:{
-iron:3,
-wood:2
-},
+    display:flex;
+    flex-direction:column;
+    gap:5px;
 
-ironAxe:{
-iron:3,
-wood:2
-},
+    padding:10px 13px;
 
-ironSword:{
-iron:5,
-wood:1
-},
+    background:rgba(0,0,0,.38);
+    backdrop-filter:blur(5px);
 
-goldPickaxe:{
-gold:4,
-wood:2
-},
+    border-radius:12px;
 
-torch:{
-coal:1,
-wood:1
-},
+    color:white;
 
-armor:{
-iron:8,
-wood:2
+    font-family:Arial,sans-serif;
+    font-size:22px;
+
+    user-select:none;
+    pointer-events:none;
 }
+
+.survivalRow{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    height:27px;
+}
+
+.statIcon{
+    width:30px;
+    text-align:center;
+    font-size:21px;
+}
+
+.statValue{
+    letter-spacing:2px;
+}
+
+</style>
+
+<div id="survivalHUD">
+
+    <div class="survivalRow">
+        <div class="statIcon">❤️</div>
+        <div id="healthValue" class="statValue"></div>
+    </div>
+
+    <div class="survivalRow">
+        <div class="statIcon">💧</div>
+        <div id="waterValue" class="statValue"></div>
+    </div>
+
+    <div class="survivalRow">
+        <div class="statIcon">🍗</div>
+        <div id="foodValue" class="statValue"></div>
+    </div>
+
+</div>
+
+<script>
+
+/* =========================================================
+   ESTADO DE SUPERVIVENCIA
+========================================================= */
+
+const survival = {
+
+    /* Máximos */
+
+    maxHealth:10,
+    maxWater:7,
+    maxFood:8,
+
+    /* Estado inicial */
+
+    health:3,
+    water:5,
+    food:3,
+
+    /* Temporizadores */
+
+    waterTimer:0,
+    foodTimer:0,
+    healthTimer:0,
+
+    /* Estado */
+
+    alive:true
 
 };
 
 
-const craftButtons=
-document.querySelectorAll(
-".craftButton"
-);
+/* =========================================================
+   REFERENCIAS HUD
+========================================================= */
+
+const healthValue =
+    document.getElementById("healthValue");
+
+const waterValue =
+    document.getElementById("waterValue");
+
+const foodValue =
+    document.getElementById("foodValue");
 
 
-function openCraft(){
+/* =========================================================
+   DIBUJAR CORAZONES
+========================================================= */
 
-if(dead)
-return;
+function dibujarCorazones(){
 
-controls.unlock();
+    let texto="";
 
-document.getElementById(
-"craftMenu"
-).style.display=
-"block";
+    for(
+        let i=0;
+        i<survival.maxHealth;
+        i++
+    ){
 
-updateCraftButtons();
+        if(i < survival.health){
 
-}
+            texto += "♥";
 
+        }else{
 
-function closeCraft(){
+            texto += "♡";
 
-document.getElementById(
-"craftMenu"
-).style.display=
-"none";
+        }
 
-if(!dead)
-controls.lock();
+    }
 
-}
-
-
-function canCraft(recipe){
-
-for(const material in recipe){
-
-if(
-inventory[material].amount<
-recipe[material]
-)
-return false;
-
-}
-
-return true;
+    healthValue.textContent = texto;
 
 }
 
 
-function craft(type){
+/* =========================================================
+   DIBUJAR GOTAS
+========================================================= */
 
-const recipe=
-recipes[type];
+function dibujarAgua(){
 
+    let texto="";
 
-if(!canCraft(recipe)){
+    for(
+        let i=0;
+        i<survival.maxWater;
+        i++
+    ){
 
-showMessage(
-"❌ No tenés materiales suficientes"
-);
+        if(i < survival.water){
 
-return;
+            texto += "●";
 
-}
+        }else{
 
+            texto += "○";
 
-for(const material in recipe){
+        }
 
-inventory[material].amount-=
-recipe[material];
+    }
 
-}
-
-
-if(type==="ironPickaxe")
-inventory.ironPickaxe.amount++;
-
-if(type==="ironAxe")
-inventory.ironAxe.amount++;
-
-if(type==="ironSword")
-inventory.ironSword.amount++;
-
-if(type==="goldPickaxe")
-inventory.goldPickaxe.amount++;
-
-if(type==="torch")
-inventory.torch.amount+=4;
-
-if(type==="armor")
-inventory.armor.amount++;
-
-
-updateInventoryUI();
-
-updateCraftButtons();
-
-
-showMessage(
-"🔨 ¡Objeto fabricado!"
-);
+    waterValue.textContent = texto;
 
 }
 
 
-function updateCraftButtons(){
+/* =========================================================
+   DIBUJAR COMIDA
+========================================================= */
 
-craftButtons.forEach(button=>{
+function dibujarComida(){
 
-const type=
-button.dataset.craft;
+    let texto="";
 
-button.disabled=
-!canCraft(
-recipes[type]
-);
+    for(
+        let i=0;
+        i<survival.maxFood;
+        i++
+    ){
 
-});
+        if(i < survival.food){
 
-}
+            texto += "🍗";
 
+        }else{
 
-craftButtons.forEach(button=>{
+            texto += "▫";
 
-button.onclick=()=>{
+        }
 
-craft(
-button.dataset.craft
-);
+    }
 
-};
-
-});
-
-
-document.getElementById(
-"closeCraft"
-).onclick=
-closeCraft;
-
-
-// =====================================================
-// CLICK
-// =====================================================
-
-document.addEventListener(
-"mousedown",
-e=>{
-
-if(
-e.button!==0||
-!controls.isLocked||
-dead
-)
-return;
-
-startMining();
-
-});
-
-
-// =====================================================
-// TECLAS
-// =====================================================
-
-document.addEventListener(
-"keydown",
-e=>{
-
-keys[e.code]=true;
-
-
-if(e.code==="KeyC"){
-
-openCraft();
+    foodValue.textContent = texto;
 
 }
 
 
-if(e.code==="KeyE"){
+/* =========================================================
+   ACTUALIZAR HUD
+========================================================= */
 
-collectResource();
+function actualizarSupervivenciaHUD(){
 
-}
+    dibujarCorazones();
 
+    dibujarAgua();
 
-if(e.code==="KeyF"){
-
-eat();
-
-}
-
-
-if(e.code==="KeyG"){
-
-drink();
+    dibujarComida();
 
 }
 
 
-if(e.code==="KeyH"){
+/* =========================================================
+   DAÑO
+========================================================= */
 
-eatMeat();
+function recibirDanio(cantidad=1){
 
-}
+    if(!survival.alive)
+        return;
 
+    survival.health -= cantidad;
 
-if(e.code==="Escape"){
+    survival.health =
+        Math.max(
+            0,
+            survival.health
+        );
 
-document.getElementById(
-"craftMenu"
-).style.display=
-"none";
+    actualizarSupervivenciaHUD();
 
-}
+    /*
+       Si llega a cero,
+       por ahora solo activamos
+       el estado de muerte.
+       El sistema completo de respawn
+       se agregará más adelante.
+    */
 
-});
+    if(
+        survival.health <= 0
+    ){
 
+        survival.alive = false;
 
-document.addEventListener(
-"keyup",
-e=>{
+        mostrarMensajeMuerte();
 
-keys[e.code]=false;
-
-});
-
-
-// =====================================================
-// RECOGER
-// =====================================================
-
-function collectResource(){
-
-let closest=null;
-let distance=Infinity;
-
-
-for(const resource of resources){
-
-if(!resource.object.parent)
-continue;
-
-
-const d=
-camera.position.distanceTo(
-resource.object.position
-);
-
-
-if(d<distance){
-
-distance=d;
-closest=resource;
-
-}
+    }
 
 }
 
 
-if(!closest)
-return;
+/* =========================================================
+   CURACIÓN
+========================================================= */
 
+function curar(cantidad){
 
-if(distance>4){
+    if(!survival.alive)
+        return;
 
-showMessage(
-"📏 Acercate más"
-);
+    survival.health += cantidad;
 
-return;
+    survival.health =
+        Math.min(
+            survival.maxHealth,
+            survival.health
+        );
 
-}
-
-
-inventory[
-closest.type
-].amount++;
-
-
-scene.remove(
-closest.object
-);
-
-
-updateInventoryUI();
+    actualizarSupervivenciaHUD();
 
 }
 
 
-// =====================================================
-// COMIDA
-// =====================================================
+/* =========================================================
+   BEBER AGUA
+========================================================= */
 
-function eat(){
+function beberAgua(){
 
-if(
-inventory.food.amount<=0
-){
+    if(!survival.alive)
+        return;
 
-showMessage(
-"❌ No tenés comida"
-);
+    survival.water =
+        survival.maxWater;
 
-return;
+    survival.waterTimer = 0;
 
-}
-
-inventory.food.amount--;
-
-hunger=
-Math.min(
-100,
-hunger+30
-);
-
-energy=
-Math.min(
-100,
-energy+10
-);
-
-updateInventoryUI();
+    actualizarSupervivenciaHUD();
 
 }
 
 
-function eatMeat(){
+/* =========================================================
+   COMER
+========================================================= */
 
-if(
-inventory.meat.amount<=0
-){
+function comer(cantidad){
 
-showMessage(
-"❌ No tenés carne"
-);
+    if(!survival.alive)
+        return;
 
-return;
+    survival.food += cantidad;
 
-}
+    survival.food =
+        Math.min(
+            survival.maxFood,
+            survival.food
+        );
 
-inventory.meat.amount--;
+    survival.foodTimer = 0;
 
-hunger=
-Math.min(
-100,
-hunger+45
-);
-
-energy=
-Math.min(
-100,
-energy+15
-);
-
-updateInventoryUI();
+    actualizarSupervivenciaHUD();
 
 }
 
 
-function drink(){
+/* =========================================================
+   MENSAJE DE MUERTE
+========================================================= */
 
-if(
-inventory.water.amount<=0
-){
+function mostrarMensajeMuerte(){
 
-showMessage(
-"❌ No tenés agua"
-);
+    const mensaje =
+        document.createElement("div");
 
-return;
+    mensaje.id =
+        "deathMessage";
 
-}
+    mensaje.style.position =
+        "fixed";
 
-inventory.water.amount--;
+    mensaje.style.inset =
+        "0";
 
-thirst=
-Math.min(
-100,
-thirst+40
-);
+    mensaje.style.display =
+        "flex";
 
-updateInventoryUI();
+    mensaje.style.alignItems =
+        "center";
 
-}
+    mensaje.style.justifyContent =
+        "center";
 
+    mensaje.style.zIndex =
+        "200";
 
-// =====================================================
-// INVENTARIO
-// =====================================================
+    mensaje.style.background =
+        "rgba(0,0,0,.45)";
 
-function updateInventoryUI(){
+    mensaje.style.color =
+        "white";
 
-const container=
-document.getElementById(
-"items"
-);
+    mensaje.style.fontFamily =
+        "Arial,sans-serif";
 
-container.innerHTML="";
+    mensaje.style.fontSize =
+        "26px";
 
+    mensaje.style.textAlign =
+        "center";
 
-for(const key in inventory){
+    mensaje.innerHTML = `
 
-const item=
-inventory[key];
+        <div style="
+            background:rgba(0,0,0,.7);
+            padding:25px 35px;
+            border-radius:15px;
+            backdrop-filter:blur(7px);
+        ">
 
+            <div style="
+                font-size:32px;
+                margin-bottom:10px;
+            ">
+                HAS MUERTO
+            </div>
 
-const div=
-document.createElement(
-"div"
-);
+            <div style="
+                font-size:16px;
+                opacity:.8;
+            ">
+                Tu aventura en la isla continúa...
+            </div>
 
-div.className="item";
+        </div>
 
+    `;
 
-div.innerHTML=`
-
-<div class="icon">
-${item.icon}
-</div>
-
-<div>
-${item.name}
-</div>
-
-<div class="count">
-${item.amount}
-</div>
-
-`;
-
-
-container.appendChild(
-div
-);
-
-}
+    document.body.appendChild(
+        mensaje
+    );
 
 }
 
 
-// =====================================================
-// SUPERVIVENCIA
-// =====================================================
+/* =========================================================
+   SISTEMA DE HAMBRE Y SED
+========================================================= */
 
-let survivalTimer=0;
+function actualizarNecesidades(dt){
 
-
-function updateSurvival(delta){
-
-survivalTimer+=delta;
+    if(!survival.alive)
+        return;
 
 
-if(survivalTimer>=1){
+    /* =========================================
+       AGUA
 
-survivalTimer=0;
+       Se pierde 1 gota cada 10 minutos.
+    ========================================= */
 
-hunger-=.35;
-thirst-=.55;
+    survival.waterTimer += dt;
 
+    if(
+        survival.waterTimer >= 600
+    ){
 
-if(
-keys["ShiftLeft"]||
-keys["ShiftRight"]
-){
+        survival.waterTimer = 0;
 
-energy-=1.8;
+        if(
+            survival.water > 0
+        ){
 
-}else{
+            survival.water--;
 
-energy+=.7;
+        }
 
-}
-
-
-energy=
-Math.max(
-0,
-Math.min(
-100,
-energy
-)
-);
+    }
 
 
-if(hunger<=0)
-health-=1;
+    /* =========================================
+       HAMBRE
 
-if(thirst<=0)
-health-=1.5;
+       Se pierde medio muslito
+       cada 7 minutos.
 
+       Como usamos unidades enteras,
+       se acumula una unidad cada
+       3.5 minutos.
+    ========================================= */
 
-if(
-hunger>70&&
-thirst>70&&
-temperature>45&&
-temperature<85
-){
+    survival.foodTimer += dt;
 
-health=
-Math.min(
-100,
-health+.4
-);
+    if(
+        survival.foodTimer >= 210
+    ){
 
-}
+        survival.foodTimer = 0;
 
-}
+        if(
+            survival.food > 0
+        ){
 
+            survival.food--;
 
-health=
-Math.max(
-0,
-health
-);
+        }
 
-hunger=
-Math.max(
-0,
-hunger
-);
-
-thirst=
-Math.max(
-0,
-thirst
-);
+    }
 
 
-updateTemperature(delta);
+    /* =========================================
+       SIN AGUA
 
-updateUI();
+       Si las gotas llegan a cero,
+       pierde 1 corazón por minuto.
+    ========================================= */
+
+    if(
+        survival.water <= 0
+    ){
+
+        survival.healthTimer += dt;
+
+        if(
+            survival.healthTimer >= 60
+        ){
+
+            survival.healthTimer = 0;
+
+            recibirDanio(1);
+
+        }
+
+    }else{
+
+        survival.healthTimer = 0;
+
+    }
 
 
-if(health<=0)
-die();
-
-}
-
-
-// =====================================================
-// TEMPERATURA
-// =====================================================
-
-function updateTemperature(delta){
-
-const night=
-Math.sin(time)<-.25;
-
-
-const target=
-night?35:75;
-
-
-temperature+=
-(target-temperature)*
-delta*.4;
-
-
-if(temperature<25){
-
-health-=delta*.8;
-
-setStatus(
-"🥶 MUY FRÍO"
-);
-
-}
-else if(temperature<40){
-
-setStatus(
-"❄️ FRÍO"
-);
-
-}
-else if(temperature>90){
-
-health-=delta*.5;
-
-setStatus(
-"🥵 MUCHO CALOR"
-);
-
-}
-else{
-
-setStatus(
-"Normal"
-);
-
-}
+    actualizarSupervivenciaHUD();
 
 }
 
 
-// =====================================================
-// UI
-// =====================================================
+/* =========================================================
+   INICIALIZAR HUD
+========================================================= */
 
-function updateUI(){
+actualizarSupervivenciaHUD();
 
-document.getElementById(
-"health"
-).style.width=
-health+"%";
 
-document.getElementById(
-"hunger"
-).style.width=
-hunger+"%";
+/* =========================================================
+   CONECTAR AL BUCLE DEL JUEGO
+========================================================= */
 
-document.getElementById(
-"thirst"
-).style.width=
-thirst+"%";
+/*
+   Guardamos la función anterior.
+*/
 
-document.getElementById(
-"energy"
-).style.width=
-energy+"%";
+const actualizarJugadorOriginal =
+    actualizarJugador;
 
-document.getElementById(
-"temperature"
-).style.width=
-temperature+"%";
 
-}
+/*
+   Reemplazamos actualizarJugador
+   por una versión que además
+   actualiza supervivencia.
+*/
 
+actualizarJugador =
+function(dt){
 
-function setStatus(text){
+    actualizarJugadorOriginal(dt);
 
-document.getElementById(
-"statusText"
-).textContent=
-text;
-
-}
-
-
-// =====================================================
-// DÍA / NOCHE
-// =====================================================
-
-function updateDayNight(delta){
-
-time+=delta*.03;
-
-
-const daylight=
-Math.sin(time);
-
-
-const day=
-Math.floor(
-time/(Math.PI*2)
-)+1;
-
-
-document.getElementById(
-"day"
-).textContent=
-day;
-
-
-const brightness=
-Math.max(
-.08,
-daylight*.8+.9
-);
-
-
-ambient.intensity=
-brightness;
-
-sun.intensity=
-brightness*1.5;
-
-
-if(daylight<-.25){
-
-scene.background.set(
-0x080b20
-);
-
-scene.fog.color.set(
-0x080b20
-);
-
-document.getElementById(
-"nightWarning"
-).textContent=
-"🌙 NOCHE";
-
-}
-else{
-
-scene.background.set(
-0x87ceeb
-);
-
-scene.fog.color.set(
-0x87ceeb
-);
-
-document.getElementById(
-"nightWarning"
-).textContent=
-"";
-
-}
-
-}
-
-
-// =====================================================
-// MOVIMIENTO
-// =====================================================
-
-function movePlayer(delta){
-
-if(
-!controls.isLocked||
-dead
-)
-return;
-
-
-const direction=
-new THREE.Vector3();
-
-
-if(keys["KeyW"])
-direction.z-=1;
-
-if(keys["KeyS"])
-direction.z+=1;
-
-if(keys["KeyA"])
-direction.x-=1;
-
-if(keys["KeyD"])
-direction.x+=1;
-
-
-if(direction.length()>0){
-
-direction.normalize();
-
-
-let speed=8;
-
-
-if(
-keys["ShiftLeft"]||
-keys["ShiftRight"]
-){
-
-speed=
-energy>0?13:5;
-
-}
-
-
-controls.moveRight(
-direction.x*
-speed*
-delta
-);
-
-controls.moveForward(
--direction.z*
-speed*
-delta
-);
-
-}
-
-
-camera.position.y=
-getTerrainHeight(
-camera.position.x,
-camera.position.z
-)+2;
-
-}
-
-
-// =====================================================
-// UBICACIÓN
-// =====================================================
-
-function updateLocation(){
-
-const x=
-camera.position.x;
-
-
-let location=
-"🌲 Bosque";
-
-
-if(Math.abs(x)<20)
-location="🌊 Río";
-
-
-document.getElementById(
-"location"
-).textContent=
-location;
-
-}
-
-
-// =====================================================
-// MUERTE
-// =====================================================
-
-function die(){
-
-dead=true;
-
-stopMining();
-
-controls.unlock();
-
-
-document.getElementById(
-"dead"
-).style.display=
-"flex";
-
-}
-
-
-document.getElementById(
-"restart"
-).onclick=
-()=>{
-
-location.reload();
+    actualizarNecesidades(dt);
 
 };
 
 
-// =====================================================
-// MENSAJES
-// =====================================================
+/* =========================================================
+   FIN PARTE 3
+========================================================= */
 
-let messageTimer;
+</script>
+     <!-- =========================================================
+     PARTE 4 — MOCHILA + INVENTARIO + BARRA RÁPIDA
+========================================================= -->
+
+<style>
+
+#quickBar{
+    position:fixed;
+    left:50%;
+    bottom:20px;
+    transform:translateX(-50%);
+
+    display:flex;
+    gap:8px;
+
+    z-index:60;
+
+    font-family:Arial,sans-serif;
+}
+
+.quickSlot{
+    width:70px;
+    height:70px;
+
+    border:2px solid rgba(255,255,255,.35);
+    border-radius:10px;
+
+    background:rgba(20,20,20,.65);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:white;
+
+    font-size:30px;
+
+    position:relative;
+
+    box-shadow:
+        0 4px 15px rgba(0,0,0,.4);
+
+    transition:.15s;
+}
+
+.quickSlot.selected{
+    border-color:white;
+
+    background:rgba(80,80,80,.75);
+
+    transform:translateY(-4px);
+}
+
+.quickNumber{
+    position:absolute;
+
+    top:3px;
+    left:6px;
+
+    font-size:13px;
+
+    opacity:.8;
+}
+
+.itemCount{
+    position:absolute;
+
+    right:6px;
+    bottom:3px;
+
+    font-size:13px;
+}
+
+#inventoryPanel{
+
+    position:fixed;
+
+    top:50%;
+    left:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:500px;
+
+    max-width:90vw;
+
+    background:rgba(15,15,15,.92);
+
+    border:1px solid rgba(255,255,255,.25);
+
+    border-radius:15px;
+
+    padding:20px;
+
+    z-index:100;
+
+    color:white;
+
+    font-family:Arial,sans-serif;
+
+    display:none;
+
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.65);
+}
+
+#inventoryPanel h2{
+    margin:0 0 15px 0;
+    font-weight:500;
+}
+
+#inventoryClose{
+
+    position:absolute;
+
+    right:12px;
+    top:10px;
+
+    width:30px;
+    height:30px;
+
+    border:0;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.12);
+
+    color:white;
+
+    font-size:18px;
+
+    cursor:pointer;
+}
+
+#inventoryGrid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:8px;
+}
+
+.inventorySlot{
+
+    height:75px;
+
+    border-radius:9px;
+
+    border:1px solid rgba(255,255,255,.2);
+
+    background:rgba(255,255,255,.07);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:30px;
+
+    position:relative;
+
+    cursor:pointer;
+}
+
+.inventorySlot:hover{
+
+    background:
+        rgba(255,255,255,.15);
+
+}
+
+.inventorySlot.selected{
+
+    border-color:white;
+
+}
+
+.inventoryCount{
+
+    position:absolute;
+
+    bottom:5px;
+    right:7px;
+
+    font-size:13px;
+}
+
+#backpackHint{
+
+    margin-top:15px;
+
+    font-size:13px;
+
+    opacity:.65;
+
+    text-align:center;
+}
+
+</style>
 
 
-function showMessage(text){
+<!-- =========================================================
+     BARRA RÁPIDA
+========================================================= -->
 
-const message=
-document.getElementById(
-"message"
+<div id="quickBar">
+
+    <div class="quickSlot selected"
+         data-slot="0">
+
+        <span class="quickNumber">1</span>
+
+        <span class="quickItem"></span>
+
+        <span class="itemCount"></span>
+
+    </div>
+
+
+    <div class="quickSlot"
+         data-slot="1">
+
+        <span class="quickNumber">2</span>
+
+        <span class="quickItem"></span>
+
+        <span class="itemCount"></span>
+
+    </div>
+
+
+    <div class="quickSlot"
+         data-slot="2">
+
+        <span class="quickNumber">3</span>
+
+        <span class="quickItem"></span>
+
+        <span class="itemCount"></span>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     INVENTARIO
+========================================================= -->
+
+<div id="inventoryPanel">
+
+    <button id="inventoryClose">×</button>
+
+    <h2>🎒 Mochila</h2>
+
+    <div id="inventoryGrid"></div>
+
+    <div id="backpackHint">
+        Click izquierdo: seleccionar ·
+        Arrastrar: mover ·
+        Arrastrar afuera: soltar
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   INVENTARIO
+========================================================= */
+
+const inventory = {
+
+    /* 12 espacios */
+
+    slots: new Array(12).fill(null),
+
+    /* 3 espacios rápidos */
+
+    quick: [
+
+        null,
+        null,
+        null
+
+    ],
+
+    selectedQuick:0
+
+};
+
+
+/* =========================================================
+   OBJETOS INICIALES
+========================================================= */
+
+inventory.slots[0] = {
+
+    id:"apple",
+
+    name:"Manzana",
+
+    icon:"🍎",
+
+    amount:1
+
+};
+
+
+inventory.slots[1] = {
+
+    id:"pencil",
+
+    name:"Lápiz",
+
+    icon:"✏️",
+
+    amount:1
+
+};
+
+
+inventory.slots[2] = {
+
+    id:"notebook",
+
+    name:"Cuaderno",
+
+    icon:"📓",
+
+    amount:1
+
+};
+
+
+inventory.slots[3] = {
+
+    id:"waterBottle",
+
+    name:"Botella de agua",
+
+    icon:"🧴",
+
+    amount:1
+
+};
+
+
+/* =========================================================
+   REFERENCIAS
+========================================================= */
+
+const inventoryPanel =
+    document.getElementById(
+        "inventoryPanel"
+    );
+
+const inventoryGrid =
+    document.getElementById(
+        "inventoryGrid"
+    );
+
+const quickSlots =
+    document.querySelectorAll(
+        ".quickSlot"
+    );
+
+
+/* =========================================================
+   RENDER INVENTARIO
+========================================================= */
+
+function renderInventory(){
+
+    inventoryGrid.innerHTML="";
+
+
+    for(
+        let i=0;
+        i<inventory.slots.length;
+        i++
+    ){
+
+        const slot =
+            document.createElement("div");
+
+        slot.className =
+            "inventorySlot";
+
+
+        const item =
+            inventory.slots[i];
+
+
+        if(item){
+
+            slot.innerHTML = `
+
+                <span>
+                    ${item.icon}
+                </span>
+
+                <span class="inventoryCount">
+                    ${item.amount}
+                </span>
+
+            `;
+
+        }
+
+
+        /*
+           Click izquierdo:
+           selecciona el objeto.
+        */
+
+        slot.addEventListener(
+            "click",
+            () => {
+
+                if(!item)
+                    return;
+
+                moverASeleccionado(i);
+
+            }
+        );
+
+
+        /*
+           Arrastrar objeto.
+        */
+
+        slot.draggable = !!item;
+
+
+        slot.addEventListener(
+            "dragstart",
+            e => {
+
+                if(!item)
+                    return;
+
+                e.dataTransfer.setData(
+                    "inventoryIndex",
+                    i
+                );
+
+            }
+        );
+
+
+        /*
+           Soltar objeto
+           dentro de otro espacio.
+        */
+
+        slot.addEventListener(
+            "dragover",
+            e => {
+
+                e.preventDefault();
+
+            }
+        );
+
+
+        slot.addEventListener(
+            "drop",
+            e => {
+
+                e.preventDefault();
+
+                const from =
+                    Number(
+                        e.dataTransfer
+                         .getData(
+                            "inventoryIndex"
+                         )
+                    );
+
+                if(
+                    Number.isNaN(from)
+                )
+                    return;
+
+                intercambiarInventario(
+                    from,
+                    i
+                );
+
+            }
+        );
+
+
+        inventoryGrid.appendChild(
+            slot
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   MOVER A BARRA RÁPIDA
+========================================================= */
+
+function moverASeleccionado(index){
+
+    const item =
+        inventory.slots[index];
+
+    if(!item)
+        return;
+
+
+    /*
+       Busca el primer
+       espacio disponible.
+    */
+
+    let espacio =
+        inventory.quick.findIndex(
+            x => x === null
+        );
+
+
+    if(
+        espacio === -1
+    ){
+
+        espacio =
+            inventory.selectedQuick;
+
+    }
+
+
+    inventory.quick[espacio] =
+        item;
+
+    inventory.slots[index] =
+        null;
+
+
+    renderInventory();
+
+    renderQuickBar();
+
+}
+
+
+/* =========================================================
+   INTERCAMBIAR INVENTARIO
+========================================================= */
+
+function intercambiarInventario(
+    a,
+    b
+){
+
+    const temp =
+        inventory.slots[a];
+
+    inventory.slots[a] =
+        inventory.slots[b];
+
+    inventory.slots[b] =
+        temp;
+
+    renderInventory();
+
+}
+
+
+/* =========================================================
+   RENDER BARRA
+========================================================= */
+
+function renderQuickBar(){
+
+    quickSlots.forEach(
+        (slot,index) => {
+
+            const item =
+                inventory.quick[index];
+
+            const icon =
+                slot.querySelector(
+                    ".quickItem"
+                );
+
+            const count =
+                slot.querySelector(
+                    ".itemCount"
+                );
+
+
+            if(item){
+
+                icon.textContent =
+                    item.icon;
+
+                count.textContent =
+                    item.amount;
+
+            }else{
+
+                icon.textContent =
+                    "";
+
+                count.textContent =
+                    "";
+
+            }
+
+
+            slot.classList.toggle(
+                "selected",
+                index ===
+                inventory.selectedQuick
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SELECCIONAR BARRA
+========================================================= */
+
+function seleccionarQuick(index){
+
+    if(
+        index < 0 ||
+        index > 2
+    )
+        return;
+
+    inventory.selectedQuick =
+        index;
+
+    renderQuickBar();
+
+}
+
+
+/* =========================================================
+   TECLAS 1 / 2 / 3
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    e => {
+
+        if(e.key === "1"){
+
+            seleccionarQuick(0);
+
+        }
+
+        if(e.key === "2"){
+
+            seleccionarQuick(1);
+
+        }
+
+        if(e.key === "3"){
+
+            seleccionarQuick(2);
+
+        }
+
+        /*
+           Tecla B abre/cierra
+           la mochila.
+        */
+
+        if(
+            e.key.toLowerCase() === "b"
+        ){
+
+            alternarMochila();
+
+        }
+
+    }
 );
 
-message.textContent=text;
+
+/* =========================================================
+   ABRIR / CERRAR MOCHILA
+========================================================= */
+
+function alternarMochila(){
+
+    const abierta =
+        inventoryPanel.style.display
+        === "block";
 
 
-clearTimeout(
-messageTimer
+    if(abierta){
+
+        inventoryPanel.style.display =
+            "none";
+
+        document.exitPointerLock?.();
+
+    }else{
+
+        inventoryPanel.style.display =
+            "block";
+
+        renderInventory();
+
+    }
+
+}
+
+
+/* =========================================================
+   BOTÓN X
+========================================================= */
+
+document
+    .getElementById(
+        "inventoryClose"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            inventoryPanel.style.display =
+                "none";
+
+        }
+    );
+
+
+/* =========================================================
+   CLICK EN SLOTS DE LA BARRA
+========================================================= */
+
+quickSlots.forEach(
+    (slot,index) => {
+
+        slot.addEventListener(
+            "click",
+            () => {
+
+                seleccionarQuick(index);
+
+            }
+        );
+
+    }
 );
 
 
-messageTimer=
+/* =========================================================
+   USAR OBJETO SELECCIONADO
+========================================================= */
+
+function obtenerObjetoSeleccionado(){
+
+    return inventory.quick[
+        inventory.selectedQuick
+    ];
+
+}
+
+
+/* =========================================================
+   SOLTAR OBJETO
+========================================================= */
+
+function soltarObjetoSeleccionado(){
+
+    const index =
+        inventory.selectedQuick;
+
+    const item =
+        inventory.quick[index];
+
+    if(!item)
+        return null;
+
+
+    inventory.quick[index] =
+        null;
+
+
+    renderQuickBar();
+
+    return item;
+
+}
+
+
+/* =========================================================
+   AGREGAR OBJETO
+========================================================= */
+
+function agregarObjeto(
+    id,
+    name,
+    icon,
+    amount=1
+){
+
+    /*
+       Primero busca un objeto
+       del mismo tipo.
+    */
+
+    for(
+        let i=0;
+        i<inventory.slots.length;
+        i++
+    ){
+
+        const item =
+            inventory.slots[i];
+
+        if(
+            item &&
+            item.id === id
+        ){
+
+            item.amount += amount;
+
+            renderInventory();
+
+            return true;
+
+        }
+
+    }
+
+
+    /*
+       Si no existe,
+       busca un espacio vacío.
+    */
+
+    for(
+        let i=0;
+        i<inventory.slots.length;
+        i++
+    ){
+
+        if(
+            inventory.slots[i] === null
+        ){
+
+            inventory.slots[i] = {
+
+                id:id,
+                name:name,
+                icon:icon,
+                amount:amount
+
+            };
+
+            renderInventory();
+
+            return true;
+
+        }
+
+    }
+
+
+    /*
+       Mochila llena.
+    */
+
+    return false;
+
+}
+
+
+/* =========================================================
+   INICIALIZACIÓN
+========================================================= */
+
+renderInventory();
+
+renderQuickBar();
+
+
+/* =========================================================
+   FIN PARTE 4
+========================================================= */
+
+</script>
+<!-- =========================================================
+     PARTE 5 — RECOLECCIÓN DE RECURSOS
+========================================================= -->
+
+<style>
+
+#interactionMessage{
+
+    position:fixed;
+
+    left:50%;
+    bottom:125px;
+
+    transform:translateX(-50%);
+
+    padding:8px 14px;
+
+    background:rgba(0,0,0,.65);
+
+    color:white;
+
+    border-radius:8px;
+
+    font-family:Arial,sans-serif;
+
+    font-size:14px;
+
+    z-index:80;
+
+    pointer-events:none;
+
+    opacity:0;
+
+    transition:.15s;
+
+}
+
+#pickupChoice{
+
+    position:fixed;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    background:rgba(12,12,12,.94);
+
+    color:white;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    border:1px solid rgba(255,255,255,.25);
+
+    z-index:150;
+
+    font-family:Arial,sans-serif;
+
+    display:none;
+
+    text-align:center;
+
+    min-width:240px;
+
+}
+
+.pickupButton{
+
+    margin:7px;
+
+    padding:9px 16px;
+
+    border:0;
+
+    border-radius:7px;
+
+    background:#333;
+
+    color:white;
+
+    cursor:pointer;
+
+}
+
+.pickupButton:hover{
+
+    background:#555;
+
+}
+
+</style>
+
+
+<div id="interactionMessage">
+    Click derecho / Q para recoger
+</div>
+
+
+<div id="pickupChoice">
+
+    <div id="pickupText">
+        ¿Dónde querés guardar el objeto?
+    </div>
+
+    <button
+        id="pickupBackpack"
+        class="pickupButton">
+        🎒 Mochila
+    </button>
+
+    <button
+        id="pickupQuick"
+        class="pickupButton">
+        ⚡ Barra rápida
+    </button>
+
+    <button
+        id="pickupCancel"
+        class="pickupButton">
+        Cancelar
+    </button>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   RECURSOS
+========================================================= */
+
+const resourceLimits = {
+
+    stick:30,
+
+    stone:12,
+
+    wood:15,
+
+    iron:7,
+
+    coal:30,
+
+    meat:20,
+
+    fish:5
+
+};
+
+
+/* =========================================================
+   RECURSOS ACTUALES
+========================================================= */
+
+const resources = {
+
+    stick:0,
+
+    stone:0,
+
+    wood:0,
+
+    iron:0,
+
+    coal:0,
+
+    meat:0,
+
+    fish:0
+
+};
+
+
+/* =========================================================
+   NOMBRES E ICONOS
+========================================================= */
+
+const resourceInfo = {
+
+    stick:{
+        name:"Palo",
+        icon:"🪵"
+    },
+
+    stone:{
+        name:"Piedra",
+        icon:"🪨"
+    },
+
+    wood:{
+        name:"Tabla de madera",
+        icon:"🪵"
+    },
+
+    iron:{
+        name:"Hierro",
+        icon:"⬜"
+    },
+
+    coal:{
+        name:"Carbón",
+        icon:"⚫"
+    },
+
+    meat:{
+        name:"Chuletón",
+        icon:"🥩"
+    },
+
+    fish:{
+        name:"Pez",
+        icon:"🐟"
+    }
+
+};
+
+
+/* =========================================================
+   MENSAJE
+========================================================= */
+
+const interactionMessage =
+    document.getElementById(
+        "interactionMessage"
+    );
+
+
+function mostrarInteraccion(texto){
+
+    interactionMessage.textContent =
+        texto;
+
+    interactionMessage.style.opacity =
+        "1";
+
+}
+
+
+function ocultarInteraccion(){
+
+    interactionMessage.style.opacity =
+        "0";
+
+}
+
+
+/* =========================================================
+   RECURSO CERCANO
+========================================================= */
+
+let recursoCercano = null;
+
+
+/*
+   Esta función podrá ser utilizada
+   posteriormente por los objetos 3D
+   del mapa.
+*/
+
+function establecerRecursoCercano(
+    tipo,
+    objeto3D=null
+){
+
+    if(
+        !resourceInfo[tipo]
+    )
+        return;
+
+    recursoCercano = {
+
+        type:tipo,
+
+        object:objeto3D
+
+    };
+
+    mostrarInteraccion(
+
+        "Q / Click derecho — recoger " +
+        resourceInfo[tipo].name
+
+    );
+
+}
+
+
+/* =========================================================
+   QUITAR RECURSO CERCANO
+========================================================= */
+
+function quitarRecursoCercano(){
+
+    recursoCercano = null;
+
+    ocultarInteraccion();
+
+}
+
+
+/* =========================================================
+   INTENTAR RECOGER
+========================================================= */
+
+function intentarRecoger(){
+
+    if(!recursoCercano)
+        return;
+
+    const tipo =
+        recursoCercano.type;
+
+
+    /*
+       Comprobar límite.
+    */
+
+    if(
+        resources[tipo] >=
+        resourceLimits[tipo]
+    ){
+
+        mostrarInteraccion(
+
+            "Límite alcanzado: " +
+            resourceLimits[tipo]
+
+        );
+
+        return;
+
+    }
+
+
+    abrirPreguntaRecoger();
+
+}
+
+
+/* =========================================================
+   PREGUNTA
+========================================================= */
+
+const pickupChoice =
+    document.getElementById(
+        "pickupChoice"
+    );
+
+const pickupText =
+    document.getElementById(
+        "pickupText"
+    );
+
+
+function abrirPreguntaRecoger(){
+
+    if(!recursoCercano)
+        return;
+
+    pickupText.textContent =
+        "¿Dónde querés guardar " +
+        resourceInfo[
+            recursoCercano.type
+        ].name +
+        "?";
+
+    pickupChoice.style.display =
+        "block";
+
+}
+
+
+/* =========================================================
+   CANCELAR
+========================================================= */
+
+document
+    .getElementById(
+        "pickupCancel"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            pickupChoice.style.display =
+                "none";
+
+        }
+    );
+
+
+/* =========================================================
+   GUARDAR EN MOCHILA
+========================================================= */
+
+document
+    .getElementById(
+        "pickupBackpack"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            guardarRecursoEnMochila();
+
+        }
+    );
+
+
+function guardarRecursoEnMochila(){
+
+    if(!recursoCercano)
+        return;
+
+    const tipo =
+        recursoCercano.type;
+
+    const info =
+        resourceInfo[tipo];
+
+
+    /*
+       Intentamos agregarlo
+       al inventario de la Parte 4.
+    */
+
+    const agregado =
+        agregarObjeto(
+
+            tipo,
+
+            info.name,
+
+            info.icon,
+
+            1
+
+        );
+
+
+    if(!agregado){
+
+        mostrarInteraccion(
+            "La mochila está llena"
+        );
+
+        pickupChoice.style.display =
+            "none";
+
+        return;
+
+    }
+
+
+    resources[tipo]++;
+
+    eliminarObjetoDelMundo();
+
+    pickupChoice.style.display =
+        "none";
+
+}
+
+
+/* =========================================================
+   GUARDAR EN BARRA RÁPIDA
+========================================================= */
+
+document
+    .getElementById(
+        "pickupQuick"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            guardarRecursoEnBarra();
+
+        }
+    );
+
+
+function guardarRecursoEnBarra(){
+
+    if(!recursoCercano)
+        return;
+
+    const tipo =
+        recursoCercano.type;
+
+    const info =
+        resourceInfo[tipo];
+
+
+    /*
+       Buscar espacio.
+    */
+
+    let espacio =
+        inventory.quick.findIndex(
+            item => item === null
+        );
+
+
+    if(
+        espacio === -1
+    ){
+
+        mostrarInteraccion(
+            "La barra rápida está llena"
+        );
+
+        pickupChoice.style.display =
+            "none";
+
+        return;
+
+    }
+
+
+    inventory.quick[espacio] = {
+
+        id:tipo,
+
+        name:info.name,
+
+        icon:info.icon,
+
+        amount:1
+
+    };
+
+
+    resources[tipo]++;
+
+
+    renderQuickBar();
+
+    eliminarObjetoDelMundo();
+
+
+    pickupChoice.style.display =
+        "none";
+
+}
+
+
+/* =========================================================
+   ELIMINAR OBJETO DEL MUNDO
+========================================================= */
+
+function eliminarObjetoDelMundo(){
+
+    if(!recursoCercano)
+        return;
+
+
+    /*
+       Cuando conectemos los objetos
+       3D reales, se eliminarán
+       físicamente del escenario.
+
+       Si el objeto tiene una escena
+       Three.js asociada:
+    */
+
+    if(
+        recursoCercano.object &&
+        typeof scene !== "undefined"
+    ){
+
+        scene.remove(
+            recursoCercano.object
+        );
+
+    }
+
+
+    recursoCercano = null;
+
+    ocultarInteraccion();
+
+}
+
+
+/* =========================================================
+   CLICK DERECHO
+========================================================= */
+
+document.addEventListener(
+    "contextmenu",
+    e => {
+
+        e.preventDefault();
+
+        intentarRecoger();
+
+    }
+);
+
+
+/* =========================================================
+   TECLA Q
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    e => {
+
+        if(
+            e.key.toLowerCase() === "q"
+        ){
+
+            intentarRecoger();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   AGREGAR RECURSO DIRECTAMENTE
+========================================================= */
+
+function agregarRecurso(
+    tipo,
+    cantidad=1
+){
+
+    if(
+        !resourceLimits[tipo]
+    )
+        return false;
+
+
+    const espacioDisponible =
+        resourceLimits[tipo] -
+        resources[tipo];
+
+
+    if(
+        espacioDisponible <= 0
+    ){
+
+        return false;
+
+    }
+
+
+    const cantidadReal =
+        Math.min(
+            cantidad,
+            espacioDisponible
+        );
+
+
+    resources[tipo] +=
+        cantidadReal;
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   CONSULTAR RECURSOS
+========================================================= */
+
+function obtenerCantidadRecurso(
+    tipo
+){
+
+    if(
+        resources[tipo] === undefined
+    )
+        return 0;
+
+    return resources[tipo];
+
+}
+
+
+/* =========================================================
+   MOSTRAR RECURSOS EN CONSOLA
+========================================================= */
+
+function mostrarRecursos(){
+
+    console.table({
+
+        Palos:
+            resources.stick,
+
+        Piedras:
+            resources.stone,
+
+        Madera:
+            resources.wood,
+
+        Hierro:
+            resources.iron,
+
+        Carbon:
+            resources.coal,
+
+        Chuletones:
+            resources.meat,
+
+        Peces:
+            resources.fish
+
+    });
+
+}
+
+
+/* =========================================================
+   FIN PARTE 5
+========================================================= */
+
+</script>
+ <!-- =========================================================
+     PARTE 6 — RECURSOS 3D DEL MUNDO
+========================================================= -->
+
+<script>
+
+/* =========================================================
+   RECURSOS VISIBLES
+========================================================= */
+
+const worldResources = [];
+
+
+/* =========================================================
+   CREAR RECURSO 3D
+========================================================= */
+
+function crearRecurso3D(
+    tipo,
+    x,
+    y,
+    z
+){
+
+    if(typeof THREE === "undefined")
+        return null;
+
+    const grupo =
+        new THREE.Group();
+
+    grupo.userData.resourceType =
+        tipo;
+
+    grupo.userData.isResource =
+        true;
+
+
+    /* =====================================================
+       PALO
+    ===================================================== */
+
+    if(tipo === "stick"){
+
+        const material =
+            new THREE.MeshStandardMaterial({
+                color:0x704522
+            });
+
+        const geometria =
+            new THREE.CylinderGeometry(
+                0.035,
+                0.045,
+                0.9,
+                8
+            );
+
+        const palo =
+            new THREE.Mesh(
+                geometria,
+                material
+            );
+
+        palo.rotation.z =
+            Math.PI / 2;
+
+        grupo.add(palo);
+
+    }
+
+
+    /* =====================================================
+       PIEDRA
+    ===================================================== */
+
+    if(tipo === "stone"){
+
+        const material =
+            new THREE.MeshStandardMaterial({
+                color:0x777777,
+                roughness:1
+            });
+
+        const geometria =
+            new THREE.DodecahedronGeometry(
+                0.16,
+                0
+            );
+
+        const piedra =
+            new THREE.Mesh(
+                geometria,
+                material
+            );
+
+        piedra.scale.set(
+            1.2,
+            .8,
+            1
+        );
+
+        grupo.add(piedra);
+
+    }
+
+
+    /* =====================================================
+       TABLA DE MADERA
+    ===================================================== */
+
+    if(tipo === "wood"){
+
+        const material =
+            new THREE.MeshStandardMaterial({
+                color:0x8b5a2b,
+                roughness:.9
+            });
+
+        const geometria =
+            new THREE.BoxGeometry(
+                .18,
+                1.4,
+                .45
+            );
+
+        const tabla =
+            new THREE.Mesh(
+                geometria,
+                material
+            );
+
+        tabla.rotation.y =
+            Math.random() * Math.PI;
+
+        grupo.add(tabla);
+
+    }
+
+
+    /* =====================================================
+       HIERRO
+    ===================================================== */
+
+    if(tipo === "iron"){
+
+        const material =
+            new THREE.MeshStandardMaterial({
+                color:0x777b80,
+                metalness:.7,
+                roughness:.45
+            });
+
+        const geometria =
+            new THREE.DodecahedronGeometry(
+                .18,
+                0
+            );
+
+        const hierro =
+            new THREE.Mesh(
+                geometria,
+                material
+            );
+
+        grupo.add(hierro);
+
+    }
+
+
+    /* =====================================================
+       CARBÓN
+    ===================================================== */
+
+    if(tipo === "coal"){
+
+        const material =
+            new THREE.MeshStandardMaterial({
+                color:0x111111,
+                roughness:1
+            });
+
+        const geometria =
+            new THREE.DodecahedronGeometry(
+                .16,
+                0
+            );
+
+        const carbon =
+            new THREE.Mesh(
+                geometria,
+                material
+            );
+
+        grupo.add(carbon);
+
+    }
+
+
+    /* =====================================================
+       POSICIÓN
+    ===================================================== */
+
+    grupo.position.set(
+        x,
+        y,
+        z
+    );
+
+
+    /* =====================================================
+       AGREGAR AL MUNDO
+    ===================================================== */
+
+    if(
+        typeof scene !== "undefined"
+    ){
+
+        scene.add(grupo);
+
+    }
+
+
+    worldResources.push(
+        grupo
+    );
+
+
+    return grupo;
+
+}
+
+
+/* =========================================================
+   CREAR MUCHOS RECURSOS
+========================================================= */
+
+function generarRecursosIniciales(){
+
+    /*
+       Esta función solamente se ejecuta
+       si existe una escena Three.js.
+    */
+
+    if(
+        typeof scene === "undefined"
+    )
+        return;
+
+
+    /* ===============================
+       PALOS
+    =============================== */
+
+    for(
+        let i=0;
+        i<25;
+        i++
+    ){
+
+        crearRecurso3D(
+
+            "stick",
+
+            (Math.random()-.5)*45,
+
+            .08,
+
+            (Math.random()-.5)*45
+
+        );
+
+    }
+
+
+    /* ===============================
+       PIEDRAS
+    =============================== */
+
+    for(
+        let i=0;
+        i<18;
+        i++
+    ){
+
+        crearRecurso3D(
+
+            "stone",
+
+            (Math.random()-.5)*55,
+
+            .12,
+
+            (Math.random()-.5)*55
+
+        );
+
+    }
+
+
+    /* ===============================
+       MADERA
+    =============================== */
+
+    for(
+        let i=0;
+        i<10;
+        i++
+    ){
+
+        crearRecurso3D(
+
+            "wood",
+
+            (Math.random()-.5)*50,
+
+            .25,
+
+            (Math.random()-.5)*50
+
+        );
+
+    }
+
+
+    /* ===============================
+       HIERRO
+    =============================== */
+
+    for(
+        let i=0;
+        i<6;
+        i++
+    ){
+
+        crearRecurso3D(
+
+            "iron",
+
+            (Math.random()-.5)*60,
+
+            .18,
+
+            (Math.random()-.5)*60
+
+        );
+
+    }
+
+
+    /* ===============================
+       CARBÓN
+    =============================== */
+
+    for(
+        let i=0;
+        i<12;
+        i++
+    ){
+
+        crearRecurso3D(
+
+            "coal",
+
+            (Math.random()-.5)*60,
+
+            .12,
+
+            (Math.random()-.5)*60
+
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   DETECTAR RECURSO CERCANO
+========================================================= */
+
+function actualizarRecursoCercano(){
+
+    if(
+        typeof camera === "undefined"
+    )
+        return;
+
+    if(
+        typeof THREE === "undefined"
+    )
+        return;
+
+
+    const origen =
+        camera.position.clone();
+
+
+    const direccion =
+        new THREE.Vector3(
+            0,
+            0,
+            -1
+        );
+
+
+    direccion.applyQuaternion(
+        camera.quaternion
+    );
+
+
+    const raycaster =
+        new THREE.Raycaster(
+            origen,
+            direccion,
+            0,
+            3
+        );
+
+
+    const objetos = [];
+
+
+    worldResources.forEach(
+        recurso => {
+
+            recurso.traverse(
+                objeto => {
+
+                    if(
+                        objeto.isMesh
+                    ){
+
+                        objetos.push(
+                            objeto
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    const impactos =
+        raycaster.intersectObjects(
+            objetos,
+            false
+        );
+
+
+    if(
+        impactos.length === 0
+    ){
+
+        quitarRecursoCercano();
+
+        return;
+
+    }
+
+
+    const objeto =
+        impactos[0].object;
+
+
+    let grupo =
+        objeto;
+
+
+    while(
+        grupo.parent &&
+        !grupo.userData.isResource
+    ){
+
+        grupo =
+            grupo.parent;
+
+    }
+
+
+    if(
+        !grupo.userData.isResource
+    ){
+
+        quitarRecursoCercano();
+
+        return;
+
+    }
+
+
+    establecerRecursoCercano(
+
+        grupo.userData.resourceType,
+
+        grupo
+
+    );
+
+}
+
+
+/* =========================================================
+   ACTUALIZAR DETECCIÓN
+========================================================= */
+
+setInterval(
+    () => {
+
+        actualizarRecursoCercano();
+
+    },
+    100
+);
+
+
+/* =========================================================
+   INICIAR GENERACIÓN
+========================================================= */
+
 setTimeout(
-()=>{
+    () => {
 
-message.textContent="";
+        generarRecursosIniciales();
 
-},
-1700
+    },
+    1500
 );
+
+
+/* =========================================================
+   FIN PARTE 6
+========================================================= */
+
+</script>
+ <!-- =========================================================
+     PARTE 7 — AVIÓN + BOTIQUÍN + VENDAS + RECURSOS
+========================================================= -->
+
+<style>
+
+#airplanePanel{
+
+    position:fixed;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:340px;
+    max-width:90vw;
+
+    padding:20px;
+
+    background:rgba(12,12,12,.94);
+
+    border:1px solid rgba(255,255,255,.25);
+
+    border-radius:14px;
+
+    color:white;
+
+    font-family:Arial,sans-serif;
+
+    z-index:160;
+
+    display:none;
+
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.7);
 
 }
 
+#airplanePanel h2{
 
-// =====================================================
-// INICIO
-// =====================================================
+    margin-top:0;
 
-document.getElementById(
-"play"
-).onclick=
-()=>{
+    font-size:21px;
 
-controls.lock();
+}
+
+.airButton{
+
+    width:100%;
+
+    margin-top:8px;
+
+    padding:10px;
+
+    border:0;
+
+    border-radius:8px;
+
+    background:#333;
+
+    color:white;
+
+    cursor:pointer;
+
+}
+
+.airButton:hover{
+
+    background:#555;
+
+}
+
+#airplaneClose{
+
+    position:absolute;
+
+    right:10px;
+    top:9px;
+
+    width:30px;
+    height:30px;
+
+    border:0;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.1);
+
+    color:white;
+
+    font-size:18px;
+
+    cursor:pointer;
+
+}
+
+#medicalPanel{
+
+    position:fixed;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:300px;
+
+    padding:20px;
+
+    background:rgba(15,15,15,.95);
+
+    color:white;
+
+    border-radius:14px;
+
+    z-index:170;
+
+    display:none;
+
+    font-family:Arial,sans-serif;
+
+    text-align:center;
+
+}
+
+#medicalClose{
+
+    position:absolute;
+
+    right:10px;
+    top:8px;
+
+    border:0;
+
+    background:none;
+
+    color:white;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+}
+
+</style>
 
 
-document.getElementById(
-"start"
-).style.display=
-"none";
+<!-- =========================================================
+     PANEL DEL AVIÓN
+========================================================= -->
+
+<div id="airplanePanel">
+
+    <button id="airplaneClose">×</button>
+
+    <h2>✈ Avión destruido</h2>
+
+    <p>
+        Restos del avión accidentado.
+    </p>
+
+    <button
+        class="airButton"
+        id="takeWoodPlane">
+        🪵 Arrancar tabla
+    </button>
+
+    <button
+        class="airButton"
+        id="takeIronPlane">
+        ⬜ Arrancar hierro
+    </button>
+
+    <button
+        class="airButton"
+        id="openMedical">
+        🩹 Abrir botiquín
+    </button>
+
+</div>
+
+
+<!-- =========================================================
+     BOTIQUÍN
+========================================================= -->
+
+<div id="medicalPanel">
+
+    <button id="medicalClose">×</button>
+
+    <h2>🩹 Botiquín</h2>
+
+    <p id="bandageText">
+        Vendas disponibles: 16
+    </p>
+
+    <button
+        class="airButton"
+        id="takeBandages">
+        Agarrar vendas
+    </button>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   AVIÓN
+========================================================= */
+
+const airplaneState = {
+
+    nearby:false,
+
+    woodAvailable:10,
+
+    ironAvailable:5
 
 };
 
 
-// =====================================================
-// ANIMACIÓN
-// =====================================================
+/* =========================================================
+   BOTIQUÍN
+========================================================= */
 
-const clock=
-new THREE.Clock();
+const medicalState = {
 
+    initialBandages:16,
 
-function animate(){
+    extraBandages:0,
 
-requestAnimationFrame(
-animate
-);
+    collected:0
 
-
-const delta=
-Math.min(
-clock.getDelta(),
-.05
-);
+};
 
 
-movePlayer(delta);
+/* =========================================================
+   REFERENCIAS
+========================================================= */
 
-updateMining(delta);
+const airplanePanel =
+    document.getElementById(
+        "airplanePanel"
+    );
 
-updateDayNight(delta);
+const medicalPanel =
+    document.getElementById(
+        "medicalPanel"
+    );
 
-updateSurvival(delta);
 
+/* =========================================================
+   ABRIR AVIÓN
+========================================================= */
 
-renderer.render(
-scene,
-camera
-);
+function abrirAvion(){
+
+    airplanePanel.style.display =
+        "block";
 
 }
 
 
-animate();
+/* =========================================================
+   CERRAR AVIÓN
+========================================================= */
+
+document
+    .getElementById(
+        "airplaneClose"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            airplanePanel.style.display =
+                "none";
+
+        }
+    );
 
 
-// =====================================================
-// RESIZE
-// =====================================================
+/* =========================================================
+   MADERA DEL AVIÓN
+========================================================= */
+
+document
+    .getElementById(
+        "takeWoodPlane"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            if(
+                airplaneState.woodAvailable <= 0
+            ){
+
+                mostrarInteraccion(
+                    "No quedan tablas en el avión"
+                );
+
+                return;
+
+            }
+
+
+            /*
+               Cada tabla arrancada
+               quita medio corazón.
+
+               Como la Parte 3 utiliza
+               corazones enteros,
+               guardamos medio corazón
+               mediante una variable.
+            */
+
+            agregarRecurso(
+                "wood",
+                1
+            );
+
+
+            recibirDanioMedio();
+
+
+            airplaneState.woodAvailable--;
+
+
+            if(
+                airplaneState.woodAvailable <= 0
+            ){
+
+                document
+                    .getElementById(
+                        "takeWoodPlane"
+                    )
+                    .textContent =
+                    "No quedan tablas";
+
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   HIERRO DEL AVIÓN
+========================================================= */
+
+document
+    .getElementById(
+        "takeIronPlane"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            if(
+                airplaneState.ironAvailable <= 0
+            ){
+
+                mostrarInteraccion(
+                    "No queda hierro en el avión"
+                );
+
+                return;
+
+            }
+
+
+            agregarRecurso(
+                "iron",
+                1
+            );
+
+
+            recibirDanioMedio();
+
+
+            airplaneState.ironAvailable--;
+
+
+            if(
+                airplaneState.ironAvailable <= 0
+            ){
+
+                document
+                    .getElementById(
+                        "takeIronPlane"
+                    )
+                    .textContent =
+                    "No queda hierro";
+
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   DAÑO DE MEDIO CORAZÓN
+========================================================= */
+
+let medioCorazon =
+    0;
+
+
+function recibirDanioMedio(){
+
+    if(
+        typeof survival === "undefined"
+    )
+        return;
+
+
+    medioCorazon += .5;
+
+
+    if(
+        medioCorazon >= 1
+    ){
+
+        medioCorazon -= 1;
+
+        recibirDanio(1);
+
+    }
+
+
+    actualizarSupervivenciaHUD();
+
+}
+
+
+/* =========================================================
+   ABRIR BOTIQUÍN
+========================================================= */
+
+document
+    .getElementById(
+        "openMedical"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            airplanePanel.style.display =
+                "none";
+
+            medicalPanel.style.display =
+                "block";
+
+            actualizarTextoVendas();
+
+        }
+    );
+
+
+/* =========================================================
+   CERRAR BOTIQUÍN
+========================================================= */
+
+document
+    .getElementById(
+        "medicalClose"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            medicalPanel.style.display =
+                "none";
+
+        }
+    );
+
+
+/* =========================================================
+   AGARRAR VENDAS
+========================================================= */
+
+document
+    .getElementById(
+        "takeBandages"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            const total =
+                medicalState.initialBandages +
+                medicalState.extraBandages;
+
+
+            if(
+                medicalState.collected >=
+                total
+            ){
+
+                mostrarInteraccion(
+                    "No quedan vendas"
+                );
+
+                return;
+
+            }
+
+
+            /*
+               Una acción recoge
+               una venda.
+            */
+
+            const agregado =
+                agregarObjeto(
+                    "bandage",
+                    "Venda",
+                    "🩹",
+                    1
+                );
+
+
+            if(!agregado){
+
+                mostrarInteraccion(
+                    "La mochila está llena"
+                );
+
+                return;
+
+            }
+
+
+            medicalState.collected++;
+
+            actualizarTextoVendas();
+
+        }
+    );
+
+
+/* =========================================================
+   TEXTO VENDAS
+========================================================= */
+
+function actualizarTextoVendas(){
+
+    const total =
+        medicalState.initialBandages +
+        medicalState.extraBandages;
+
+    const restantes =
+        Math.max(
+            0,
+            total -
+            medicalState.collected
+        );
+
+
+    document
+        .getElementById(
+            "bandageText"
+        )
+        .textContent =
+        "Vendas disponibles: " +
+        restantes;
+
+}
+
+
+/* =========================================================
+   CURAR CON VENDA
+========================================================= */
+
+function usarVenda(){
+
+    if(
+        typeof survival === "undefined"
+    )
+        return;
+
+
+    if(
+        survival.health >=
+        survival.maxHealth
+    ){
+
+        mostrarInteraccion(
+            "Ya tenés la vida completa"
+        );
+
+        return;
+
+    }
+
+
+    /*
+       Buscar venda en mochila.
+    */
+
+    let indice =
+        inventory.slots.findIndex(
+            item =>
+                item &&
+                item.id === "bandage"
+        );
+
+
+    if(
+        indice === -1
+    ){
+
+        /*
+           También busca en barra.
+        */
+
+        const quickIndex =
+            inventory.quick.findIndex(
+                item =>
+                    item &&
+                    item.id === "bandage"
+            );
+
+
+        if(
+            quickIndex !== -1
+        ){
+
+            const venda =
+                inventory.quick[
+                    quickIndex
+                ];
+
+            venda.amount--;
+
+
+            if(
+                venda.amount <= 0
+            ){
+
+                inventory.quick[
+                    quickIndex
+                ] = null;
+
+            }
+
+
+            curar(4);
+
+            renderQuickBar();
+
+            return;
+
+        }
+
+
+        mostrarInteraccion(
+            "No tenés vendas"
+        );
+
+        return;
+
+    }
+
+
+    const venda =
+        inventory.slots[indice];
+
+
+    venda.amount--;
+
+
+    if(
+        venda.amount <= 0
+    ){
+
+        inventory.slots[indice] =
+            null;
+
+    }
+
+
+    /*
+       Una venda cura 4 corazones.
+    */
+
+    curar(4);
+
+
+    renderInventory();
+
+}
+
+
+/* =========================================================
+   TECLA V PARA USAR VENDA
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    e => {
+
+        if(
+            e.key.toLowerCase() === "v"
+        ){
+
+            usarVenda();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   DETECTAR AVIÓN POR DISTANCIA
+========================================================= */
+
+function actualizarAvion(){
+
+    if(
+        typeof camera === "undefined"
+    )
+        return;
+
+
+    /*
+       El avión se colocará
+       posteriormente en la posición
+       definitiva de la isla.
+
+       Por ahora dejamos preparado
+       el detector.
+    */
+
+    if(
+        typeof airplane !== "undefined" &&
+        airplane
+    ){
+
+        const distancia =
+            camera.position.distanceTo(
+                airplane.position
+            );
+
+
+        if(
+            distancia < 4
+        ){
+
+            airplaneState.nearby =
+                true;
+
+            mostrarInteraccion(
+                "Click derecho / Q — interactuar con el avión"
+            );
+
+        }else{
+
+            airplaneState.nearby =
+                false;
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   INTERACTUAR CON AVIÓN
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    e => {
+
+        if(
+            e.key.toLowerCase() !== "q"
+        )
+            return;
+
+
+        if(
+            airplaneState.nearby
+        ){
+
+            abrirAvion();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   FIN PARTE 7
+========================================================= */
+
+</script>
+ <!-- =========================================================
+     PARTE 8 — ANIMALES + IA + COMBATE
+========================================================= -->
+
+<style>
+
+.animal-hit{
+
+    animation:
+        animalHit .18s linear;
+
+}
+
+@keyframes animalHit{
+
+    0%{
+        transform:translateX(0);
+    }
+
+    25%{
+        transform:translateX(-.08px);
+    }
+
+    50%{
+        transform:translateX(.08px);
+    }
+
+    75%{
+        transform:translateX(-.05px);
+    }
+
+    100%{
+        transform:translateX(0);
+    }
+
+}
+
+</style>
+
+<script>
+
+/* =========================================================
+   ESTADO DE ANIMALES
+========================================================= */
+
+const islandAnimals = [];
+
+
+/* =========================================================
+   TIPOS DE ANIMALES
+========================================================= */
+
+const animalStats = {
+
+    leon:{
+        health:6,
+        damage:1,
+        speed:1.7,
+        meat:4,
+        aggressive:true,
+        scale:1.25
+    },
+
+    cocodrilo:{
+        health:3,
+        damage:1,
+        speed:.8,
+        meat:2,
+        aggressive:true,
+        scale:1.5
+    },
+
+    hipopotamo:{
+        health:10,
+        damage:1,
+        speed:1,
+        meat:6,
+        aggressive:true,
+        scale:1.8
+    },
+
+    dinosaurio:{
+        health:20,
+        damage:1,
+        speed:1.1,
+        meat:10,
+        aggressive:true,
+        scale:2
+    },
+
+    ciervo:{
+        health:10,
+        damage:0,
+        speed:2,
+        meat:8,
+        aggressive:false,
+        scale:1
+    },
+
+    mono:{
+        health:5,
+        damage:0,
+        speed:2,
+        meat:2,
+        aggressive:false,
+        scale:.7
+    },
+
+    ave:{
+        health:3,
+        damage:1,
+        speed:2.5,
+        meat:1,
+        aggressive:false,
+        scale:.4
+    },
+
+    perro:{
+        health:15,
+        damage:3,
+        speed:2,
+        meat:0,
+        aggressive:false,
+        friendly:true,
+        scale:.8
+    }
+
+};
+
+
+/* =========================================================
+   CREAR ANIMAL
+========================================================= */
+
+function crearAnimal(
+    tipo,
+    x,
+    y,
+    z
+){
+
+    if(
+        typeof THREE === "undefined" ||
+        typeof scene === "undefined"
+    )
+        return null;
+
+
+    const stats =
+        animalStats[tipo];
+
+    if(!stats)
+        return null;
+
+
+    const grupo =
+        new THREE.Group();
+
+
+    grupo.userData.isAnimal =
+        true;
+
+    grupo.userData.type =
+        tipo;
+
+    grupo.userData.health =
+        stats.health;
+
+    grupo.userData.maxHealth =
+        stats.health;
+
+    grupo.userData.damage =
+        stats.damage;
+
+    grupo.userData.speed =
+        stats.speed;
+
+    grupo.userData.meat =
+        stats.meat;
+
+    grupo.userData.aggressive =
+        stats.aggressive;
+
+    grupo.userData.tamed =
+        false;
+
+    grupo.userData.dead =
+        false;
+
+
+    /* =====================================================
+       CUERPO
+    ===================================================== */
+
+    const bodyMaterial =
+        new THREE.MeshStandardMaterial({
+
+            color:
+                tipo === "leon"
+                    ? 0xb58a55
+
+                : tipo === "cocodrilo"
+                    ? 0x3d5f36
+
+                : tipo === "hipopotamo"
+                    ? 0x756c72
+
+                : tipo === "dinosaurio"
+                    ? 0x536b45
+
+                : tipo === "ciervo"
+                    ? 0x8b623f
+
+                : tipo === "mono"
+                    ? 0x513d30
+
+                : tipo === "perro"
+                    ? 0xcfcfcf
+
+                : 0x777777,
+
+            roughness:.9
+
+        });
+
+
+    const bodyGeometry =
+        new THREE.SphereGeometry(
+            .45,
+            12,
+            8
+        );
+
+
+    const body =
+        new THREE.Mesh(
+            bodyGeometry,
+            bodyMaterial
+        );
+
+
+    body.scale.set(
+        1.5,
+        1,
+        2
+    );
+
+
+    grupo.add(body);
+
+
+    /* =====================================================
+       CABEZA
+    ===================================================== */
+
+    const head =
+        new THREE.Mesh(
+
+            new THREE.SphereGeometry(
+                .35,
+                12,
+                8
+            ),
+
+            bodyMaterial
+
+        );
+
+
+    head.position.set(
+        0,
+        .2,
+        -.65
+    );
+
+
+    grupo.add(head);
+
+
+    /* =====================================================
+       OJOS
+    ===================================================== */
+
+    const eyeMaterial =
+        new THREE.MeshBasicMaterial({
+            color:0x080808
+        });
+
+
+    for(
+        let i=-1;
+        i<=1;
+        i+=2
+    ){
+
+        const eye =
+            new THREE.Mesh(
+
+                new THREE.SphereGeometry(
+                    .045,
+                    8,
+                    8
+                ),
+
+                eyeMaterial
+
+            );
+
+
+        eye.position.set(
+            i*.11,
+            .28,
+            -.94
+        );
+
+
+        grupo.add(eye);
+
+    }
+
+
+    /* =====================================================
+       ESCALA
+    ===================================================== */
+
+    grupo.scale.setScalar(
+        stats.scale
+    );
+
+
+    grupo.position.set(
+        x,
+        y,
+        z
+    );
+
+
+    scene.add(
+        grupo
+    );
+
+
+    islandAnimals.push(
+        grupo
+    );
+
+
+    return grupo;
+
+}
+
+
+/* =========================================================
+   CREAR ANIMALES INICIALES
+========================================================= */
+
+function generarAnimales(){
+
+    if(
+        typeof scene === "undefined"
+    )
+        return;
+
+
+    crearAnimal(
+        "leon",
+        15,
+        .5,
+        -12
+    );
+
+
+    crearAnimal(
+        "leon",
+        -18,
+        .5,
+        -25
+    );
+
+
+    crearAnimal(
+        "cocodrilo",
+        8,
+        .35,
+        20
+    );
+
+
+    crearAnimal(
+        "hipopotamo",
+        -20,
+        .5,
+        20
+    );
+
+
+    crearAnimal(
+        "ciervo",
+        -8,
+        .5,
+        -15
+    );
+
+
+    crearAnimal(
+        "ciervo",
+        12,
+        .5,
+        -28
+    );
+
+
+    crearAnimal(
+        "mono",
+        -10,
+        3,
+        10
+    );
+
+
+    crearAnimal(
+        "mono",
+        18,
+        4,
+        8
+    );
+
+
+    crearAnimal(
+        "ave",
+        5,
+        2,
+        -8
+    );
+
+
+    crearAnimal(
+        "ave",
+        -5,
+        2,
+        -5
+    );
+
+
+    crearAnimal(
+        "perro",
+        5,
+        .5,
+        12
+    );
+
+
+    crearAnimal(
+        "dinosaurio",
+        35,
+        .8,
+        -35
+    );
+
+}
+
+
+/* =========================================================
+   DISTANCIA AL JUGADOR
+========================================================= */
+
+function distanciaAnimalJugador(
+    animal
+){
+
+    if(
+        typeof camera === "undefined"
+    )
+        return 9999;
+
+
+    return animal.position.distanceTo(
+        camera.position
+    );
+
+}
+
+
+/* =========================================================
+   IA BÁSICA
+========================================================= */
+
+function actualizarAnimales(){
+
+    if(
+        typeof camera === "undefined"
+    )
+        return;
+
+
+    const tiempo =
+        performance.now() *
+        .001;
+
+
+    islandAnimals.forEach(
+        animal => {
+
+            if(
+                !animal ||
+                animal.userData.dead
+            )
+                return;
+
+
+            const distancia =
+                distanciaAnimalJugador(
+                    animal
+                );
+
+
+            /* =============================================
+               ANIMALES AGRESIVOS
+            ============================================= */
+
+            if(
+                animal.userData.aggressive &&
+                distancia < 12
+            ){
+
+                const direccion =
+                    new THREE.Vector3()
+                    .subVectors(
+                        camera.position,
+                        animal.position
+                    );
+
+
+                direccion.y = 0;
+
+
+                if(
+                    direccion.length() > 1.8
+                ){
+
+                    direccion.normalize();
+
+
+                    animal.position.x +=
+                        direccion.x *
+                        animal.userData.speed *
+                        .016;
+
+                    animal.position.z +=
+                        direccion.z *
+                        animal.userData.speed *
+                        .016;
+
+                    animal.rotation.y =
+                        Math.atan2(
+                            direccion.x,
+                            direccion.z
+                        );
+
+                }
+
+
+                /*
+                   Ataque cuando llega cerca.
+                */
+
+                if(
+                    distancia < 2
+                ){
+
+                    atacarJugadorAnimal(
+                        animal
+                    );
+
+                }
+
+            }
+
+
+            /* =============================================
+               ANIMALES TRANQUILOS
+            ============================================= */
+
+            else if(
+                !animal.userData.aggressive &&
+                !animal.userData.tamed
+            ){
+
+                const movimiento =
+                    Math.sin(
+                        tiempo *
+                        .7 +
+                        animal.id
+                    ) * .004;
+
+
+                animal.position.x +=
+                    movimiento;
+
+                animal.rotation.y +=
+                    Math.sin(
+                        tiempo +
+                        animal.id
+                    ) * .002;
+
+            }
+
+
+            /* =============================================
+               PERRO DOMADO
+            ============================================= */
+
+            if(
+                animal.userData.tamed
+            ){
+
+                seguirJugador(
+                    animal
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SEGUIR AL JUGADOR
+========================================================= */
+
+function seguirJugador(
+    perro
+){
+
+    if(
+        typeof camera === "undefined"
+    )
+        return;
+
+
+    const direccion =
+        new THREE.Vector3()
+        .subVectors(
+            camera.position,
+            perro.position
+        );
+
+
+    direccion.y = 0;
+
+
+    const distancia =
+        direccion.length();
+
+
+    if(
+        distancia > 3
+    ){
+
+        direccion.normalize();
+
+
+        perro.position.x +=
+            direccion.x *
+            .035;
+
+        perro.position.z +=
+            direccion.z *
+            .035;
+
+    }
+
+}
+
+
+/* =========================================================
+   ATAQUE DE ANIMAL
+========================================================= */
+
+let ultimoAtaqueAnimal = 0;
+
+
+function atacarJugadorAnimal(
+    animal
+){
+
+    const ahora =
+        performance.now();
+
+
+    /*
+       Evita que un animal
+       haga daño cada frame.
+    */
+
+    if(
+        ahora -
+        ultimoAtaqueAnimal
+        < 1000
+    )
+        return;
+
+
+    ultimoAtaqueAnimal =
+        ahora;
+
+
+    recibirDanio(
+        animal.userData.damage
+    );
+
+
+    reproducirSonidoAnimal(
+        animal.userData.type
+    );
+
+}
+
+
+/* =========================================================
+   DAÑO DEL JUGADOR
+========================================================= */
+
+function recibirDanio(
+    cantidad
+){
+
+    if(
+        typeof survival === "undefined"
+    )
+        return;
+
+
+    survival.health -=
+        cantidad;
+
+
+    if(
+        survival.health < 0
+    ){
+
+        survival.health = 0;
+
+    }
+
+
+    actualizarSupervivenciaHUD();
+
+
+    if(
+        typeof mostrarInteraccion ===
+        "function"
+    ){
+
+        mostrarInteraccion(
+            "⚠ Has recibido daño"
+        );
+
+    }
+
+
+    if(
+        survival.health <= 0
+    ){
+
+        if(
+            typeof jugadorMuerto ===
+            "function"
+        ){
+
+            jugadorMuerto();
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   ATAQUE DEL JUGADOR
+========================================================= */
+
+function atacarAnimal(){
+
+    if(
+        typeof camera === "undefined" ||
+        typeof THREE === "undefined"
+    )
+        return;
+
+
+    const origen =
+        camera.position.clone();
+
+
+    const direccion =
+        new THREE.Vector3(
+            0,
+            0,
+            -1
+        );
+
+
+    direccion.applyQuaternion(
+        camera.quaternion
+    );
+
+
+    const raycaster =
+        new THREE.Raycaster(
+            origen,
+            direccion,
+            0,
+            3.5
+        );
+
+
+    const objetos = [];
+
+
+    islandAnimals.forEach(
+        animal => {
+
+            animal.traverse(
+                objeto => {
+
+                    if(
+                        objeto.isMesh &&
+                        !animal.userData.dead
+                    ){
+
+                        objetos.push(
+                            objeto
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    const impactos =
+        raycaster.intersectObjects(
+            objetos,
+            false
+        );
+
+
+    if(
+        impactos.length === 0
+    )
+        return;
+
+
+    let animal =
+        impactos[0].object;
+
+
+    while(
+        animal.parent &&
+        !animal.userData.isAnimal
+    ){
+
+        animal =
+            animal.parent;
+
+    }
+
+
+    if(
+        !animal.userData.isAnimal ||
+        animal.userData.dead
+    )
+        return;
+
+
+    let dano = 1;
+
+
+    /*
+       Si existe un arma seleccionada,
+       posteriormente las Partes siguientes
+       podrán modificar este daño.
+    */
+
+    if(
+        typeof armaActual !==
+        "undefined"
+    ){
+
+        if(
+            armaActual === "wood_spear"
+        )
+            dano = 1;
+
+        if(
+            armaActual === "stone_spear"
+        )
+            dano = 4;
+
+        if(
+            armaActual === "iron_spear"
+        )
+            dano = 16;
+
+        if(
+            armaActual === "wood_sword"
+        )
+            dano = 4;
+
+        if(
+            armaActual === "stone_sword"
+        )
+            dano = 10;
+
+        if(
+            armaActual === "iron_sword"
+        )
+            dano = 15;
+
+        if(
+            armaActual === "black_sword"
+        )
+            dano = 30;
+
+    }
+
+
+    animal.userData.health -=
+        dano;
+
+
+    animal.classList &&
+        animal.classList.add(
+            "animal-hit"
+        );
+
+
+    if(
+        animal.userData.health <= 0
+    ){
+
+        matarAnimal(
+            animal
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   MATAR ANIMAL
+========================================================= */
+
+function matarAnimal(
+    animal
+){
+
+    if(
+        animal.userData.dead
+    )
+        return;
+
+
+    animal.userData.dead =
+        true;
+
+
+    /*
+       El animal queda en el lugar
+       donde murió.
+    */
+
+    animal.rotation.z =
+        Math.PI / 2;
+
+
+    /*
+       Crear carne.
+    */
+
+    crearCarneAnimal(
+        animal
+    );
+
+
+    reproducirSonidoMuerteAnimal(
+        animal.userData.type
+    );
+
+
+    if(
+        typeof mostrarInteraccion ===
+        "function"
+    ){
+
+        mostrarInteraccion(
+            "+" +
+            animal.userData.meat +
+            " chuletones"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CARNE
+========================================================= */
+
+function crearCarneAnimal(
+    animal
+){
+
+    const cantidad =
+        animal.userData.meat;
+
+
+    /*
+       El límite total de carne
+       se controla posteriormente
+       en el inventario.
+    */
+
+    if(
+        typeof agregarObjeto ===
+        "function"
+    ){
+
+        agregarObjeto(
+            "raw_meat",
+            "Chuletón crudo",
+            "🥩",
+            cantidad
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SONIDOS
+========================================================= */
+
+function reproducirSonidoAnimal(
+    tipo
+){
+
+    /*
+       Preparado para conectar
+       sonidos reales en la Parte
+       de audio.
+    */
+
+    if(
+        typeof sonidoAnimal ===
+        "function"
+    ){
+
+        sonidoAnimal(
+            tipo
+        );
+
+    }
+
+}
+
+
+function reproducirSonidoMuerteAnimal(
+    tipo
+){
+
+    if(
+        typeof sonidoMuerteAnimal ===
+        "function"
+    ){
+
+        sonidoMuerteAnimal(
+            tipo
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CLICK IZQUIERDO — ATAQUE
+========================================================= */
+
+document.addEventListener(
+    "mousedown",
+    e => {
+
+        if(
+            e.button !== 0
+        )
+            return;
+
+
+        /*
+           No atacar mientras se está
+           escribiendo en un campo.
+        */
+
+        if(
+            e.target.tagName ===
+            "INPUT" ||
+            e.target.tagName ===
+            "TEXTAREA"
+        )
+            return;
+
+
+        atacarAnimal();
+
+    }
+);
+
+
+/* =========================================================
+   ACTUALIZACIÓN DE IA
+========================================================= */
+
+setInterval(
+    () => {
+
+        actualizarAnimales();
+
+    },
+    30
+);
+
+
+/* =========================================================
+   GENERAR ANIMALES
+========================================================= */
+
+setTimeout(
+    () => {
+
+        generarAnimales();
+
+    },
+    2500
+);
+
+
+/* =========================================================
+   FIN PARTE 8
+========================================================= */
+
+</script>
+<!-- =========================================================
+     PARTE 9 — MOCHILA + INVENTARIO + BARRA RÁPIDA
+========================================================= -->
+
+<style>
+
+#inventoryPanel{
+
+    position:fixed;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:430px;
+    max-width:92vw;
+
+    padding:20px;
+
+    background:rgba(18,18,18,.96);
+
+    border:1px solid rgba(255,255,255,.25);
+
+    border-radius:16px;
+
+    color:white;
+
+    font-family:Arial,sans-serif;
+
+    z-index:200;
+
+    display:none;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.8);
+
+}
+
+#inventoryPanel h2{
+
+    margin:0 0 15px 0;
+
+    text-align:center;
+
+}
+
+#inventoryClose{
+
+    position:absolute;
+
+    right:10px;
+    top:10px;
+
+    width:30px;
+    height:30px;
+
+    border:0;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.1);
+
+    color:white;
+
+    font-size:19px;
+
+    cursor:pointer;
+
+}
+
+#inventoryGrid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:8px;
+
+}
+
+.inventorySlot{
+
+    height:72px;
+
+    border-radius:9px;
+
+    border:1px solid
+        rgba(255,255,255,.18);
+
+    background:
+        linear-gradient(
+            145deg,
+            #292929,
+            #171717
+        );
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    position:relative;
+
+    cursor:pointer;
+
+    user-select:none;
+
+}
+
+.inventorySlot:hover{
+
+    border-color:white;
+
+    background:#333;
+
+}
+
+.inventorySlot.selected{
+
+    outline:2px solid white;
+
+}
+
+.itemIcon{
+
+    font-size:30px;
+
+    pointer-events:none;
+
+}
+
+.itemName{
+
+    position:absolute;
+
+    bottom:4px;
+    left:4px;
+    right:4px;
+
+    text-align:center;
+
+    font-size:10px;
+
+    opacity:.8;
+
+    pointer-events:none;
+
+}
+
+.itemAmount{
+
+    position:absolute;
+
+    right:5px;
+    top:4px;
+
+    font-weight:bold;
+
+    font-size:13px;
+
+    pointer-events:none;
+
+}
+
+#quickBar{
+
+    position:fixed;
+
+    bottom:18px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    display:flex;
+
+    gap:6px;
+
+    z-index:120;
+
+}
+
+.quickSlot{
+
+    width:64px;
+    height:64px;
+
+    background:
+        rgba(20,20,20,.82);
+
+    border:
+        1px solid
+        rgba(255,255,255,.25);
+
+    border-radius:9px;
+
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:white;
+
+    font-family:Arial,sans-serif;
+
+    cursor:pointer;
+
+}
+
+.quickSlot.active{
+
+    border:
+        2px solid white;
+
+    transform:
+        translateY(-4px);
+
+}
+
+.quickNumber{
+
+    position:absolute;
+
+    left:5px;
+    top:4px;
+
+    font-size:11px;
+
+    opacity:.8;
+
+}
+
+.quickAmount{
+
+    position:absolute;
+
+    right:5px;
+    bottom:4px;
+
+    font-size:12px;
+
+    font-weight:bold;
+
+}
+
+#inventoryMessage{
+
+    text-align:center;
+
+    min-height:20px;
+
+    margin-top:12px;
+
+    font-size:13px;
+
+    opacity:.8;
+
+}
+
+</style>
+
+
+<!-- =========================================================
+     INVENTARIO
+========================================================= -->
+
+<div id="inventoryPanel">
+
+    <button id="inventoryClose">
+        ×
+    </button>
+
+    <h2>🎒 Mochila</h2>
+
+    <div id="inventoryGrid"></div>
+
+    <div id="inventoryMessage"></div>
+
+</div>
+
+
+<!-- =========================================================
+     BARRA RÁPIDA
+========================================================= -->
+
+<div id="quickBar">
+
+    <div
+        class="quickSlot active"
+        data-quick="0">
+
+        <span class="quickNumber">
+            1
+        </span>
+
+    </div>
+
+
+    <div
+        class="quickSlot"
+        data-quick="1">
+
+        <span class="quickNumber">
+            2
+        </span>
+
+    </div>
+
+
+    <div
+        class="quickSlot"
+        data-quick="2">
+
+        <span class="quickNumber">
+            3
+        </span>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   INVENTARIO PRINCIPAL
+========================================================= */
+
+const inventory = {
+
+    /*
+       12 espacios de mochila.
+    */
+
+    slots:
+        new Array(12).fill(null),
+
+    /*
+       3 espacios rápidos.
+    */
+
+    quick:
+        new Array(3).fill(null),
+
+    selectedQuick:0
+
+};
+
+
+/* =========================================================
+   CAPACIDADES
+========================================================= */
+
+const inventoryLimits = {
+
+    wood:15,
+
+    iron:7,
+
+    raw_meat:20,
+
+    cooked_meat:20,
+
+    stick:30,
+
+    stone:12,
+
+    bandage:16,
+
+    apple:10,
+
+    banana:10,
+
+    violet_berry:20,
+
+    green_berry:10,
+
+    coal:20,
+
+    fish:5
+
+};
+
+
+/* =========================================================
+   OBJETOS
+========================================================= */
+
+const itemData = {
+
+    wood:{
+        name:"Madera",
+        icon:"🪵"
+    },
+
+    iron:{
+        name:"Hierro",
+        icon:"⬜"
+    },
+
+    stick:{
+        name:"Palo",
+        icon:"│"
+    },
+
+    stone:{
+        name:"Piedra",
+        icon:"🪨"
+    },
+
+    coal:{
+        name:"Carbón",
+        icon:"⚫"
+    },
+
+    raw_meat:{
+        name:"Carne cruda",
+        icon:"🥩"
+    },
+
+    cooked_meat:{
+        name:"Carne cocida",
+        icon:"🍖"
+    },
+
+    bandage:{
+        name:"Venda",
+        icon:"🩹"
+    },
+
+    apple:{
+        name:"Manzana",
+        icon:"🍎"
+    },
+
+    banana:{
+        name:"Banana",
+        icon:"🍌"
+    },
+
+    violet_berry:{
+        name:"Baya violeta",
+        icon:"🫐"
+    },
+
+    green_berry:{
+        name:"Baya verde",
+        icon:"🟢"
+    },
+
+    fish:{
+        name:"Pez",
+        icon:"🐟"
+    },
+
+    pencil:{
+        name:"Lápiz",
+        icon:"✏️"
+    },
+
+    notebook:{
+        name:"Cuaderno",
+        icon:"📓"
+    },
+
+    backpack:{
+        name:"Mochila",
+        icon:"🎒"
+    },
+
+    wood_spear:{
+        name:"Lanza de madera",
+        icon:"🔱"
+    },
+
+    stone_spear:{
+        name:"Lanza de piedra",
+        icon:"🔱"
+    },
+
+    iron_spear:{
+        name:"Lanza de hierro",
+        icon:"🔱"
+    },
+
+    wood_sword:{
+        name:"Espada de madera",
+        icon:"🗡️"
+    },
+
+    stone_sword:{
+        name:"Espada de piedra",
+        icon:"🗡️"
+    },
+
+    iron_sword:{
+        name:"Espada de hierro",
+        icon:"🗡️"
+    },
+
+    black_sword:{
+        name:"Espada negra",
+        icon:"⚔️"
+    },
+
+    axe:{
+        name:"Hacha",
+        icon:"🪓"
+    },
+
+    helmet:{
+        name:"Casco con linterna",
+        icon:"⛑️"
+    }
+
+};
+
+
+/* =========================================================
+   AGREGAR OBJETO
+========================================================= */
+
+function agregarObjeto(
+    id,
+    nombre,
+    icono,
+    cantidad=1
+){
+
+    const limite =
+        inventoryLimits[id] ??
+        99;
+
+
+    /*
+       Primero intenta encontrar
+       una pila existente.
+    */
+
+    let slot =
+        inventory.slots.find(
+            item =>
+                item &&
+                item.id === id &&
+                item.amount < limite
+        );
+
+
+    if(slot){
+
+        const espacio =
+            limite -
+            slot.amount;
+
+        const agregar =
+            Math.min(
+                espacio,
+                cantidad
+            );
+
+        slot.amount +=
+            agregar;
+
+        cantidad -=
+            agregar;
+
+    }
+
+
+    /*
+       Si todavía queda cantidad,
+       busca un espacio vacío.
+    */
+
+    while(
+        cantidad > 0
+    ){
+
+        const indice =
+            inventory.slots.findIndex(
+                item =>
+                    item === null
+            );
+
+
+        if(
+            indice === -1
+        ){
+
+            return false;
+
+        }
+
+
+        const agregar =
+            Math.min(
+                limite,
+                cantidad
+            );
+
+
+        inventory.slots[indice] = {
+
+            id:id,
+
+            name:
+                nombre ||
+                itemData[id]?.name ||
+                id,
+
+            icon:
+                icono ||
+                itemData[id]?.icon ||
+                "📦",
+
+            amount:
+                agregar
+
+        };
+
+
+        cantidad -=
+            agregar;
+
+    }
+
+
+    renderInventory();
+
+    return true;
+
+}
+
+
+/* =========================================================
+   COMPATIBILIDAD CON PARTE 6/7
+========================================================= */
+
+function agregarRecurso(
+    tipo,
+    cantidad
+){
+
+    const data =
+        itemData[tipo] || {
+
+            name:tipo,
+
+            icon:"📦"
+
+        };
+
+
+    return agregarObjeto(
+
+        tipo,
+
+        data.name,
+
+        data.icon,
+
+        cantidad
+
+    );
+
+}
+
+
+/* =========================================================
+   ELIMINAR OBJETO
+========================================================= */
+
+function eliminarObjeto(
+    indice,
+    cantidad=1
+){
+
+    const item =
+        inventory.slots[indice];
+
+
+    if(!item)
+        return;
+
+
+    item.amount -=
+        cantidad;
+
+
+    if(
+        item.amount <= 0
+    ){
+
+        inventory.slots[indice] =
+            null;
+
+    }
+
+
+    renderInventory();
+
+}
+
+
+/* =========================================================
+   RENDER INVENTARIO
+========================================================= */
+
+function renderInventory(){
+
+    const grid =
+        document.getElementById(
+            "inventoryGrid"
+        );
+
+
+    if(!grid)
+        return;
+
+
+    grid.innerHTML = "";
+
+
+    inventory.slots.forEach(
+        (item,index) => {
+
+            const slot =
+                document.createElement(
+                    "div"
+                );
+
+
+            slot.className =
+                "inventorySlot";
+
+
+            slot.dataset.index =
+                index;
+
+
+            if(item){
+
+                slot.innerHTML = `
+
+                    <span class="itemIcon">
+                        ${item.icon}
+                    </span>
+
+                    <span class="itemName">
+                        ${item.name}
+                    </span>
+
+                    <span class="itemAmount">
+                        ${item.amount}
+                    </span>
+
+                `;
+
+            }
+
+
+            slot.addEventListener(
+                "mousedown",
+                e => {
+
+                    manejarInventarioMouse(
+                        e,
+                        index
+                    );
+
+                }
+            );
+
+
+            grid.appendChild(
+                slot
+            );
+
+        }
+    );
+
+
+    renderQuickBar();
+
+}
+
+
+/* =========================================================
+   RENDER BARRA RÁPIDA
+========================================================= */
+
+function renderQuickBar(){
+
+    const slots =
+        document.querySelectorAll(
+            ".quickSlot"
+        );
+
+
+    slots.forEach(
+        (slot,index) => {
+
+            slot.innerHTML = `
+
+                <span class="quickNumber">
+                    ${index+1}
+                </span>
+
+            `;
+
+
+            const item =
+                inventory.quick[index];
+
+
+            if(item){
+
+                const icon =
+                    document.createElement(
+                        "span"
+                    );
+
+                icon.className =
+                    "itemIcon";
+
+                icon.textContent =
+                    item.icon;
+
+
+                const amount =
+                    document.createElement(
+                        "span"
+                    );
+
+                amount.className =
+                    "quickAmount";
+
+                amount.textContent =
+                    item.amount;
+
+
+                slot.appendChild(
+                    icon
+                );
+
+                slot.appendChild(
+                    amount
+                );
+
+            }
+
+
+            slot.classList.toggle(
+                "active",
+                inventory.selectedQuick === index
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   ABRIR MOCHILA
+========================================================= */
+
+function abrirInventario(){
+
+    document
+        .getElementById(
+            "inventoryPanel"
+        )
+        .style.display =
+        "block";
+
+
+    renderInventory();
+
+}
+
+
+/* =========================================================
+   CERRAR MOCHILA
+========================================================= */
+
+document
+    .getElementById(
+        "inventoryClose"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            document
+                .getElementById(
+                    "inventoryPanel"
+                )
+                .style.display =
+                "none";
+
+        }
+    );
+
+
+/* =========================================================
+   TECLA 3 — MOCHILA
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    e => {
+
+        if(
+            e.key === "3"
+        ){
+
+            inventory.selectedQuick =
+                2;
+
+            renderQuickBar();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   TECLAS 1 Y 2
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    e => {
+
+        if(
+            e.key === "1"
+        ){
+
+            inventory.selectedQuick =
+                0;
+
+            renderQuickBar();
+
+        }
+
+
+        if(
+            e.key === "2"
+        ){
+
+            inventory.selectedQuick =
+                1;
+
+            renderQuickBar();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   CLICK EN BARRA
+========================================================= */
+
+document
+    .querySelectorAll(
+        ".quickSlot"
+    )
+    .forEach(
+        slot => {
+
+            slot.addEventListener(
+                "click",
+                () => {
+
+                    inventory.selectedQuick =
+                        Number(
+                            slot.dataset.quick
+                        );
+
+                    renderQuickBar();
+
+                }
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   MOVER INVENTARIO → BARRA
+========================================================= */
+
+let draggedInventoryIndex =
+    null;
+
+
+function manejarInventarioMouse(
+    e,
+    index
+){
+
+    if(
+        e.button !== 0
+    )
+        return;
+
+
+    const item =
+        inventory.slots[index];
+
+
+    if(!item)
+        return;
+
+
+    draggedInventoryIndex =
+        index;
+
+
+    /*
+       Se mueve al espacio rápido
+       seleccionado.
+    */
+
+    const quickIndex =
+        inventory.selectedQuick;
+
+
+    inventory.quick[
+        quickIndex
+    ] = {
+
+        id:item.id,
+
+        name:item.name,
+
+        icon:item.icon,
+
+        amount:item.amount
+
+    };
+
+
+    inventory.slots[index] =
+        null;
+
+
+    draggedInventoryIndex =
+        null;
+
+
+    renderInventory();
+
+}
+
+
+/* =========================================================
+   ARRASTRAR BARRA → INVENTARIO
+========================================================= */
+
+document.addEventListener(
+    "mousedown",
+    e => {
+
+        const quick =
+            e.target.closest(
+                ".quickSlot"
+            );
+
+
+        if(
+            !quick ||
+            e.button !== 0
+        )
+            return;
+
+
+        const index =
+            Number(
+                quick.dataset.quick
+            );
+
+
+        const item =
+            inventory.quick[index];
+
+
+        if(!item)
+            return;
+
+
+        /*
+           Si se mantiene el click
+           y se suelta fuera de la barra,
+           el objeto vuelve a la mochila.
+        */
+
+        let soltado =
+            false;
+
+
+        const mover =
+            event => {
+
+                const elemento =
+                    document.elementFromPoint(
+                        event.clientX,
+                        event.clientY
+                    );
+
+
+                if(
+                    elemento &&
+                    elemento.closest(
+                        "#inventoryGrid"
+                    )
+                ){
+
+                    soltado = true;
+
+                }
+
+            };
+
+
+        const soltar =
+            event => {
+
+                document.removeEventListener(
+                    "mousemove",
+                    mover
+                );
+
+                document.removeEventListener(
+                    "mouseup",
+                    soltar
+                );
+
+
+                if(soltado){
+
+                    if(
+                        agregarObjeto(
+                            item.id,
+                            item.name,
+                            item.icon,
+                            item.amount
+                        )
+                    ){
+
+                        inventory.quick[index] =
+                            null;
+
+                    }
+
+                }
+
+
+                renderInventory();
+
+            };
+
+
+        document.addEventListener(
+            "mousemove",
+            mover
+        );
+
+
+        document.addEventListener(
+            "mouseup",
+            soltar
+        );
+
+    }
+);
+
+
+/* =========================================================
+   Q — ABRIR MOCHILA
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    e => {
+
+        if(
+            e.key.toLowerCase() === "q"
+        ){
+
+            /*
+               No abrir si el jugador está
+               interactuando con otra cosa.
+            */
+
+            const panel =
+                document.getElementById(
+                    "inventoryPanel"
+                );
+
+
+            if(
+                panel.style.display ===
+                "block"
+            ){
+
+                panel.style.display =
+                    "none";
+
+            }else{
+
+                abrirInventario();
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   EQUIPO ACTUAL
+========================================================= */
+
+let armaActual =
+    null;
+
+
+function obtenerObjetoSeleccionado(){
+
+    return inventory.quick[
+        inventory.selectedQuick
+    ];
+
+}
+
+
+function actualizarArmaActual(){
+
+    const item =
+        obtenerObjetoSeleccionado();
+
+
+    if(
+        !item
+    ){
+
+        armaActual =
+            null;
+
+        return;
+
+    }
+
+
+    armaActual =
+        item.id;
+
+}
+
+
+/* =========================================================
+   ACTUALIZAR ARMA AL CAMBIAR
+========================================================= */
+
+setInterval(
+    () => {
+
+        actualizarArmaActual();
+
+    },
+    100
+);
+
+
+/* =========================================================
+   OBJETOS INICIALES
+========================================================= */
+
+setTimeout(
+    () => {
+
+        /*
+           Objetos que lleva el jugador
+           desde el comienzo.
+        */
+
+        agregarObjeto(
+            "apple",
+            "Manzana",
+            "🍎",
+            1
+        );
+
+        agregarObjeto(
+            "pencil",
+            "Lápiz",
+            "✏️",
+            1
+        );
+
+        agregarObjeto(
+            "notebook",
+            "Cuaderno",
+            "📓",
+            1
+        );
+
+        agregarObjeto(
+            "backpack",
+            "Mochila",
+            "🎒",
+            1
+        );
+
+
+        renderInventory();
+
+    },
+    3000
+);
+
+
+/* =========================================================
+   FIN PARTE 9
+========================================================= */
+
+</script>
+     
+/* =========================================================
+   RELOJ
+========================================================= */
+
+const clock =
+    new THREE.Clock();
+
+
+/* =========================================================
+   BUCLE PRINCIPAL
+========================================================= */
+
+function animate(
+    tiempo
+){
+
+    requestAnimationFrame(
+        animate
+    );
+
+
+    const dt =
+        Math.min(
+            clock.getDelta(),
+            .05
+        );
+
+
+    actualizarJugador(dt);
+
+    actualizarCamara();
+
+    actualizarOlas(tiempo);
+
+    actualizarDiaNoche(dt);
+
+
+    renderer.render(
+        scene,
+        camera
+    );
+}
+
+
+animate(0);
+
+
+/* =========================================================
+   REDIMENSIONAR
+========================================================= */
 
 window.addEventListener(
-"resize",
-()=>{
+    "resize",
+    function(){
 
-camera.aspect=
-innerWidth/innerHeight;
+        camera.aspect =
+            window.innerWidth /
+            window.innerHeight;
 
-camera.updateProjectionMatrix();
+        camera.updateProjectionMatrix();
 
-renderer.setSize(
-innerWidth,
-innerHeight
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+    }
 );
-
-});
-
-
-updateInventoryUI();
-updateUI();
 
 </script>
 
