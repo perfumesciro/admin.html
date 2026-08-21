@@ -6,36 +6,36 @@
   <title>🎁 Sorpresa</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       min-height: 100vh;
       display: flex;
-      align-items: center;
       justify-content: center;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #111827, #4c1d95);
-      color: white;
-      text-align: center;
+      align-items: center;
       padding: 20px;
+      font-family: Arial, sans-serif;
+      color: white;
+      background: linear-gradient(135deg, #111827, #312e81);
     }
 
     .card {
       width: 100%;
-      max-width: 450px;
-      background: rgba(255,255,255,.1);
-      backdrop-filter: blur(12px);
-      border-radius: 25px;
-      padding: 35px 25px;
+      max-width: 430px;
+      padding: 30px;
+      text-align: center;
+      border-radius: 24px;
+      background: rgba(255,255,255,.10);
       box-shadow: 0 20px 50px rgba(0,0,0,.35);
     }
 
+    .emoji {
+      font-size: 65px;
+    }
+
     h1 {
-      font-size: 32px;
-      margin-bottom: 10px;
+      margin: 10px 0;
     }
 
     p {
@@ -43,149 +43,199 @@
       line-height: 1.5;
     }
 
-    button {
-      border: none;
-      border-radius: 14px;
-      padding: 15px 25px;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
+    button, a {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 14px 22px;
+      border: 0;
+      border-radius: 12px;
       background: #8b5cf6;
       color: white;
-      margin-top: 15px;
+      font-weight: bold;
+      font-size: 16px;
+      text-decoration: none;
+      cursor: pointer;
     }
 
-    button:hover {
+    button:hover, a:hover {
       background: #7c3aed;
     }
 
-    #resultado {
-      margin-top: 25px;
+    .info {
       display: none;
-    }
-
-    .coords {
-      background: rgba(0,0,0,.25);
+      margin-top: 25px;
+      padding: 18px;
       border-radius: 15px;
-      padding: 15px;
-      margin: 15px 0;
-      word-break: break-all;
+      background: rgba(0,0,0,.25);
     }
 
-    a {
-      display: inline-block;
-      margin-top: 10px;
-      color: white;
-      background: #10b981;
-      padding: 12px 18px;
-      border-radius: 12px;
-      text-decoration: none;
+    .ip {
+      font-size: 22px;
       font-weight: bold;
+      color: #a78bfa;
+      word-break: break-all;
     }
 
     #error {
       color: #fca5a5;
       margin-top: 15px;
     }
+
+    .map {
+      background: #10b981;
+    }
+
+    .map:hover {
+      background: #059669;
+    }
   </style>
 </head>
 
 <body>
 
-  <div class="card">
+<div class="card">
 
-    <div style="font-size:60px;">🎁</div>
+  <div class="emoji">🎁</div>
 
-    <h1>¡Encontraste la sorpresa!</h1>
+  <h1>¡Hay una sorpresa para vos!</h1>
 
-    <p>
-      Para continuar, podés compartir tu ubicación con esta página.
-      El navegador te pedirá permiso antes de hacerlo.
-    </p>
+  <p>
+    Tocá el botón para continuar.
+  </p>
 
-    <button onclick="obtenerUbicacion()">
-      📍 Compartir mi ubicación
-    </button>
+  <button onclick="comenzar()">
+    Continuar →
+  </button>
 
-    <div id="resultado">
-      <h2>😂 ¡CAÍSTE!</h2>
+  <div id="info" class="info">
 
-      <p>Esta es la ubicación que autorizaste a compartir:</p>
+    <h2>😂 ¡CAÍSTE!</h2>
 
-      <div class="coords">
-        <strong>Latitud:</strong>
-        <span id="latitud"></span>
-        <br><br>
-        <strong>Longitud:</strong>
-        <span id="longitud"></span>
-      </div>
+    <p>La IP pública detectada es:</p>
 
-      <a id="mapa" target="_blank">
-        🗺️ Abrir en Google Maps
-      </a>
+    <div id="ip" class="ip">
+      Cargando...
     </div>
 
-    <div id="error"></div>
+    <div id="ubicacion"></div>
+
+    <div id="mapaContainer"></div>
 
   </div>
 
-  <script>
-    function obtenerUbicacion() {
+  <div id="error"></div>
 
-      const error = document.getElementById("error");
-      const resultado = document.getElementById("resultado");
+</div>
 
-      error.textContent = "";
+<script>
 
-      if (!navigator.geolocation) {
-        error.textContent =
-          "Tu navegador no permite obtener la ubicación.";
-        return;
+async function obtenerIP() {
+
+  try {
+
+    const respuesta =
+      await fetch("https://api.ipify.org?format=json");
+
+    const datos = await respuesta.json();
+
+    document.getElementById("ip").textContent =
+      datos.ip;
+
+  } catch (error) {
+
+    document.getElementById("ip").textContent =
+      "No disponible";
+
+  }
+}
+
+
+function obtenerUbicacion() {
+
+  const ubicacion =
+    document.getElementById("ubicacion");
+
+  if (!navigator.geolocation) {
+
+    ubicacion.innerHTML =
+      "<p>Tu navegador no permite obtener la ubicación.</p>";
+
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+
+    function(posicion) {
+
+      const lat =
+        posicion.coords.latitude;
+
+      const lon =
+        posicion.coords.longitude;
+
+      ubicacion.innerHTML = `
+        <p>
+          📍 Ubicación autorizada
+        </p>
+
+        <p>
+          Latitud: <b>${lat.toFixed(6)}</b><br>
+          Longitud: <b>${lon.toFixed(6)}</b>
+        </p>
+      `;
+
+      document.getElementById("mapaContainer").innerHTML = `
+        <a
+          class="map"
+          target="_blank"
+          href="https://www.google.com/maps?q=${lat},${lon}">
+          🗺️ Abrir ubicación
+        </a>
+      `;
+
+    },
+
+    function(error) {
+
+      if (error.code === 1) {
+
+        ubicacion.innerHTML =
+          "<p>📍 No se autorizó la ubicación.</p>";
+
+      } else {
+
+        ubicacion.innerHTML =
+          "<p>📍 No se pudo obtener la ubicación.</p>";
+
       }
 
-      navigator.geolocation.getCurrentPosition(
+    },
 
-        function(posicion) {
-
-          const lat = posicion.coords.latitude;
-          const lon = posicion.coords.longitude;
-
-          document.getElementById("latitud").textContent =
-            lat.toFixed(6);
-
-          document.getElementById("longitud").textContent =
-            lon.toFixed(6);
-
-          document.getElementById("mapa").href =
-            `https://www.google.com/maps?q=${lat},${lon}`;
-
-          resultado.style.display = "block";
-        },
-
-        function(error) {
-
-          if (error.code === 1) {
-            error.textContent =
-              "No se concedió permiso para compartir la ubicación.";
-          } else if (error.code === 2) {
-            error.textContent =
-              "No se pudo determinar la ubicación.";
-          } else {
-            error.textContent =
-              "Se produjo un error al obtener la ubicación.";
-          }
-
-        },
-
-        {
-          enableHighAccuracy: true,
-          timeout: 15000,
-          maximumAge: 0
-        }
-
-      );
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0
     }
-  </script>
+
+  );
+}
+
+
+function comenzar() {
+
+  document.querySelector("button").style.display =
+    "none";
+
+  document.getElementById("info").style.display =
+    "block";
+
+  obtenerIP();
+
+  obtenerUbicacion();
+
+}
+
+</script>
 
 </body>
 </html>
