@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>San Andreas Lite 3D</title>
+    <title>GTA San Andreas Lite 3D</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pricedown&display=swap');
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             user-select: none;
             -webkit-user-select: none;
-            font-family: 'Impact', 'Arial Black', sans-serif;
         }
 
         body, html {
@@ -19,6 +20,7 @@
             height: 100%;
             overflow: hidden;
             background-color: #000;
+            font-family: 'Impact', 'Arial Black', sans-serif;
         }
 
         #canvas-container {
@@ -30,7 +32,24 @@
             z-index: 1;
         }
 
-        /* UI Overlays */
+        /* Contador de FPS */
+        #fps-counter {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 20;
+            color: #00ff00;
+            font-family: monospace;
+            font-size: 16px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid #00ff00;
+            text-shadow: 0 0 4px #00ff00;
+        }
+
+        /* HUD GTA San Andreas */
         #hud {
             position: absolute;
             top: 0;
@@ -50,23 +69,36 @@
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            gap: 5px;
+            gap: 4px;
+        }
+
+        .clock-display {
+            color: #e5b324;
+            font-size: 28px;
+            text-shadow: 2px 2px 0 #000, -1px -1px 0 #000;
+            letter-spacing: 2px;
+            margin-bottom: 2px;
         }
 
         .money {
             color: #55b355;
-            font-size: 36px;
+            font-size: 38px;
             text-shadow: 3px 3px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
             letter-spacing: 2px;
         }
 
-        .health-bar-container {
-            width: 200px;
-            height: 18px;
-            background: rgba(0, 0, 0, 0.7);
+        .bars-container {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            align-items: flex-end;
+        }
+
+        .bar-wrapper {
+            width: 180px;
+            height: 14px;
+            background: #000;
             border: 2px solid #000;
-            border-radius: 3px;
-            overflow: hidden;
             position: relative;
         }
 
@@ -74,19 +106,26 @@
             width: 100%;
             height: 100%;
             background: #b82e2e;
-            transition: width 0.2s ease;
+            transition: width 0.15s ease;
+        }
+
+        .armor-bar-fill {
+            width: 100%;
+            height: 100%;
+            background: #e6e6e6;
+            transition: width 0.15s ease;
         }
 
         .wanted-stars {
             color: #d6a100;
-            font-size: 28px;
+            font-size: 26px;
             text-shadow: 2px 2px 0 #000;
             letter-spacing: 4px;
         }
 
         .star {
             display: inline-block;
-            opacity: 0.3;
+            opacity: 0.25;
             transition: opacity 0.3s;
         }
 
@@ -97,21 +136,21 @@
 
         @keyframes pulseStar {
             from { transform: scale(1); }
-            to { transform: scale(1.2); }
+            to { transform: scale(1.15); }
         }
 
         .weapon-card {
-            width: 90px;
-            height: 70px;
-            background: rgba(0,0,0,0.4);
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 8px;
+            width: 80px;
+            height: 60px;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #fff;
-            font-size: 14px;
-            margin-top: 5px;
+            font-size: 13px;
+            margin-top: 4px;
         }
 
         .hud-bottom-left {
@@ -122,14 +161,14 @@
         }
 
         #radar-container {
-            width: 140px;
-            height: 140px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
-            border: 4px solid #333;
-            background: #112211;
+            border: 4px solid #1a1a1a;
+            background: #192a19;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 10px rgba(0,0,0,0.8);
+            box-shadow: 0 0 12px rgba(0,0,0,0.9);
         }
 
         #radar-canvas {
@@ -138,26 +177,26 @@
         }
 
         .vehicle-hud {
-            background: rgba(0,0,0,0.6);
-            padding: 8px 15px;
-            border-radius: 5px;
+            background: rgba(0,0,0,0.7);
+            padding: 6px 12px;
+            border-radius: 4px;
             color: #fff;
             font-family: Arial, sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             display: none;
-            border-left: 4px solid #ff9900;
+            border-left: 4px solid #e5b324;
         }
 
         #radio-display {
             position: absolute;
-            top: 80px;
+            top: 75px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             color: #33ff33;
-            padding: 10px 25px;
-            border-radius: 20px;
-            font-size: 20px;
+            padding: 8px 20px;
+            border-radius: 15px;
+            font-size: 18px;
             font-family: Arial, sans-serif;
             font-weight: bold;
             display: none;
@@ -174,7 +213,7 @@
             width: 100%;
             height: 100%;
             z-index: 100;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0, 0, 0, 0.88);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -184,16 +223,16 @@
         }
 
         .screen h1 {
-            font-size: 64px;
+            font-size: 72px;
             color: #e5b324;
-            text-shadow: 4px 4px 0 #000;
-            margin-bottom: 10px;
-            letter-spacing: 3px;
+            text-shadow: 4px 4px 0 #000, -2px -2px 0 #000;
+            margin-bottom: 5px;
+            letter-spacing: 2px;
         }
 
         .screen h2 {
-            font-size: 24px;
-            color: #aaa;
+            font-size: 20px;
+            color: #ccc;
             margin-bottom: 30px;
             font-family: Arial, sans-serif;
             font-weight: normal;
@@ -203,7 +242,7 @@
             background: #e5b324;
             color: #000;
             border: none;
-            padding: 15px 40px;
+            padding: 14px 45px;
             font-size: 22px;
             font-weight: bold;
             cursor: pointer;
@@ -219,24 +258,19 @@
             box-shadow: 0 6px 0 #997510;
         }
 
-        .btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #997510;
-        }
-
         #wasted-screen {
             display: none;
-            background: rgba(150, 0, 0, 0.4);
+            background: rgba(120, 0, 0, 0.55);
         }
 
         #wasted-screen h1 {
             color: #cc0000;
-            font-size: 80px;
+            font-size: 85px;
             animation: wastedAnim 0.5s ease-out;
         }
 
         @keyframes wastedAnim {
-            0% { transform: scale(3); opacity: 0; }
+            0% { transform: scale(2.5); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
 
@@ -244,8 +278,8 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             transform: translate(-50%, -50%);
             pointer-events: none;
             z-index: 5;
@@ -254,27 +288,23 @@
         #crosshair::before, #crosshair::after {
             content: '';
             position: absolute;
-            background: rgba(255,255,255,0.7);
+            background: rgba(255,255,255,0.8);
         }
 
-        #crosshair::before {
-            top: 4px; left: -6px; width: 22px; height: 2px;
-        }
-        #crosshair::after {
-            top: -6px; left: 4px; width: 2px; height: 22px;
-        }
+        #crosshair::before { top: 3px; left: -5px; width: 18px; height: 2px; }
+        #crosshair::after { top: -5px; left: 3px; width: 2px; height: 18px; }
 
         /* Mobile Controls */
         .mobile-btn {
             position: absolute;
-            background: rgba(255,255,255,0.2);
-            border: 2px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.25);
+            border: 2px solid rgba(255,255,255,0.6);
             border-radius: 50%;
             color: white;
             display: none;
             justify-content: center;
             align-items: center;
-            font-size: 20px;
+            font-size: 22px;
             pointer-events: auto;
             touch-action: manipulation;
         }
@@ -292,18 +322,21 @@
 </head>
 <body>
 
+    <div id="fps-counter">FPS: 60</div>
     <div id="canvas-container"></div>
     <div id="crosshair"></div>
 
     <!-- HUD Overlay -->
     <div id="hud">
         <div class="hud-top-right">
+            <div class="clock-display" id="clock-display">12:00</div>
+            <div class="money" id="money-display">$00000350</div>
+            <div class="bars-container">
+                <div class="bar-wrapper"><div class="armor-bar-fill" id="armor-fill"></div></div>
+                <div class="bar-wrapper"><div class="health-bar-fill" id="health-fill"></div></div>
+            </div>
             <div class="wanted-stars" id="stars-container">
                 <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
-            </div>
-            <div class="money" id="money-display">$00000350</div>
-            <div class="health-bar-container">
-                <div class="health-bar-fill" id="health-fill"></div>
             </div>
             <div class="weapon-card" id="weapon-display">PUÑOS</div>
         </div>
@@ -312,10 +345,10 @@
 
         <div class="hud-bottom-left">
             <div id="radar-container">
-                <canvas id="radar-canvas" width="140" height="140"></canvas>
+                <canvas id="radar-canvas" width="130" height="130"></canvas>
             </div>
             <div class="vehicle-hud" id="vehicle-hud">
-                <div id="vehicle-name">Infernus</div>
+                <div id="vehicle-name">INFERNUS</div>
                 <div id="vehicle-speed" style="font-size: 11px; color: #aaa;">0 KM/H</div>
             </div>
         </div>
@@ -342,9 +375,7 @@
     <script>
         // --- SONIDOS SINTETIZADOS (Web Audio API) ---
         class SoundEngine {
-            constructor() {
-                this.ctx = null;
-            }
+            constructor() { this.ctx = null; }
             init() {
                 if (!this.ctx) {
                     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -356,8 +387,8 @@
                     const osc = this.ctx.createOscillator();
                     const gain = this.ctx.createGain();
                     osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(40 * pitch, this.ctx.currentTime);
-                    gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
+                    osc.frequency.setValueAtTime(45 * pitch, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.1);
                     osc.connect(gain);
                     gain.connect(this.ctx.destination);
@@ -370,7 +401,7 @@
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
                 osc.type = 'triangle';
-                osc.frequency.setValueAtTime(120, this.ctx.currentTime);
+                osc.frequency.setValueAtTime(130, this.ctx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.15);
                 gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
                 gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
@@ -388,7 +419,7 @@
                 osc.frequency.setValueAtTime(600, now);
                 osc.frequency.linearRampToValueAtTime(900, now + 0.25);
                 osc.frequency.linearRampToValueAtTime(600, now + 0.5);
-                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.setValueAtTime(0.08, now);
                 gain.gain.linearRampToValueAtTime(0.01, now + 0.5);
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);
@@ -401,7 +432,7 @@
                 const gain = this.ctx.createGain();
                 osc.type = 'square';
                 osc.frequency.setValueAtTime(800, this.ctx.currentTime);
-                gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
+                gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
                 gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.08);
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);
@@ -412,16 +443,23 @@
 
         const audio = new SoundEngine();
 
+        // --- PARÁMETROS DEL MUNDO ---
         const CITY_SIZE = 400;
         const BLOCK_SIZE = 40;
         const ROAD_WIDTH = 12;
 
         let scene, camera, renderer;
-        let player, playerBody;
+        let player, playerLeftArm, playerRightArm, playerLeftLeg, playerRightLeg;
         let clock = new THREE.Clock();
+
+        // FPS Tracker
+        let frameCount = 0;
+        let lastFpsUpdate = performance.now();
+        const fpsEl = document.getElementById('fps-counter');
 
         let gameState = 'START'; 
         let playerHealth = 100;
+        let playerArmor = 50;
         let playerMoney = 350;
         let wantedLevel = 0;
 
@@ -434,7 +472,7 @@
         const keys = {};
         let cameraAngleX = 0;
         let cameraAngleY = 0.3;
-        let cameraDistance = 12;
+        let cameraDistance = 10;
 
         const radioStations = [
             'RADIO OFF',
@@ -446,13 +484,16 @@
         let currentRadioIndex = 1;
         let radioTimeout = null;
 
+        // Elementos DOM HUD
         const healthFill = document.getElementById('health-fill');
+        const armorFill = document.getElementById('armor-fill');
         const moneyDisplay = document.getElementById('money-display');
         const starsContainer = document.getElementById('stars-container');
         const vehicleHud = document.getElementById('vehicle-hud');
         const vehicleNameEl = document.getElementById('vehicle-name');
         const vehicleSpeedEl = document.getElementById('vehicle-speed');
         const radioDisplay = document.getElementById('radio-display');
+        const clockDisplay = document.getElementById('clock-display');
         const radarCanvas = document.getElementById('radar-canvas');
         const radarCtx = radarCanvas.getContext('2d');
 
@@ -460,8 +501,9 @@
             const container = document.getElementById('canvas-container');
 
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x87ceeb);
-            scene.fog = new THREE.FogExp2(0x87ceeb, 0.005);
+            // Ambiente cálido de atardecer típico de San Andreas
+            scene.background = new THREE.Color(0xdca167);
+            scene.fog = new THREE.FogExp2(0xdca167, 0.005);
 
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
 
@@ -472,11 +514,12 @@
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             container.appendChild(renderer.domElement);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            // Iluminación
+            const ambientLight = new THREE.AmbientLight(0xffeedd, 0.6);
             scene.add(ambientLight);
 
-            const sunLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            sunLight.position.set(100, 150, 50);
+            const sunLight = new THREE.DirectionalLight(0xffa500, 0.9);
+            sunLight.position.set(120, 140, 60);
             sunLight.castShadow = true;
             sunLight.shadow.mapSize.width = 2048;
             sunLight.shadow.mapSize.height = 2048;
@@ -490,7 +533,7 @@
             scene.add(sunLight);
 
             createCity();
-            createPlayer();
+            createPlayerModel();
             spawnInitialVehicles();
             spawnInitialPeds();
 
@@ -501,8 +544,9 @@
         }
 
         function createCity() {
+            // Suelo
             const groundGeo = new THREE.PlaneGeometry(CITY_SIZE * 2, CITY_SIZE * 2);
-            const groundMat = new THREE.MeshLambertMaterial({ color: 0x3d7e3d });
+            const groundMat = new THREE.MeshLambertMaterial({ color: 0x2e5e2e });
             const ground = new THREE.Mesh(groundGeo, groundMat);
             ground.rotation.x = -Math.PI / 2;
             ground.position.y = -0.1;
@@ -511,8 +555,9 @@
 
             const halfSize = CITY_SIZE / 2;
 
+            // Carreteras
             const asphaltGeo = new THREE.PlaneGeometry(CITY_SIZE, CITY_SIZE);
-            const asphaltMat = new THREE.MeshLambertMaterial({ color: 0x222222 });
+            const asphaltMat = new THREE.MeshLambertMaterial({ color: 0x282828 });
             const asphalt = new THREE.Mesh(asphaltGeo, asphaltMat);
             asphalt.rotation.x = -Math.PI / 2;
             asphalt.receiveShadow = true;
@@ -522,7 +567,7 @@
                 for (let z = -halfSize + BLOCK_SIZE/2; z < halfSize; z += BLOCK_SIZE) {
                     const sidewalkSize = BLOCK_SIZE - ROAD_WIDTH;
                     const sidewalkGeo = new THREE.BoxGeometry(sidewalkSize, 0.2, sidewalkSize);
-                    const sidewalkMat = new THREE.MeshLambertMaterial({ color: 0x999999 });
+                    const sidewalkMat = new THREE.MeshLambertMaterial({ color: 0x888888 });
                     const sidewalk = new THREE.Mesh(sidewalkGeo, sidewalkMat);
                     sidewalk.position.set(x, 0.1, z);
                     sidewalk.receiveShadow = true;
@@ -534,13 +579,13 @@
         }
 
         function createBlockBuildings(centerX, centerZ, blockSize) {
-            const buildingColors = [0x993333, 0x336699, 0x888888, 0xbb9966, 0x558855, 0x666666];
+            const buildingColors = [0x8b4513, 0x3a5fcd, 0x708090, 0xcd853f, 0x2e8b57, 0x555555];
             const numBuildings = 2 + Math.floor(Math.random() * 3);
 
             for (let i = 0; i < numBuildings; i++) {
                 const w = 8 + Math.random() * (blockSize / 2 - 4);
                 const d = 8 + Math.random() * (blockSize / 2 - 4);
-                const h = 10 + Math.random() * 35;
+                const h = 12 + Math.random() * 30;
 
                 const offsetX = (Math.random() - 0.5) * (blockSize - w - 2);
                 const offsetZ = (Math.random() - 0.5) * (blockSize - d - 2);
@@ -565,7 +610,7 @@
         }
 
         function addWindowsToBuilding(buildingMesh, w, h, d) {
-            const windowMat = new THREE.MeshBasicMaterial({ color: 0xffffaa });
+            const windowMat = new THREE.MeshBasicMaterial({ color: 0xffe066 });
             const windowGeo = new THREE.PlaneGeometry(0.8, 1.2);
             const rows = Math.floor(h / 4);
             for (let r = 1; r < rows; r++) {
@@ -581,38 +626,63 @@
             }
         }
 
-        function createPlayer() {
+        // --- JUGADOR CON BRAZOS Y PIERNAS (CJ LITE MODEL) ---
+        function createPlayerModel() {
             player = new THREE.Group();
 
-            const torsoGeo = new THREE.BoxGeometry(0.8, 1.0, 0.4);
-            const torsoMat = new THREE.MeshLambertMaterial({ color: 0xeeeeee });
-            const torso = new THREE.Mesh(torsoGeo, torsoMat);
-            torso.position.y = 1.1;
+            const skinMat = new THREE.MeshLambertMaterial({ color: 0x8d5524 });
+            const shirtMat = new THREE.MeshLambertMaterial({ color: 0xf0f0f0 }); // Camiseta blanca
+            const pantsMat = new THREE.MeshLambertMaterial({ color: 0x2b4c7e }); // Jean azul
+            const capMat = new THREE.MeshLambertMaterial({ color: 0x111111 });
+
+            // Torso
+            const torsoGeo = new THREE.BoxGeometry(0.7, 0.9, 0.38);
+            const torso = new THREE.Mesh(torsoGeo, shirtMat);
+            torso.position.y = 1.15;
             torso.castShadow = true;
             player.add(torso);
 
-            const headGeo = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-            const headMat = new THREE.MeshLambertMaterial({ color: 0x8d5524 });
-            const head = new THREE.Mesh(headGeo, headMat);
+            // Cabeza
+            const headGeo = new THREE.BoxGeometry(0.45, 0.45, 0.45);
+            const head = new THREE.Mesh(headGeo, skinMat);
             head.position.y = 1.85;
             head.castShadow = true;
             player.add(head);
 
-            const legsGeo = new THREE.BoxGeometry(0.75, 1.0, 0.38);
-            const legsMat = new THREE.MeshLambertMaterial({ color: 0x2b4c7e });
-            const legs = new THREE.Mesh(legsGeo, legsMat);
-            legs.position.y = 0.5;
-            legs.castShadow = true;
-            player.add(legs);
+            // Gorra de CJ
+            const capGeo = new THREE.BoxGeometry(0.48, 0.12, 0.55);
+            const cap = new THREE.Mesh(capGeo, capMat);
+            cap.position.set(0, 2.1, 0.05);
+            player.add(cap);
+
+            // Brazos
+            const armGeo = new THREE.BoxGeometry(0.2, 0.75, 0.2);
+            
+            playerLeftArm = new THREE.Mesh(armGeo, skinMat);
+            playerLeftArm.position.set(-0.48, 1.1, 0);
+            playerLeftArm.castShadow = true;
+            player.add(playerLeftArm);
+
+            playerRightArm = new THREE.Mesh(armGeo, skinMat);
+            playerRightArm.position.set(0.48, 1.1, 0);
+            playerRightArm.castShadow = true;
+            player.add(playerRightArm);
+
+            // Piernas
+            const legGeo = new THREE.BoxGeometry(0.28, 0.8, 0.28);
+
+            playerLeftLeg = new THREE.Mesh(legGeo, pantsMat);
+            playerLeftLeg.position.set(-0.2, 0.4, 0);
+            playerLeftLeg.castShadow = true;
+            player.add(playerLeftLeg);
+
+            playerRightLeg = new THREE.Mesh(legGeo, pantsMat);
+            playerRightLeg.position.set(0.2, 0.4, 0);
+            playerRightLeg.castShadow = true;
+            player.add(playerRightLeg);
 
             player.position.set(0, 0, 0);
             scene.add(player);
-
-            playerBody = {
-                radius: 0.6,
-                velocity: new THREE.Vector3(),
-                isGrounded: true
-            };
         }
 
         function createVehicleMesh(type = 'sedan') {
@@ -691,7 +761,6 @@
                     speed: 0,
                     maxSpeed: type === 'sports' ? 0.9 : 0.6,
                     acceleration: 0.015,
-                    steering: 0,
                     heading: mesh.rotation.y,
                     isPolice: type === 'police'
                 });
@@ -735,6 +804,12 @@
         function setupInput() {
             window.addEventListener('keydown', (e) => {
                 keys[e.code] = true;
+
+                // SALIR DEL JUEGO CON TECLA ESC
+                if (e.code === 'Escape' && gameState === 'PLAYING') {
+                    exitToMenu();
+                }
+
                 if (e.code === 'KeyF' || e.code === 'KeyE') {
                     toggleVehicleEnterExit();
                 }
@@ -773,6 +848,11 @@
 
             document.getElementById('start-btn').addEventListener('click', startGame);
             document.getElementById('restart-btn').addEventListener('click', restartGame);
+        }
+
+        function exitToMenu() {
+            gameState = 'START';
+            document.getElementById('start-screen').style.display = 'flex';
         }
 
         function toggleVehicleEnterExit() {
@@ -826,8 +906,10 @@
 
         function performAttack() {
             audio.playPunch();
-            player.rotation.y += 0.2;
-            setTimeout(() => player.rotation.y -= 0.2, 100);
+
+            // Animación de Puñetazo en brazo derecho
+            playerRightArm.rotation.x = -Math.PI / 2;
+            setTimeout(() => { playerRightArm.rotation.x = 0; }, 150);
 
             const attackPos = player.position.clone().add(
                 new THREE.Vector3(Math.sin(player.rotation.y), 0, Math.cos(player.rotation.y)).multiplyScalar(1.5)
@@ -856,9 +938,16 @@
         }
 
         function update() {
-            if (gameState !== 'PLAYING') return;
+            // Actualizar FPS
+            frameCount++;
+            const now = performance.now();
+            if (now - lastFpsUpdate >= 1000) {
+                fpsEl.innerText = `FPS: ${frameCount}`;
+                frameCount = 0;
+                lastFpsUpdate = now;
+            }
 
-            clock.getDelta();
+            if (gameState !== 'PLAYING') return;
 
             if (isDriving && currentVehicle) {
                 updateVehiclePhysics();
@@ -888,12 +977,24 @@
                 moveVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), cameraAngleX);
 
                 const nextPos = player.position.clone().add(moveVector.clone().multiplyScalar(moveSpeed));
-                if (!checkBuildingCollision(nextPos, playerBody.radius)) {
+                if (!checkBuildingCollision(nextPos, 0.6)) {
                     player.position.copy(nextPos);
                 }
 
                 const targetAngle = Math.atan2(moveVector.x, moveVector.z);
                 player.rotation.y = targetAngle;
+
+                // Animación de Caminar
+                const time = Date.now() * 0.01;
+                playerLeftArm.rotation.x = Math.sin(time) * 0.5;
+                playerRightArm.rotation.x = -Math.sin(time) * 0.5;
+                playerLeftLeg.rotation.x = -Math.sin(time) * 0.6;
+                playerRightLeg.rotation.x = Math.sin(time) * 0.6;
+            } else {
+                playerLeftArm.rotation.x = 0;
+                playerRightArm.rotation.x = 0;
+                playerLeftLeg.rotation.x = 0;
+                playerRightLeg.rotation.x = 0;
             }
             player.position.y = 0;
         }
@@ -1011,7 +1112,11 @@
         }
 
         function damagePlayer(amount) {
-            playerHealth = Math.max(0, playerHealth - amount);
+            if (playerArmor > 0) {
+                playerArmor = Math.max(0, playerArmor - amount);
+            } else {
+                playerHealth = Math.max(0, playerHealth - amount);
+            }
             updateHUD();
 
             if (playerHealth <= 0) {
@@ -1032,7 +1137,12 @@
 
         function updateHUD() {
             healthFill.style.width = `${playerHealth}%`;
+            armorFill.style.width = `${playerArmor}%`;
             moneyDisplay.innerText = '$' + playerMoney.toString().padStart(8, '0');
+
+            // Reloj Simulado
+            const d = new Date();
+            clockDisplay.innerText = d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
 
             const stars = starsContainer.children;
             for (let i = 0; i < 5; i++) {
@@ -1052,14 +1162,14 @@
 
             radarCtx.clearRect(0, 0, w, h);
 
-            radarCtx.fillStyle = '#112211';
+            radarCtx.fillStyle = '#192a19';
             radarCtx.beginPath();
             radarCtx.arc(center, center, center, 0, Math.PI * 2);
             radarCtx.fill();
 
             const playerPos = isDriving ? currentVehicle.mesh.position : player.position;
 
-            radarCtx.fillStyle = '#335533';
+            radarCtx.fillStyle = '#3a5f3a';
             buildings.forEach(b => {
                 const relX = (b.mesh.position.x - playerPos.x) * scale;
                 const relZ = (b.mesh.position.z - playerPos.z) * scale;
@@ -1105,6 +1215,7 @@
 
         function restartGame() {
             playerHealth = 100;
+            playerArmor = 50;
             wantedLevel = 0;
             playerMoney = Math.max(0, playerMoney - 100);
             
